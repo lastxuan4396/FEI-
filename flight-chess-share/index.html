@@ -1,0 +1,1088 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>情侣飞行棋 V1.0（双人分享版）</title>
+    <meta name="description" content="情侣飞行棋双人分享版，支持实时位置、历史点数、事件格互动。" />
+    <meta property="og:title" content="情侣飞行棋 V1.0（双人分享版）" />
+    <meta property="og:description" content="直接打开即可玩，支持系统分享和复制链接。" />
+    <meta property="og:type" content="website" />
+    <style>
+      :root {
+        --bg-a: #e9e3d8;
+        --bg-b: #e9e3d8;
+        --ink: #1f2937;
+        --panel: #ffffff;
+        --line: #cfc8b8;
+        --accent: #be123c;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: "Avenir Next", "PingFang SC", "Microsoft YaHei", sans-serif;
+        color: var(--ink);
+        background: linear-gradient(180deg, var(--bg-a), var(--bg-b));
+        display: flex;
+        justify-content: center;
+        align-items: flex-start;
+        padding: 20px;
+      }
+
+      .app {
+        width: min(1460px, 100%);
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 320px;
+        align-items: start;
+        gap: 16px;
+      }
+
+      .panel {
+        background: var(--panel);
+        border: 1px solid var(--line);
+        border-radius: 14px;
+        box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
+      }
+
+      .board-wrap {
+        padding: 10px;
+        display: flex;
+        justify-content: center;
+      }
+
+      #board {
+        width: min(980px, calc(100vh - 56px));
+        max-width: 100%;
+        aspect-ratio: 1;
+        display: block;
+        border-radius: 10px;
+        border: 1px solid #c7c0af;
+        background: #f7f5ef;
+      }
+
+      .hud {
+        padding: 14px;
+        display: grid;
+        gap: 12px;
+      }
+
+      .share-bar {
+        display: grid;
+        gap: 8px;
+        padding: 10px;
+        border-radius: 10px;
+        background: #f8f7f2;
+        border: 1px solid #ddd8ca;
+      }
+
+      .share-bar p {
+        margin: 0;
+        font-size: 12px;
+        color: #475569;
+      }
+
+      .status {
+        display: grid;
+        gap: 6px;
+        padding: 10px;
+        border-radius: 10px;
+        background: #f8f7f2;
+        border: 1px solid #d8d4cb;
+      }
+
+      .status p {
+        margin: 0;
+      }
+
+      .row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      button {
+        border: 0;
+        border-radius: 10px;
+        padding: 10px 14px;
+        font-size: 14px;
+        cursor: pointer;
+      }
+
+      button:disabled {
+        opacity: 0.45;
+        cursor: not-allowed;
+      }
+
+      #rollBtn {
+        background: #0f766e;
+        color: #fff;
+        font-weight: 600;
+      }
+
+      #restartBtn {
+        background: #ece7dd;
+        color: #334155;
+      }
+
+      #shareBtn {
+        background: #2563eb;
+        color: #fff;
+        font-weight: 600;
+      }
+
+      #copyBtn {
+        background: #facc15;
+        color: #111827;
+      }
+
+      #copyTextBtn {
+        background: #e2e8f0;
+        color: #1e293b;
+      }
+
+      #logBox {
+        margin: 0;
+        padding: 10px 12px 10px 28px;
+        border-radius: 10px;
+        background: #f8f7f2;
+        border: 1px solid #e2dece;
+        max-height: 190px;
+        overflow: auto;
+      }
+
+      #logBox li {
+        margin: 3px 0;
+      }
+
+      .positions {
+        display: grid;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px;
+      }
+
+      .pos-card {
+        border: 1px solid #ddd8ca;
+        border-radius: 10px;
+        background: #faf8f1;
+        padding: 10px;
+        display: grid;
+        gap: 6px;
+      }
+
+      .pos-card h3 {
+        margin: 0;
+        font-size: 14px;
+      }
+
+      .pos-card p {
+        margin: 0;
+        font-size: 12px;
+        color: #334155;
+        line-height: 1.35;
+      }
+
+      .pos-card.red h3 {
+        color: #b91c1c;
+      }
+
+      .pos-card.blue h3 {
+        color: #1d4ed8;
+      }
+
+      .progress {
+        height: 8px;
+        border-radius: 999px;
+        background: #e6e2d8;
+        overflow: hidden;
+      }
+
+      .progress > span {
+        display: block;
+        height: 100%;
+        width: 0%;
+      }
+
+      #redProgress {
+        background: linear-gradient(90deg, #fb7185, #ef4444);
+      }
+
+      #blueProgress {
+        background: linear-gradient(90deg, #60a5fa, #2563eb);
+      }
+
+      .dice-board {
+        display: grid;
+        gap: 10px;
+      }
+
+      .dice-lane {
+        border: 1px solid #ddd8ca;
+        border-radius: 10px;
+        padding: 8px;
+        background: #faf8f1;
+      }
+
+      .dice-lane h3 {
+        margin: 0 0 7px;
+        font-size: 13px;
+      }
+
+      .dice-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        min-height: 26px;
+      }
+
+      .dice-chip {
+        border-radius: 999px;
+        padding: 3px 8px;
+        font-size: 12px;
+        font-weight: 700;
+        letter-spacing: 0.01em;
+      }
+
+      .dice-chip.red {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .dice-chip.blue {
+        background: #dbeafe;
+        color: #1e3a8a;
+      }
+
+      @media (max-width: 760px) {
+        .positions {
+          grid-template-columns: 1fr;
+        }
+      }
+
+      @media (max-width: 1260px) {
+        .app {
+          grid-template-columns: 1fr;
+        }
+
+        #board {
+          width: min(980px, calc(100vw - 56px));
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="app">
+      <section class="panel board-wrap">
+        <canvas id="board" width="980" height="980"></canvas>
+      </section>
+
+      <section class="panel hud">
+        <section class="share-bar">
+          <p id="shareHint">分享提示：可直接复制链接发给对方打开。</p>
+          <div class="row">
+            <button id="shareBtn">系统分享</button>
+            <button id="copyBtn">复制链接</button>
+            <button id="copyTextBtn">复制邀请文案</button>
+          </div>
+        </section>
+
+        <div class="status">
+          <p id="turnText"></p>
+          <p id="diceText"></p>
+          <p id="msgText"></p>
+        </div>
+
+        <div class="row">
+          <button id="rollBtn">掷骰子</button>
+          <button id="restartBtn">重新开始</button>
+        </div>
+
+        <div class="positions">
+          <article class="pos-card red">
+            <h3>男方（红）实时位置</h3>
+            <p id="redPosText"></p>
+            <p id="redCellText"></p>
+            <div class="progress"><span id="redProgress"></span></div>
+          </article>
+          <article class="pos-card blue">
+            <h3>女方（蓝）实时位置</h3>
+            <p id="bluePosText"></p>
+            <p id="blueCellText"></p>
+            <div class="progress"><span id="blueProgress"></span></div>
+          </article>
+        </div>
+
+        <section class="dice-board">
+          <article class="dice-lane">
+            <h3>男方（红）历史点数</h3>
+            <div id="redDiceRow" class="dice-row"></div>
+          </article>
+          <article class="dice-lane">
+            <h3>女方（蓝）历史点数</h3>
+            <div id="blueDiceRow" class="dice-row"></div>
+          </article>
+        </section>
+
+        <ol id="logBox"></ol>
+      </section>
+    </main>
+
+    <script>
+      const board = document.getElementById("board");
+      const ctx = board.getContext("2d");
+
+      const turnText = document.getElementById("turnText");
+      const diceText = document.getElementById("diceText");
+      const msgText = document.getElementById("msgText");
+      const logBox = document.getElementById("logBox");
+      const rollBtn = document.getElementById("rollBtn");
+      const restartBtn = document.getElementById("restartBtn");
+      const shareBtn = document.getElementById("shareBtn");
+      const copyBtn = document.getElementById("copyBtn");
+      const copyTextBtn = document.getElementById("copyTextBtn");
+      const shareHint = document.getElementById("shareHint");
+      const redPosText = document.getElementById("redPosText");
+      const redCellText = document.getElementById("redCellText");
+      const bluePosText = document.getElementById("bluePosText");
+      const blueCellText = document.getElementById("blueCellText");
+      const redProgress = document.getElementById("redProgress");
+      const blueProgress = document.getElementById("blueProgress");
+      const redDiceRow = document.getElementById("redDiceRow");
+      const blueDiceRow = document.getElementById("blueDiceRow");
+
+      const SIZE = 980;
+      const CENTER = { x: SIZE / 2, y: SIZE / 2 };
+      const PATH_LEN = 44;
+      const HOME_LEN = 3;
+      const GOAL_STEP = PATH_LEN + HOME_LEN;
+      const CELL_SIZE = 58;
+
+      const vertices = [
+        { x: 190, y: 50 },
+        { x: 790, y: 50 },
+        { x: 930, y: 190 },
+        { x: 930, y: 790 },
+        { x: 790, y: 930 },
+        { x: 190, y: 930 },
+        { x: 50, y: 790 },
+        { x: 50, y: 190 },
+      ];
+
+      const baseTexts = [
+        "掷骰子",
+        "下一轮休息",
+        "喝半杯",
+        "口交至对方流水或坚持10秒",
+        "舔对方耳根10秒",
+        "用嘴喂对方喝一口酒",
+        "为对方脱一件衣物",
+        "手伸进对方内裤里随意发挥30秒",
+        "吮吸对方脖子种一颗草莓",
+        "后退3格并脱一件衣物",
+        "为对方撸管或抠阴1分钟",
+        "舔对方大腿内侧10秒，对方笑岔气则罚喝一杯",
+        "女生停留此格进入",
+        "与对方舌吻30秒",
+        "喝一杯",
+        "返回起点",
+        "男生停留此格让女生咬自己乳头10秒方可飞跃",
+        "后入抽插对方1分钟",
+        "从背后抱住对方随意抚摸1分钟",
+        "为对方口交3分钟",
+        "让对方喝酒每喝一杯给对方转账5.2元",
+        "揉对方乳头1分钟",
+        "为对方口交3分钟",
+        "自己喝酒每喝一杯对方给自己转账13.14元",
+        "选择一个自己喜欢的姿势让对方插10下",
+        "和对方用观音坐莲姿势自己动至少10下",
+        "喂对方喝一口自己的口水",
+        "女生停留此格进入",
+        "后退6格并脱一件衣物",
+        "打对方屁股3下",
+        "自己脱一件衣物",
+        "让对手从耳根开始舔到胸口",
+        "男生停留此格进入",
+        "女生停留此格与男生69式1分钟方可飞跃",
+        "对方坐在自己脸上吸吮对方鸡鸡或阴蒂30秒",
+        "喝半杯",
+        "下一轮休息",
+        "喝半杯",
+        "掷骰子",
+        "喝一杯",
+        "再掷一次",
+        "后退3格并脱一件衣物",
+        "为对方脱一件衣物",
+        "手伸进对方内裤里随意发挥30秒",
+      ];
+
+      function colorByText(text, idx) {
+        if (idx === 0 || text.includes("掷骰子")) return "#9ae6b4";
+        if (text.includes("返回")) return "#fca5a5";
+        if (text.includes("再掷")) return "#86efac";
+        if (text.includes("喝")) return "#fde047";
+        if (text.includes("后退")) return "#fdba74";
+        if (text.includes("休息")) return "#e5e7eb";
+        if (text.includes("停留")) return "#93c5fd";
+        if (text.includes("转账")) return "#f9a8d4";
+        if (text.includes("脱一件衣物")) return "#bfdbfe";
+        return "#f8fafc";
+      }
+
+      const cells = baseTexts.map((text, idx) => ({
+        text,
+        color: colorByText(text, idx),
+      }));
+
+      function samplePolyline(points, count) {
+        const closed = [...points, points[0]];
+        const segments = [];
+        let total = 0;
+
+        for (let i = 0; i < closed.length - 1; i += 1) {
+          const a = closed[i];
+          const b = closed[i + 1];
+          const len = Math.hypot(b.x - a.x, b.y - a.y);
+          segments.push({ a, b, len, start: total });
+          total += len;
+        }
+
+        const interval = total / count;
+        const out = [];
+
+        for (let i = 0; i < count; i += 1) {
+          const dist = i * interval;
+          const seg = segments.find((s, idx) => {
+            if (idx === segments.length - 1) return true;
+            return dist >= s.start && dist < s.start + s.len;
+          });
+
+          const t = seg.len === 0 ? 0 : (dist - seg.start) / seg.len;
+          out.push({
+            x: seg.a.x + (seg.b.x - seg.a.x) * t,
+            y: seg.a.y + (seg.b.y - seg.a.y) * t,
+          });
+        }
+
+        return out;
+      }
+
+      const pathPoints = samplePolyline(vertices, PATH_LEN);
+
+      function syncCanvasResolution() {
+        const rect = board.getBoundingClientRect();
+        if (!rect.width || !rect.height) {
+          return;
+        }
+
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        const targetWidth = Math.round(rect.width * dpr);
+        const targetHeight = Math.round(rect.height * dpr);
+        if (board.width !== targetWidth || board.height !== targetHeight) {
+          board.width = targetWidth;
+          board.height = targetHeight;
+        }
+
+        ctx.setTransform(targetWidth / SIZE, 0, 0, targetHeight / SIZE, 0, 0);
+      }
+
+      const players = [
+        {
+          name: "男方",
+          short: "男",
+          color: "#ef4444",
+          dark: "#7f1d1d",
+          startIndex: 0,
+          base: { x: 130, y: 120 },
+          step: -1,
+          skip: 0,
+        },
+        {
+          name: "女方",
+          short: "女",
+          color: "#3b82f6",
+          dark: "#1e3a8a",
+          startIndex: 22,
+          base: { x: 850, y: 860 },
+          step: -1,
+          skip: 0,
+        },
+      ];
+
+      const state = {
+        current: 0,
+        dice: null,
+        lastRoll: null,
+        gameOver: false,
+        message: "点击掷骰子开始。",
+        logs: [],
+        diceHistory: [],
+        rollCount: 0,
+      };
+
+      function toGlobalIndex(playerIdx, step) {
+        return (players[playerIdx].startIndex + step) % PATH_LEN;
+      }
+
+      function stepToPoint(playerIdx, step) {
+        if (step === -1) {
+          return players[playerIdx].base;
+        }
+
+        if (step < PATH_LEN) {
+          return pathPoints[toGlobalIndex(playerIdx, step)];
+        }
+
+        if (step < GOAL_STEP) {
+          const lane = step - PATH_LEN + 1;
+          const t = lane / (HOME_LEN + 1);
+          const start = pathPoints[players[playerIdx].startIndex];
+          return {
+            x: start.x + (CENTER.x - start.x) * t,
+            y: start.y + (CENTER.y - start.y) * t,
+          };
+        }
+
+        return CENTER;
+      }
+
+      function describeStep(step) {
+        if (step === -1) return "基地";
+        if (step === GOAL_STEP) return "终点";
+        if (step < PATH_LEN) return `环道${step + 1}`;
+        return `冲刺${step - PATH_LEN + 1}`;
+      }
+
+      function getCellTextByStep(playerIdx, step) {
+        if (step >= 0 && step < PATH_LEN) {
+          return cells[toGlobalIndex(playerIdx, step)].text;
+        }
+        if (step === -1) {
+          return "未起飞（掷到6起飞）";
+        }
+        if (step === GOAL_STEP) {
+          return "已到终点";
+        }
+        return "冲刺航道";
+      }
+
+      function getProgress(step) {
+        if (step < 0) return 0;
+        return Math.max(0, Math.min(100, (step / GOAL_STEP) * 100));
+      }
+
+      function addDiceHistory(playerIdx, dice, fromStep, toStep) {
+        state.rollCount += 1;
+        state.diceHistory.unshift({
+          id: state.rollCount,
+          playerIdx,
+          dice,
+          fromStep,
+          toStep,
+        });
+        state.diceHistory = state.diceHistory.slice(0, 40);
+        state.lastRoll = { playerIdx, dice };
+      }
+
+      function setMessage(msg) {
+        state.message = msg;
+        state.logs.unshift(msg);
+        state.logs = state.logs.slice(0, 12);
+      }
+
+      function canMove(player, dice) {
+        if (player.step === -1) return dice === 6;
+        return player.step + dice <= GOAL_STEP;
+      }
+
+      function handleCapture(playerIdx) {
+        const me = players[playerIdx];
+        const enemy = players[playerIdx === 0 ? 1 : 0];
+        if (me.step < 0 || me.step >= PATH_LEN || enemy.step < 0 || enemy.step >= PATH_LEN) {
+          return "";
+        }
+
+        const meGlobal = toGlobalIndex(playerIdx, me.step);
+        const enemyGlobal = toGlobalIndex(playerIdx === 0 ? 1 : 0, enemy.step);
+        if (meGlobal === enemyGlobal) {
+          enemy.step = -1;
+          return "撞机成功，对方回基地";
+        }
+
+        return "";
+      }
+
+      function applyCellEffect(playerIdx, text) {
+        const me = players[playerIdx];
+        const enemy = players[playerIdx === 0 ? 1 : 0];
+        let extraTurn = false;
+        let effectMsg = `触发事件：${text}`;
+
+        const moveMatch = text.match(/(前进|后退)(\d)格/);
+        if (moveMatch && me.step !== -1) {
+          const sign = moveMatch[1] === "前进" ? 1 : -1;
+          const num = Number(moveMatch[2]);
+          const candidate = me.step + sign * num;
+          if (candidate >= 0 && candidate <= GOAL_STEP) {
+            me.step = candidate;
+            effectMsg += `，位置变为${describeStep(me.step)}`;
+          }
+        }
+
+        if (text.includes("再掷一次")) {
+          extraTurn = true;
+          effectMsg += "，获得额外回合";
+        }
+
+        if (text.includes("掷骰子")) {
+          extraTurn = true;
+          effectMsg += "，立刻再掷一次";
+        }
+
+        if (text.includes("返回起点")) {
+          me.step = -1;
+          effectMsg += "，回到基地";
+        }
+
+        if (text.includes("交换位置") && enemy.step !== -1) {
+          const tmp = me.step;
+          me.step = enemy.step;
+          enemy.step = tmp;
+          effectMsg += "，与对方交换位置";
+        }
+
+        if (text.includes("休息")) {
+          me.skip += 1;
+          effectMsg += "，下回合休息";
+        }
+
+        return { extraTurn, effectMsg };
+      }
+
+      function endTurn(keepCurrent) {
+        state.dice = null;
+        if (!keepCurrent) {
+          state.current = state.current === 0 ? 1 : 0;
+        }
+      }
+
+      function rollDice() {
+        if (state.gameOver || state.dice !== null) return;
+
+        const playerIdx = state.current;
+        const player = players[playerIdx];
+        if (player.skip > 0) {
+          player.skip -= 1;
+          setMessage(`${player.name} 本回合休息。`);
+          endTurn(false);
+          render();
+          return;
+        }
+
+        const dice = Math.floor(Math.random() * 6) + 1;
+        state.dice = dice;
+        const fromStep = player.step;
+
+        if (!canMove(player, dice)) {
+          addDiceHistory(playerIdx, dice, fromStep, fromStep);
+          setMessage(`${player.name} 掷出 ${dice}，点数无效，回合结束。`);
+          endTurn(false);
+          render();
+          return;
+        }
+
+        player.step = player.step === -1 ? 0 : player.step + dice;
+
+        let msg = `${player.name} 掷出 ${dice}，移动到 ${describeStep(player.step)}。`;
+        const cap1 = handleCapture(playerIdx);
+        if (cap1) msg += ` ${cap1}。`;
+
+        if (player.step === GOAL_STEP) {
+          state.gameOver = true;
+          addDiceHistory(playerIdx, dice, fromStep, player.step);
+          setMessage(`${msg} ${player.name} 率先抵达终点，获胜！`);
+          render();
+          return;
+        }
+
+        let extra = dice === 6;
+
+        if (player.step >= 0 && player.step < PATH_LEN) {
+          const global = toGlobalIndex(playerIdx, player.step);
+          const { extraTurn, effectMsg } = applyCellEffect(playerIdx, cells[global].text);
+          msg += ` ${effectMsg}。`;
+          const cap2 = handleCapture(playerIdx);
+          if (cap2) msg += ` ${cap2}。`;
+          extra = extra || extraTurn;
+        }
+
+        addDiceHistory(playerIdx, dice, fromStep, player.step);
+
+        if (player.step === GOAL_STEP) {
+          state.gameOver = true;
+          setMessage(`${msg} ${player.name} 率先抵达终点，获胜！`);
+          render();
+          return;
+        }
+
+        setMessage(msg);
+        endTurn(extra);
+        render();
+      }
+
+      function resetGame() {
+        players.forEach((p) => {
+          p.step = -1;
+          p.skip = 0;
+        });
+
+        state.current = 0;
+        state.dice = null;
+        state.lastRoll = null;
+        state.gameOver = false;
+        state.message = "点击掷骰子开始。";
+        state.logs = [];
+        state.diceHistory = [];
+        state.rollCount = 0;
+        render();
+      }
+
+      function wrapText(text, x, y, maxWidth, lineHeight, maxLines = 4) {
+        const chars = [...text];
+        const lines = [];
+        let line = "";
+
+        chars.forEach((ch) => {
+          const test = line + ch;
+          if (ctx.measureText(test).width > maxWidth && line.length > 0) {
+            lines.push(line);
+            line = ch;
+          } else {
+            line = test;
+          }
+        });
+
+        if (line) lines.push(line);
+
+        const shown = lines.slice(0, maxLines);
+        if (lines.length > maxLines && shown.length > 0) {
+          shown[shown.length - 1] = `${shown[shown.length - 1].slice(0, -1)}…`;
+        }
+        const startY = y - ((shown.length - 1) * lineHeight) / 2;
+        shown.forEach((ln, idx) => {
+          ctx.fillText(ln, x, startY + idx * lineHeight);
+        });
+      }
+
+      function drawWheel(cx, cy, title) {
+        const labels = ["1 喝一口", "2 再掷一次", "3 亲吻对方", "4 喝一口", "5 亲吻对方", "6 进入棋盘"];
+        const colors = ["#93c5fd", "#86efac", "#fdba74", "#fcd34d", "#fda4af", "#d1d5db"];
+        const r = 95;
+        const sector = (Math.PI * 2) / labels.length;
+
+        for (let i = 0; i < labels.length; i += 1) {
+          const start = -Math.PI / 2 + i * sector;
+          const end = start + sector;
+          ctx.beginPath();
+          ctx.moveTo(cx, cy);
+          ctx.arc(cx, cy, r, start, end);
+          ctx.closePath();
+          ctx.fillStyle = colors[i];
+          ctx.fill();
+          ctx.strokeStyle = "#ffffff";
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          const mid = (start + end) / 2;
+          const tx = cx + Math.cos(mid) * 58;
+          const ty = cy + Math.sin(mid) * 58;
+          ctx.fillStyle = "#1f2937";
+          ctx.font = "600 12px Avenir Next, PingFang SC";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          wrapText(labels[i], tx, ty, 62, 13, 3);
+        }
+
+        ctx.beginPath();
+        ctx.arc(cx, cy, 26, 0, Math.PI * 2);
+        ctx.fillStyle = "#fff";
+        ctx.fill();
+        ctx.strokeStyle = "#94a3b8";
+        ctx.stroke();
+
+        ctx.fillStyle = "#475569";
+        ctx.font = "700 14px Avenir Next, PingFang SC";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("转盘", cx, cy);
+
+        ctx.fillStyle = "#334155";
+        ctx.font = "700 17px Avenir Next, PingFang SC";
+        ctx.fillText(title, cx, cy - 118);
+      }
+
+      function drawBoardShape() {
+        ctx.clearRect(0, 0, SIZE, SIZE);
+
+        ctx.fillStyle = "#fdf9ef";
+        ctx.fillRect(0, 0, SIZE, SIZE);
+
+        ctx.beginPath();
+        ctx.moveTo(vertices[0].x, vertices[0].y);
+        for (let i = 1; i < vertices.length; i += 1) {
+          ctx.lineTo(vertices[i].x, vertices[i].y);
+        }
+        ctx.closePath();
+        ctx.fillStyle = "#ffffff";
+        ctx.fill();
+        ctx.lineWidth = 3;
+        ctx.strokeStyle = "#1f2937";
+        ctx.stroke();
+
+        pathPoints.forEach((pt, idx) => {
+          const size = CELL_SIZE;
+          ctx.fillStyle = cells[idx].color;
+          ctx.fillRect(pt.x - size / 2, pt.y - size / 2, size, size);
+          ctx.strokeStyle = "#111827";
+          ctx.lineWidth = 1.5;
+          ctx.strokeRect(pt.x - size / 2, pt.y - size / 2, size, size);
+
+          ctx.fillStyle = "#111827";
+          ctx.font = "600 11px Avenir Next, PingFang SC";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          wrapText(cells[idx].text, pt.x, pt.y, size - 8, 12, 4);
+        });
+
+        ctx.fillStyle = "#be123c";
+        ctx.font = "700 56px Avenir Next, PingFang SC";
+        ctx.textAlign = "center";
+        ctx.textBaseline = "middle";
+        ctx.fillText("情侣飞行棋V1.0", CENTER.x, 250);
+
+        ctx.font = "700 46px Avenir Next, PingFang SC";
+        ctx.fillText("（双人版）", CENTER.x, 310);
+
+        ctx.fillStyle = "#1f2937";
+        ctx.font = "600 24px Avenir Next, PingFang SC";
+        ctx.fillText("规则", CENTER.x, 700);
+
+        const rules = [
+          "1. 掷到 6 可起飞；掷到 6 额外回合。",
+          "2. 落在同一格会把对方撞回基地。",
+          "3. 触发格按格子文字执行效果。",
+          "4. 需要刚好点数到达终点。",
+        ];
+
+        ctx.font = "500 22px Avenir Next, PingFang SC";
+        rules.forEach((line, i) => {
+          ctx.fillText(line, CENTER.x, 738 + i * 32);
+        });
+
+        ctx.beginPath();
+        ctx.arc(CENTER.x, CENTER.y, 78, 0, Math.PI * 2);
+        ctx.fillStyle = "#ef4444";
+        ctx.fill();
+        ctx.strokeStyle = "#7f1d1d";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+
+        ctx.fillStyle = "#fff";
+        ctx.font = "700 46px Avenir Next, PingFang SC";
+        ctx.fillText("终点", CENTER.x, CENTER.y - 6);
+        ctx.font = "600 20px Avenir Next, PingFang SC";
+        ctx.fillText("先到者胜", CENTER.x, CENTER.y + 30);
+
+        drawWheel(165, 165, "男方转盘");
+        drawWheel(815, 815, "女方转盘");
+      }
+
+      function drawTokens() {
+        players.forEach((p, idx) => {
+          if (p.step >= 0 && p.step < PATH_LEN) {
+            const cell = pathPoints[toGlobalIndex(idx, p.step)];
+            ctx.strokeStyle = p.color;
+            ctx.lineWidth = 3;
+            ctx.strokeRect(
+              cell.x - CELL_SIZE / 2 + 2,
+              cell.y - CELL_SIZE / 2 + 2,
+              CELL_SIZE - 4,
+              CELL_SIZE - 4,
+            );
+          }
+
+          let pt = stepToPoint(idx, p.step);
+          let outerR = 14;
+          let innerR = 10;
+          if (p.step >= 0 && p.step < PATH_LEN) {
+            const offset = idx === 0 ? { x: -16, y: -16 } : { x: 16, y: 16 };
+            pt = { x: pt.x + offset.x, y: pt.y + offset.y };
+            outerR = 11;
+            innerR = 8;
+          } else if (p.step >= PATH_LEN && p.step < GOAL_STEP) {
+            const offset = idx === 0 ? { x: -12, y: -12 } : { x: 12, y: 12 };
+            pt = { x: pt.x + offset.x, y: pt.y + offset.y };
+          }
+
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, outerR, 0, Math.PI * 2);
+          ctx.fillStyle = "#ffffff";
+          ctx.fill();
+
+          ctx.beginPath();
+          ctx.arc(pt.x, pt.y, innerR, 0, Math.PI * 2);
+          ctx.fillStyle = p.color;
+          ctx.fill();
+          ctx.strokeStyle = p.dark;
+          ctx.lineWidth = 2;
+          ctx.stroke();
+
+          ctx.fillStyle = "#ffffff";
+          ctx.font = innerR <= 8 ? "700 11px Avenir Next, PingFang SC" : "700 13px Avenir Next, PingFang SC";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          ctx.fillText(p.short, pt.x, pt.y + 0.5);
+        });
+      }
+
+      function renderPositionCard(playerIdx, posEl, cellEl, progressEl) {
+        const p = players[playerIdx];
+        const remain = p.step < 0 ? GOAL_STEP : Math.max(0, GOAL_STEP - p.step);
+        posEl.textContent = `位置：${describeStep(p.step)}｜距终点 ${remain} 步`;
+        cellEl.textContent = `当前格：${getCellTextByStep(playerIdx, p.step)}`;
+        progressEl.style.width = `${getProgress(p.step).toFixed(1)}%`;
+      }
+
+      function renderDiceRow(playerIdx, rowEl, className) {
+        rowEl.innerHTML = "";
+        const items = state.diceHistory.filter((h) => h.playerIdx === playerIdx).slice(0, 20);
+        if (items.length === 0) {
+          const chip = document.createElement("span");
+          chip.className = `dice-chip ${className}`;
+          chip.textContent = "暂无";
+          rowEl.appendChild(chip);
+          return;
+        }
+
+        items.forEach((item) => {
+          const chip = document.createElement("span");
+          chip.className = `dice-chip ${className}`;
+          chip.textContent = `#${item.id}:${item.dice}`;
+          chip.title = `从 ${describeStep(item.fromStep)} 到 ${describeStep(item.toStep)}`;
+          rowEl.appendChild(chip);
+        });
+      }
+
+      function renderStatus() {
+        turnText.textContent = state.gameOver
+          ? "状态：游戏结束"
+          : `当前回合：${players[state.current].name}`;
+        diceText.textContent = state.lastRoll
+          ? `上一掷：${players[state.lastRoll.playerIdx].name} 掷出 ${state.lastRoll.dice}`
+          : "上一掷：-";
+        msgText.textContent = `提示：${state.message}`;
+
+        renderPositionCard(0, redPosText, redCellText, redProgress);
+        renderPositionCard(1, bluePosText, blueCellText, blueProgress);
+        renderDiceRow(0, redDiceRow, "red");
+        renderDiceRow(1, blueDiceRow, "blue");
+
+        logBox.innerHTML = "";
+        state.logs.forEach((line) => {
+          const li = document.createElement("li");
+          li.textContent = line;
+          logBox.appendChild(li);
+        });
+
+        rollBtn.disabled = state.gameOver || state.dice !== null;
+      }
+
+      function render() {
+        syncCanvasResolution();
+        drawBoardShape();
+        drawTokens();
+        renderStatus();
+      }
+
+      async function copyToClipboard(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+
+      function getShareUrl() {
+        return window.location.href;
+      }
+
+      function getInviteText() {
+        return `来玩情侣飞行棋（双人分享版）\\n${getShareUrl()}`;
+      }
+
+      async function handleCopyLink() {
+        try {
+          await copyToClipboard(getShareUrl());
+          shareHint.textContent = "分享提示：链接已复制，直接发给对方即可。";
+        } catch (e) {
+          shareHint.textContent = "分享提示：复制失败，请手动复制地址栏链接。";
+        }
+      }
+
+      async function handleCopyText() {
+        try {
+          await copyToClipboard(getInviteText());
+          shareHint.textContent = "分享提示：邀请文案已复制。";
+        } catch (e) {
+          shareHint.textContent = "分享提示：复制失败，请手动复制。";
+        }
+      }
+
+      async function handleSystemShare() {
+        if (!navigator.share) {
+          shareHint.textContent = "分享提示：当前浏览器不支持系统分享，请用“复制链接”。";
+          return;
+        }
+        try {
+          await navigator.share({
+            title: "情侣飞行棋 V1.0（双人分享版）",
+            text: "来一起玩情侣飞行棋！",
+            url: getShareUrl(),
+          });
+        } catch (e) {
+          if (String(e).includes("AbortError")) {
+            return;
+          }
+          shareHint.textContent = "分享提示：系统分享失败，请改用“复制链接”。";
+        }
+      }
+
+      function updateShareHint() {
+        if (window.location.protocol === "file:") {
+          shareHint.textContent = "分享提示：你当前是本地文件，建议上传到网盘或静态托管后再发链接。";
+        }
+      }
+
+      rollBtn.addEventListener("click", rollDice);
+      restartBtn.addEventListener("click", resetGame);
+      shareBtn.addEventListener("click", handleSystemShare);
+      copyBtn.addEventListener("click", handleCopyLink);
+      copyTextBtn.addEventListener("click", handleCopyText);
+      window.addEventListener("resize", render);
+
+      updateShareHint();
+      render();
+    </script>
+  </body>
+</html>
