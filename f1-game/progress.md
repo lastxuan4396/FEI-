@@ -1,0 +1,32 @@
+Original prompt: 我朋友想要一个F1的游戏 你看看怎么做合适呢？
+
+- Follow-up prompt: 你直接做一个完全体吧
+- Plan: Build a complete browser F1-style top-down game with menu setup, race simulation, AI drivers, lap timing, weather, pit strategy, and deterministic test hooks.
+
+## 2026-03-08 - Implementation chunk 1
+- Created full standalone web game scaffold: `index.html`, `style.css`, `game.js`.
+- Implemented race lifecycle: menu -> countdown -> race -> finish.
+- Added 3 tracks, weather profiles, difficulty profiles, AI grid sizing.
+- Implemented car simulation: speed/steering/grip, off-track penalties, damage, fuel/tyre wear.
+- Implemented advanced race systems: DRS, ERS, pit lane + pit service, lap sectors, penalties.
+- Added standings, HUD bars, minimap, race results overlay, fullscreen and pause controls.
+- Exposed deterministic hooks: `window.advanceTime(ms)` and `window.render_game_to_text()`.
+
+## 2026-03-08 - Debug and verification
+- Fixed crash on race start: pit path generation now passes `segmentLengths`/`curvatures` into sampler.
+- Rebalanced simulation stability:
+  - moved grid start farther from line to prevent immediate lap increment,
+  - fuel and tyre wear switched to proper per-second rates (`* dt`),
+  - removed auto-retire trigger from damage and lowered car-contact damage.
+- Playwright automated test runs completed with screenshots + state dumps:
+  - `/Users/xiaoxuan/Documents/Playground/output/f1-game-run2`
+  - `/Users/xiaoxuan/Documents/Playground/output/f1-game-run3`
+  - `/Users/xiaoxuan/Documents/Playground/output/f1-game-run4`
+  - `/Users/xiaoxuan/Documents/Playground/output/f1-game-run5`
+- Final stable run: `run5` (no JS errors, lap progression and resources look reasonable).
+
+## TODO / follow-up suggestions
+- Add explicit keyboard test coverage for `P` (pit request), `D` (DRS), `Esc` (pause), `F` (fullscreen) using a richer action client (current web-game client only maps arrow keys/space/enter/a/b).
+- Add optional race audio (engine + curb + rain) and configurable race length presets.
+- Add saveable championship mode (points across multiple races).
+- Post-balance verification run: `/Users/xiaoxuan/Documents/Playground/output/f1-game-run5` confirms stable early-race progression without premature retirements.
