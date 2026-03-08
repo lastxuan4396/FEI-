@@ -1,10 +1,9 @@
 services:
   - type: web
-    name: flight-chess-share
-    runtime: static
-    buildCommand: ""
-    staticPublishPath: .
-    headers:
-      - path: /*
-        name: Cache-Control
-        value: no-cache
+    name: flight-chess-share-fei
+    runtime: node
+    rootDir: flight-chess-share
+    buildCommand: npm install
+    startCommand: npm start
+    plan: free
+    autoDeploy: true

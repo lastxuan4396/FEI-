@@ -3,19 +3,21 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>情侣飞行棋 V1.0（双人分享版）</title>
-    <meta name="description" content="情侣飞行棋双人分享版，支持实时位置、历史点数、事件格互动。" />
-    <meta property="og:title" content="情侣飞行棋 V1.0（双人分享版）" />
-    <meta property="og:description" content="直接打开即可玩，支持系统分享和复制链接。" />
+    <title>情侣飞行棋 V2.0（联机分享版）</title>
+    <meta name="description" content="支持联机房间、实时位置、回合时间线、截图导出的情侣飞行棋分享版。" />
+    <meta property="og:title" content="情侣飞行棋 V2.0（联机分享版）" />
+    <meta property="og:description" content="创建房间后可异地对战，支持完整复盘与分享。" />
     <meta property="og:type" content="website" />
     <style>
       :root {
-        --bg-a: #e9e3d8;
-        --bg-b: #e9e3d8;
-        --ink: #1f2937;
+        --bg: #ece6d9;
         --panel: #ffffff;
-        --line: #cfc8b8;
-        --accent: #be123c;
+        --line: #cac3b2;
+        --text: #1f2937;
+        --muted: #475569;
+        --danger: #dc2626;
+        --blue: #2563eb;
+        --green: #15803d;
       }
 
       * {
@@ -26,20 +28,19 @@
         margin: 0;
         min-height: 100vh;
         font-family: "Avenir Next", "PingFang SC", "Microsoft YaHei", sans-serif;
-        color: var(--ink);
-        background: linear-gradient(180deg, var(--bg-a), var(--bg-b));
-        display: flex;
-        justify-content: center;
-        align-items: flex-start;
-        padding: 20px;
+        background: var(--bg);
+        color: var(--text);
+        padding: max(16px, env(safe-area-inset-top)) max(16px, env(safe-area-inset-right))
+          max(16px, env(safe-area-inset-bottom)) max(16px, env(safe-area-inset-left));
       }
 
-      .app {
-        width: min(1460px, 100%);
+      .layout {
+        margin: 0 auto;
+        width: min(1520px, 100%);
         display: grid;
-        grid-template-columns: minmax(0, 1fr) 320px;
+        grid-template-columns: minmax(0, 1fr) 360px;
+        gap: 14px;
         align-items: start;
-        gap: 16px;
       }
 
       .panel {
@@ -49,68 +50,85 @@
         box-shadow: 0 4px 14px rgba(15, 23, 42, 0.08);
       }
 
-      .board-wrap {
+      .board-panel {
         padding: 10px;
         display: flex;
         justify-content: center;
       }
 
       #board {
-        width: min(980px, calc(100vh - 56px));
+        width: min(980px, calc(100vh - 48px));
         max-width: 100%;
         aspect-ratio: 1;
         display: block;
+        background: #f8f6f1;
+        border: 1px solid #c7c0b0;
         border-radius: 10px;
-        border: 1px solid #c7c0af;
-        background: #f7f5ef;
       }
 
-      .hud {
-        padding: 14px;
+      .side {
         display: grid;
-        gap: 12px;
-      }
-
-      .share-bar {
-        display: grid;
-        gap: 8px;
+        gap: 10px;
         padding: 10px;
+      }
+
+      .card {
+        border: 1px solid #dfd9cb;
         border-radius: 10px;
-        background: #f8f7f2;
-        border: 1px solid #ddd8ca;
-      }
-
-      .share-bar p {
-        margin: 0;
-        font-size: 12px;
-        color: #475569;
-      }
-
-      .status {
-        display: grid;
-        gap: 6px;
         padding: 10px;
-        border-radius: 10px;
-        background: #f8f7f2;
-        border: 1px solid #d8d4cb;
+        background: #faf9f5;
       }
 
-      .status p {
-        margin: 0;
+      .card h2,
+      .card h3 {
+        margin: 0 0 8px;
+      }
+
+      .card h2 {
+        font-size: 15px;
+      }
+
+      .card h3 {
+        font-size: 14px;
+      }
+
+      .muted {
+        color: var(--muted);
+      }
+
+      .status-grid {
+        display: grid;
+        gap: 4px;
+        font-size: 13px;
       }
 
       .row {
         display: flex;
-        flex-wrap: wrap;
         gap: 8px;
+        flex-wrap: wrap;
+      }
+
+      .row > * {
+        min-width: 0;
+      }
+
+      button,
+      input {
+        border-radius: 10px;
+        border: 1px solid #d7d1c1;
+        font-size: 14px;
       }
 
       button {
-        border: 0;
-        border-radius: 10px;
-        padding: 10px 14px;
-        font-size: 14px;
+        min-height: 44px;
+        padding: 8px 12px;
         cursor: pointer;
+        background: #f2eee4;
+        color: #1f2937;
+      }
+
+      button:hover:not(:disabled) {
+        filter: brightness(0.98);
       }
 
       button:disabled {
@@ -118,93 +136,112 @@
         cursor: not-allowed;
       }
 
-      #rollBtn {
+      input {
+        min-height: 44px;
+        padding: 8px 10px;
+        width: 100%;
+        background: #fff;
+      }
+
+      .btn-primary {
         background: #0f766e;
         color: #fff;
-        font-weight: 600;
+        border-color: #0f766e;
+        font-weight: 700;
       }
 
-      #restartBtn {
-        background: #ece7dd;
-        color: #334155;
-      }
-
-      #shareBtn {
+      .btn-blue {
         background: #2563eb;
         color: #fff;
-        font-weight: 600;
+        border-color: #2563eb;
       }
 
-      #copyBtn {
-        background: #facc15;
-        color: #111827;
+      .btn-danger {
+        background: #dc2626;
+        color: #fff;
+        border-color: #dc2626;
       }
 
-      #copyTextBtn {
+      .btn-soft {
         background: #e2e8f0;
-        color: #1e293b;
       }
 
-      #logBox {
-        margin: 0;
-        padding: 10px 12px 10px 28px;
-        border-radius: 10px;
-        background: #f8f7f2;
-        border: 1px solid #e2dece;
-        max-height: 190px;
-        overflow: auto;
+      .field {
+        display: grid;
+        gap: 6px;
       }
 
-      #logBox li {
-        margin: 3px 0;
+      .field label {
+        font-size: 12px;
+        color: #475569;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        padding: 3px 8px;
+        border-radius: 999px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .pill.red {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+
+      .pill.blue {
+        background: #dbeafe;
+        color: #1e3a8a;
+      }
+
+      .pill.ok {
+        background: #dcfce7;
+        color: #166534;
+      }
+
+      .pill.warn {
+        background: #fef9c3;
+        color: #854d0e;
       }
 
       .positions {
         display: grid;
         grid-template-columns: repeat(2, minmax(0, 1fr));
-        gap: 10px;
+        gap: 8px;
       }
 
-      .pos-card {
-        border: 1px solid #ddd8ca;
+      .pos {
+        border: 1px solid #ddd7c9;
         border-radius: 10px;
-        background: #faf8f1;
-        padding: 10px;
+        padding: 8px;
+        background: #fff;
         display: grid;
         gap: 6px;
       }
 
-      .pos-card h3 {
+      .pos h3 {
         margin: 0;
-        font-size: 14px;
+        font-size: 13px;
       }
 
-      .pos-card p {
+      .pos p {
         margin: 0;
         font-size: 12px;
-        color: #334155;
         line-height: 1.35;
-      }
-
-      .pos-card.red h3 {
-        color: #b91c1c;
-      }
-
-      .pos-card.blue h3 {
-        color: #1d4ed8;
       }
 
       .progress {
         height: 8px;
         border-radius: 999px;
-        background: #e6e2d8;
+        background: #ece7dd;
         overflow: hidden;
       }
 
       .progress > span {
         display: block;
         height: 100%;
-        width: 0%;
+        width: 0;
       }
 
       #redProgress {
@@ -215,151 +252,254 @@
         background: linear-gradient(90deg, #60a5fa, #2563eb);
       }
 
-      .dice-board {
+      .dice-lanes {
         display: grid;
-        gap: 10px;
+        gap: 8px;
       }
 
       .dice-lane {
-        border: 1px solid #ddd8ca;
+        border: 1px solid #ddd7c9;
         border-radius: 10px;
         padding: 8px;
-        background: #faf8f1;
+        background: #fff;
       }
 
       .dice-lane h3 {
-        margin: 0 0 7px;
+        margin: 0 0 6px;
         font-size: 13px;
       }
 
-      .dice-row {
+      .chips {
+        min-height: 28px;
         display: flex;
         flex-wrap: wrap;
         gap: 6px;
-        min-height: 26px;
       }
 
-      .dice-chip {
+      .chip {
         border-radius: 999px;
-        padding: 3px 8px;
         font-size: 12px;
         font-weight: 700;
-        letter-spacing: 0.01em;
+        padding: 3px 8px;
       }
 
-      .dice-chip.red {
+      .chip.red {
         background: #fee2e2;
         color: #991b1b;
       }
 
-      .dice-chip.blue {
+      .chip.blue {
         background: #dbeafe;
         color: #1e3a8a;
+      }
+
+      .detail-body {
+        font-size: 13px;
+        line-height: 1.45;
+        margin: 0;
+        white-space: pre-wrap;
+      }
+
+      .timeline {
+        max-height: 250px;
+        overflow: auto;
+        margin: 0;
+        padding-left: 20px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .timeline li {
+        font-size: 12px;
+        line-height: 1.35;
+      }
+
+      .tiny {
+        font-size: 11px;
+        color: #64748b;
+      }
+
+      #orientationHint {
+        display: none;
+        position: fixed;
+        left: 50%;
+        transform: translateX(-50%);
+        bottom: max(10px, env(safe-area-inset-bottom));
+        z-index: 99;
+        background: #111827;
+        color: #fff;
+        font-size: 12px;
+        padding: 8px 10px;
+        border-radius: 8px;
+      }
+
+      @media (max-width: 1280px) {
+        .layout {
+          grid-template-columns: 1fr;
+        }
+
+        #board {
+          width: min(980px, calc(100vw - 32px));
+        }
       }
 
       @media (max-width: 760px) {
         .positions {
           grid-template-columns: 1fr;
         }
+
+        .timeline {
+          max-height: 200px;
+        }
       }
 
-      @media (max-width: 1260px) {
-        .app {
-          grid-template-columns: 1fr;
-        }
-
-        #board {
-          width: min(980px, calc(100vw - 56px));
+      @media (max-width: 760px) and (orientation: portrait) {
+        #orientationHint {
+          display: block;
         }
       }
     </style>
   </head>
   <body>
-    <main class="app">
-      <section class="panel board-wrap">
+    <main class="layout">
+      <section class="panel board-panel">
         <canvas id="board" width="980" height="980"></canvas>
       </section>
 
-      <section class="panel hud">
-        <section class="share-bar">
-          <p id="shareHint">分享提示：可直接复制链接发给对方打开。</p>
-          <div class="row">
-            <button id="shareBtn">系统分享</button>
-            <button id="copyBtn">复制链接</button>
-            <button id="copyTextBtn">复制邀请文案</button>
+      <aside class="panel side">
+        <section class="card">
+          <h2>联机房间</h2>
+          <div class="field">
+            <label for="roomInput">房间号（4-8位）</label>
+            <input id="roomInput" placeholder="例如 A7K9X2" />
+          </div>
+          <div class="row" style="margin-top: 8px">
+            <button id="createRoomBtn" class="btn-blue">创建房间</button>
+            <button id="joinRoomBtn" class="btn-blue">加入房间</button>
+            <button id="leaveRoomBtn" class="btn-danger">退出房间</button>
+          </div>
+          <div class="row" style="margin-top: 8px">
+            <button id="copyRoomLinkBtn" class="btn-soft">复制房间链接</button>
+            <button id="shareRoomBtn" class="btn-soft">系统分享</button>
+          </div>
+          <p id="roomStatus" class="tiny" style="margin: 8px 0 0">状态：离线本地模式</p>
+        </section>
+
+        <section class="card">
+          <h2>对局状态</h2>
+          <div class="status-grid">
+            <div id="turnText"></div>
+            <div id="diceText"></div>
+            <div id="msgText"></div>
+            <div id="seatText"></div>
+          </div>
+          <div class="row" style="margin-top: 8px">
+            <button id="rollBtn" class="btn-primary">掷骰子</button>
+            <button id="restartBtn">重新开始</button>
+          </div>
+          <div class="row" style="margin-top: 8px">
+            <button id="exportImageBtn" class="btn-soft">导出棋盘图</button>
+            <button id="exportTextBtn" class="btn-soft">导出复盘文本</button>
+          </div>
+          <div class="tiny" id="versionText" style="margin-top: 8px">版本：-</div>
+        </section>
+
+        <section class="card">
+          <h2>实时位置</h2>
+          <div class="positions">
+            <article class="pos">
+              <h3>男方（红）</h3>
+              <p id="redPosText"></p>
+              <p id="redCellText"></p>
+              <div class="progress"><span id="redProgress"></span></div>
+            </article>
+            <article class="pos">
+              <h3>女方（蓝）</h3>
+              <p id="bluePosText"></p>
+              <p id="blueCellText"></p>
+              <div class="progress"><span id="blueProgress"></span></div>
+            </article>
           </div>
         </section>
 
-        <div class="status">
-          <p id="turnText"></p>
-          <p id="diceText"></p>
-          <p id="msgText"></p>
-        </div>
-
-        <div class="row">
-          <button id="rollBtn">掷骰子</button>
-          <button id="restartBtn">重新开始</button>
-        </div>
-
-        <div class="positions">
-          <article class="pos-card red">
-            <h3>男方（红）实时位置</h3>
-            <p id="redPosText"></p>
-            <p id="redCellText"></p>
-            <div class="progress"><span id="redProgress"></span></div>
-          </article>
-          <article class="pos-card blue">
-            <h3>女方（蓝）实时位置</h3>
-            <p id="bluePosText"></p>
-            <p id="blueCellText"></p>
-            <div class="progress"><span id="blueProgress"></span></div>
-          </article>
-        </div>
-
-        <section class="dice-board">
-          <article class="dice-lane">
-            <h3>男方（红）历史点数</h3>
-            <div id="redDiceRow" class="dice-row"></div>
-          </article>
-          <article class="dice-lane">
-            <h3>女方（蓝）历史点数</h3>
-            <div id="blueDiceRow" class="dice-row"></div>
-          </article>
+        <section class="card">
+          <h2>格子详情</h2>
+          <h3 id="cellDetailTitle" class="muted">未选择格子</h3>
+          <p id="cellDetailBody" class="detail-body">点击棋盘格子可查看完整文案。</p>
+          <p id="lastTriggerText" class="tiny" style="margin: 8px 0 0"></p>
         </section>
 
-        <ol id="logBox"></ol>
-      </section>
+        <section class="card">
+          <h2>历史点数</h2>
+          <div class="dice-lanes">
+            <div class="dice-lane">
+              <h3>男方（红）</h3>
+              <div id="redDiceRow" class="chips"></div>
+            </div>
+            <div class="dice-lane">
+              <h3>女方（蓝）</h3>
+              <div id="blueDiceRow" class="chips"></div>
+            </div>
+          </div>
+        </section>
+
+        <section class="card">
+          <h2>回合时间线</h2>
+          <ol id="timelineList" class="timeline"></ol>
+        </section>
+      </aside>
     </main>
 
+    <div id="orientationHint">建议横屏查看，格子文案会更清晰。</div>
+
     <script>
+      const APP_VERSION = "2.0.0";
+      const SIZE = 980;
+      const PATH_LEN = 44;
+      const HOME_LEN = 3;
+      const GOAL_STEP = PATH_LEN + HOME_LEN;
+      const CELL_SIZE = 58;
+      const CENTER = { x: SIZE / 2, y: SIZE / 2 };
+      const ROOM_POLL_MS = 1200;
+      const ROLE_RED = "red";
+      const ROLE_BLUE = "blue";
+
       const board = document.getElementById("board");
       const ctx = board.getContext("2d");
 
       const turnText = document.getElementById("turnText");
       const diceText = document.getElementById("diceText");
       const msgText = document.getElementById("msgText");
-      const logBox = document.getElementById("logBox");
+      const seatText = document.getElementById("seatText");
+      const roomStatus = document.getElementById("roomStatus");
+      const versionText = document.getElementById("versionText");
+
       const rollBtn = document.getElementById("rollBtn");
       const restartBtn = document.getElementById("restartBtn");
-      const shareBtn = document.getElementById("shareBtn");
-      const copyBtn = document.getElementById("copyBtn");
-      const copyTextBtn = document.getElementById("copyTextBtn");
-      const shareHint = document.getElementById("shareHint");
+      const exportImageBtn = document.getElementById("exportImageBtn");
+      const exportTextBtn = document.getElementById("exportTextBtn");
+
+      const createRoomBtn = document.getElementById("createRoomBtn");
+      const joinRoomBtn = document.getElementById("joinRoomBtn");
+      const leaveRoomBtn = document.getElementById("leaveRoomBtn");
+      const copyRoomLinkBtn = document.getElementById("copyRoomLinkBtn");
+      const shareRoomBtn = document.getElementById("shareRoomBtn");
+      const roomInput = document.getElementById("roomInput");
+
       const redPosText = document.getElementById("redPosText");
       const redCellText = document.getElementById("redCellText");
       const bluePosText = document.getElementById("bluePosText");
       const blueCellText = document.getElementById("blueCellText");
       const redProgress = document.getElementById("redProgress");
       const blueProgress = document.getElementById("blueProgress");
+
       const redDiceRow = document.getElementById("redDiceRow");
       const blueDiceRow = document.getElementById("blueDiceRow");
 
-      const SIZE = 980;
-      const CENTER = { x: SIZE / 2, y: SIZE / 2 };
-      const PATH_LEN = 44;
-      const HOME_LEN = 3;
-      const GOAL_STEP = PATH_LEN + HOME_LEN;
-      const CELL_SIZE = 58;
+      const cellDetailTitle = document.getElementById("cellDetailTitle");
+      const cellDetailBody = document.getElementById("cellDetailBody");
+      const lastTriggerText = document.getElementById("lastTriggerText");
+      const timelineList = document.getElementById("timelineList");
 
       const vertices = [
         { x: 190, y: 50 },
@@ -419,8 +559,23 @@
         "手伸进对方内裤里随意发挥30秒",
       ];
 
+      function makeShortLabel(text) {
+        if (text.includes("掷骰")) return "掷骰";
+        if (text.includes("返回")) return "返回";
+        if (text.includes("再掷")) return "再掷";
+        if (text.includes("休息")) return "休息";
+        if (text.includes("后退")) return text.match(/后退\d+格/)?.[0] || "后退";
+        if (text.includes("喝一杯")) return "喝一杯";
+        if (text.includes("喝半杯")) return "喝半杯";
+        if (text.includes("脱一件衣物")) return "脱衣";
+        if (text.includes("口交")) return "口交";
+        if (text.includes("舌吻")) return "舌吻";
+        if (text.length <= 5) return text;
+        return `${text.slice(0, 4)}…`;
+      }
+
       function colorByText(text, idx) {
-        if (idx === 0 || text.includes("掷骰子")) return "#9ae6b4";
+        if (idx === 0 || text.includes("掷骰")) return "#9ae6b4";
         if (text.includes("返回")) return "#fca5a5";
         if (text.includes("再掷")) return "#86efac";
         if (text.includes("喝")) return "#fde047";
@@ -434,6 +589,7 @@
 
       const cells = baseTexts.map((text, idx) => ({
         text,
+        short: makeShortLabel(text),
         color: colorByText(text, idx),
       }));
 
@@ -451,7 +607,7 @@
         }
 
         const interval = total / count;
-        const out = [];
+        const pointsOut = [];
 
         for (let i = 0; i < count; i += 1) {
           const dist = i * interval;
@@ -459,38 +615,21 @@
             if (idx === segments.length - 1) return true;
             return dist >= s.start && dist < s.start + s.len;
           });
-
           const t = seg.len === 0 ? 0 : (dist - seg.start) / seg.len;
-          out.push({
+          pointsOut.push({
             x: seg.a.x + (seg.b.x - seg.a.x) * t,
             y: seg.a.y + (seg.b.y - seg.a.y) * t,
           });
         }
 
-        return out;
+        return pointsOut;
       }
 
       const pathPoints = samplePolyline(vertices, PATH_LEN);
 
-      function syncCanvasResolution() {
-        const rect = board.getBoundingClientRect();
-        if (!rect.width || !rect.height) {
-          return;
-        }
-
-        const dpr = Math.max(1, window.devicePixelRatio || 1);
-        const targetWidth = Math.round(rect.width * dpr);
-        const targetHeight = Math.round(rect.height * dpr);
-        if (board.width !== targetWidth || board.height !== targetHeight) {
-          board.width = targetWidth;
-          board.height = targetHeight;
-        }
-
-        ctx.setTransform(targetWidth / SIZE, 0, 0, targetHeight / SIZE, 0, 0);
-      }
-
       const players = [
         {
+          role: ROLE_RED,
           name: "男方",
           short: "男",
           color: "#ef4444",
@@ -501,6 +640,7 @@
           skip: 0,
         },
         {
+          role: ROLE_BLUE,
           name: "女方",
           short: "女",
           color: "#3b82f6",
@@ -518,19 +658,88 @@
         lastRoll: null,
         gameOver: false,
         message: "点击掷骰子开始。",
-        logs: [],
         diceHistory: [],
         rollCount: 0,
+        turnHistory: [],
+        selectedCellIndex: null,
+        lastTriggeredCell: null,
       };
+
+      const online = {
+        enabled: false,
+        roomId: "",
+        role: null,
+        token: "",
+        version: 0,
+        seats: { red: false, blue: false },
+        pollTimer: null,
+        applyingRemote: false,
+        deployInfo: null,
+      };
+
+      function formatTime(ts) {
+        const d = new Date(ts);
+        return d.toLocaleTimeString("zh-CN", { hour12: false });
+      }
+
+      function makeId() {
+        return Math.random().toString(36).slice(2, 8).toUpperCase();
+      }
+
+      function sanitizeRoomId(raw) {
+        return String(raw || "")
+          .toUpperCase()
+          .replace(/[^A-Z0-9]/g, "")
+          .slice(0, 8);
+      }
+
+      function roomLink(roomId = online.roomId) {
+        const url = new URL(window.location.href);
+        if (roomId) {
+          url.searchParams.set("room", roomId);
+        } else {
+          url.searchParams.delete("room");
+        }
+        return url.toString();
+      }
+
+      async function copyText(text) {
+        if (navigator.clipboard && window.isSecureContext) {
+          await navigator.clipboard.writeText(text);
+          return;
+        }
+        const ta = document.createElement("textarea");
+        ta.value = text;
+        ta.style.position = "fixed";
+        ta.style.left = "-9999px";
+        document.body.appendChild(ta);
+        ta.focus();
+        ta.select();
+        document.execCommand("copy");
+        document.body.removeChild(ta);
+      }
+
+      async function api(path, options = {}) {
+        const res = await fetch(path, {
+          method: options.method || "GET",
+          headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+          body: options.body ? JSON.stringify(options.body) : undefined,
+        });
+
+        const payload = await res.json().catch(() => ({}));
+        if (!res.ok) {
+          throw new Error(payload.error || `请求失败(${res.status})`);
+        }
+
+        return payload;
+      }
 
       function toGlobalIndex(playerIdx, step) {
         return (players[playerIdx].startIndex + step) % PATH_LEN;
       }
 
       function stepToPoint(playerIdx, step) {
-        if (step === -1) {
-          return players[playerIdx].base;
-        }
+        if (step === -1) return players[playerIdx].base;
 
         if (step < PATH_LEN) {
           return pathPoints[toGlobalIndex(playerIdx, step)];
@@ -556,17 +765,12 @@
         return `冲刺${step - PATH_LEN + 1}`;
       }
 
-      function getCellTextByStep(playerIdx, step) {
+      function getCellByStep(playerIdx, step) {
         if (step >= 0 && step < PATH_LEN) {
-          return cells[toGlobalIndex(playerIdx, step)].text;
+          const idx = toGlobalIndex(playerIdx, step);
+          return { idx, cell: cells[idx] };
         }
-        if (step === -1) {
-          return "未起飞（掷到6起飞）";
-        }
-        if (step === GOAL_STEP) {
-          return "已到终点";
-        }
-        return "冲刺航道";
+        return null;
       }
 
       function getProgress(step) {
@@ -574,183 +778,20 @@
         return Math.max(0, Math.min(100, (step / GOAL_STEP) * 100));
       }
 
-      function addDiceHistory(playerIdx, dice, fromStep, toStep) {
-        state.rollCount += 1;
-        state.diceHistory.unshift({
-          id: state.rollCount,
-          playerIdx,
-          dice,
-          fromStep,
-          toStep,
-        });
-        state.diceHistory = state.diceHistory.slice(0, 40);
-        state.lastRoll = { playerIdx, dice };
+      function syncCanvasResolution() {
+        const rect = board.getBoundingClientRect();
+        if (!rect.width || !rect.height) return;
+        const dpr = Math.max(1, window.devicePixelRatio || 1);
+        const targetW = Math.round(rect.width * dpr);
+        const targetH = Math.round(rect.height * dpr);
+        if (board.width !== targetW || board.height !== targetH) {
+          board.width = targetW;
+          board.height = targetH;
+        }
+        ctx.setTransform(targetW / SIZE, 0, 0, targetH / SIZE, 0, 0);
       }
 
-      function setMessage(msg) {
-        state.message = msg;
-        state.logs.unshift(msg);
-        state.logs = state.logs.slice(0, 12);
-      }
-
-      function canMove(player, dice) {
-        if (player.step === -1) return dice === 6;
-        return player.step + dice <= GOAL_STEP;
-      }
-
-      function handleCapture(playerIdx) {
-        const me = players[playerIdx];
-        const enemy = players[playerIdx === 0 ? 1 : 0];
-        if (me.step < 0 || me.step >= PATH_LEN || enemy.step < 0 || enemy.step >= PATH_LEN) {
-          return "";
-        }
-
-        const meGlobal = toGlobalIndex(playerIdx, me.step);
-        const enemyGlobal = toGlobalIndex(playerIdx === 0 ? 1 : 0, enemy.step);
-        if (meGlobal === enemyGlobal) {
-          enemy.step = -1;
-          return "撞机成功，对方回基地";
-        }
-
-        return "";
-      }
-
-      function applyCellEffect(playerIdx, text) {
-        const me = players[playerIdx];
-        const enemy = players[playerIdx === 0 ? 1 : 0];
-        let extraTurn = false;
-        let effectMsg = `触发事件：${text}`;
-
-        const moveMatch = text.match(/(前进|后退)(\d)格/);
-        if (moveMatch && me.step !== -1) {
-          const sign = moveMatch[1] === "前进" ? 1 : -1;
-          const num = Number(moveMatch[2]);
-          const candidate = me.step + sign * num;
-          if (candidate >= 0 && candidate <= GOAL_STEP) {
-            me.step = candidate;
-            effectMsg += `，位置变为${describeStep(me.step)}`;
-          }
-        }
-
-        if (text.includes("再掷一次")) {
-          extraTurn = true;
-          effectMsg += "，获得额外回合";
-        }
-
-        if (text.includes("掷骰子")) {
-          extraTurn = true;
-          effectMsg += "，立刻再掷一次";
-        }
-
-        if (text.includes("返回起点")) {
-          me.step = -1;
-          effectMsg += "，回到基地";
-        }
-
-        if (text.includes("交换位置") && enemy.step !== -1) {
-          const tmp = me.step;
-          me.step = enemy.step;
-          enemy.step = tmp;
-          effectMsg += "，与对方交换位置";
-        }
-
-        if (text.includes("休息")) {
-          me.skip += 1;
-          effectMsg += "，下回合休息";
-        }
-
-        return { extraTurn, effectMsg };
-      }
-
-      function endTurn(keepCurrent) {
-        state.dice = null;
-        if (!keepCurrent) {
-          state.current = state.current === 0 ? 1 : 0;
-        }
-      }
-
-      function rollDice() {
-        if (state.gameOver || state.dice !== null) return;
-
-        const playerIdx = state.current;
-        const player = players[playerIdx];
-        if (player.skip > 0) {
-          player.skip -= 1;
-          setMessage(`${player.name} 本回合休息。`);
-          endTurn(false);
-          render();
-          return;
-        }
-
-        const dice = Math.floor(Math.random() * 6) + 1;
-        state.dice = dice;
-        const fromStep = player.step;
-
-        if (!canMove(player, dice)) {
-          addDiceHistory(playerIdx, dice, fromStep, fromStep);
-          setMessage(`${player.name} 掷出 ${dice}，点数无效，回合结束。`);
-          endTurn(false);
-          render();
-          return;
-        }
-
-        player.step = player.step === -1 ? 0 : player.step + dice;
-
-        let msg = `${player.name} 掷出 ${dice}，移动到 ${describeStep(player.step)}。`;
-        const cap1 = handleCapture(playerIdx);
-        if (cap1) msg += ` ${cap1}。`;
-
-        if (player.step === GOAL_STEP) {
-          state.gameOver = true;
-          addDiceHistory(playerIdx, dice, fromStep, player.step);
-          setMessage(`${msg} ${player.name} 率先抵达终点，获胜！`);
-          render();
-          return;
-        }
-
-        let extra = dice === 6;
-
-        if (player.step >= 0 && player.step < PATH_LEN) {
-          const global = toGlobalIndex(playerIdx, player.step);
-          const { extraTurn, effectMsg } = applyCellEffect(playerIdx, cells[global].text);
-          msg += ` ${effectMsg}。`;
-          const cap2 = handleCapture(playerIdx);
-          if (cap2) msg += ` ${cap2}。`;
-          extra = extra || extraTurn;
-        }
-
-        addDiceHistory(playerIdx, dice, fromStep, player.step);
-
-        if (player.step === GOAL_STEP) {
-          state.gameOver = true;
-          setMessage(`${msg} ${player.name} 率先抵达终点，获胜！`);
-          render();
-          return;
-        }
-
-        setMessage(msg);
-        endTurn(extra);
-        render();
-      }
-
-      function resetGame() {
-        players.forEach((p) => {
-          p.step = -1;
-          p.skip = 0;
-        });
-
-        state.current = 0;
-        state.dice = null;
-        state.lastRoll = null;
-        state.gameOver = false;
-        state.message = "点击掷骰子开始。";
-        state.logs = [];
-        state.diceHistory = [];
-        state.rollCount = 0;
-        render();
-      }
-
-      function wrapText(text, x, y, maxWidth, lineHeight, maxLines = 4) {
+      function wrapText(text, x, y, maxWidth, lineHeight, maxLines = 3) {
         const chars = [...text];
         const lines = [];
         let line = "";
@@ -766,11 +807,11 @@
         });
 
         if (line) lines.push(line);
-
         const shown = lines.slice(0, maxLines);
         if (lines.length > maxLines && shown.length > 0) {
           shown[shown.length - 1] = `${shown[shown.length - 1].slice(0, -1)}…`;
         }
+
         const startY = y - ((shown.length - 1) * lineHeight) / 2;
         shown.forEach((ln, idx) => {
           ctx.fillText(ln, x, startY + idx * lineHeight);
@@ -778,32 +819,32 @@
       }
 
       function drawWheel(cx, cy, title) {
-        const labels = ["1 喝一口", "2 再掷一次", "3 亲吻对方", "4 喝一口", "5 亲吻对方", "6 进入棋盘"];
+        const labels = ["1 喝一口", "2 再掷", "3 亲吻", "4 喝一口", "5 亲吻", "6 入棋盘"];
         const colors = ["#93c5fd", "#86efac", "#fdba74", "#fcd34d", "#fda4af", "#d1d5db"];
         const r = 95;
-        const sector = (Math.PI * 2) / labels.length;
+        const each = (Math.PI * 2) / labels.length;
 
         for (let i = 0; i < labels.length; i += 1) {
-          const start = -Math.PI / 2 + i * sector;
-          const end = start + sector;
+          const start = -Math.PI / 2 + i * each;
+          const end = start + each;
           ctx.beginPath();
           ctx.moveTo(cx, cy);
           ctx.arc(cx, cy, r, start, end);
           ctx.closePath();
           ctx.fillStyle = colors[i];
           ctx.fill();
-          ctx.strokeStyle = "#ffffff";
+          ctx.strokeStyle = "#fff";
           ctx.lineWidth = 2;
           ctx.stroke();
 
           const mid = (start + end) / 2;
-          const tx = cx + Math.cos(mid) * 58;
-          const ty = cy + Math.sin(mid) * 58;
+          const tx = cx + Math.cos(mid) * 57;
+          const ty = cy + Math.sin(mid) * 57;
           ctx.fillStyle = "#1f2937";
           ctx.font = "600 12px Avenir Next, PingFang SC";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          wrapText(labels[i], tx, ty, 62, 13, 3);
+          wrapText(labels[i], tx, ty, 58, 12, 2);
         }
 
         ctx.beginPath();
@@ -813,21 +854,17 @@
         ctx.strokeStyle = "#94a3b8";
         ctx.stroke();
 
-        ctx.fillStyle = "#475569";
-        ctx.font = "700 14px Avenir Next, PingFang SC";
-        ctx.textAlign = "center";
-        ctx.textBaseline = "middle";
-        ctx.fillText("转盘", cx, cy);
-
         ctx.fillStyle = "#334155";
+        ctx.font = "700 14px Avenir Next, PingFang SC";
+        ctx.fillText("转盘", cx, cy + 0.5);
+
         ctx.font = "700 17px Avenir Next, PingFang SC";
         ctx.fillText(title, cx, cy - 118);
       }
 
-      function drawBoardShape() {
+      function drawBoard() {
         ctx.clearRect(0, 0, SIZE, SIZE);
-
-        ctx.fillStyle = "#fdf9ef";
+        ctx.fillStyle = "#f8f6f1";
         ctx.fillRect(0, 0, SIZE, SIZE);
 
         ctx.beginPath();
@@ -836,50 +873,54 @@
           ctx.lineTo(vertices[i].x, vertices[i].y);
         }
         ctx.closePath();
-        ctx.fillStyle = "#ffffff";
+        ctx.fillStyle = "#fff";
         ctx.fill();
-        ctx.lineWidth = 3;
         ctx.strokeStyle = "#1f2937";
+        ctx.lineWidth = 3;
         ctx.stroke();
 
         pathPoints.forEach((pt, idx) => {
-          const size = CELL_SIZE;
           ctx.fillStyle = cells[idx].color;
-          ctx.fillRect(pt.x - size / 2, pt.y - size / 2, size, size);
-          ctx.strokeStyle = "#111827";
-          ctx.lineWidth = 1.5;
-          ctx.strokeRect(pt.x - size / 2, pt.y - size / 2, size, size);
+          ctx.fillRect(pt.x - CELL_SIZE / 2, pt.y - CELL_SIZE / 2, CELL_SIZE, CELL_SIZE);
+          ctx.strokeStyle = "#1f2937";
+          ctx.lineWidth = 1.4;
+          ctx.strokeRect(pt.x - CELL_SIZE / 2, pt.y - CELL_SIZE / 2, CELL_SIZE, CELL_SIZE);
+
+          if (state.selectedCellIndex === idx) {
+            ctx.strokeStyle = "#0f766e";
+            ctx.lineWidth = 3;
+            ctx.strokeRect(pt.x - CELL_SIZE / 2 + 2, pt.y - CELL_SIZE / 2 + 2, CELL_SIZE - 4, CELL_SIZE - 4);
+          }
 
           ctx.fillStyle = "#111827";
           ctx.font = "600 11px Avenir Next, PingFang SC";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          wrapText(cells[idx].text, pt.x, pt.y, size - 8, 12, 4);
+          wrapText(cells[idx].short, pt.x, pt.y, CELL_SIZE - 8, 12, 2);
         });
 
         ctx.fillStyle = "#be123c";
-        ctx.font = "700 56px Avenir Next, PingFang SC";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
-        ctx.fillText("情侣飞行棋V1.0", CENTER.x, 250);
-
-        ctx.font = "700 46px Avenir Next, PingFang SC";
-        ctx.fillText("（双人版）", CENTER.x, 310);
+        ctx.font = "700 54px Avenir Next, PingFang SC";
+        ctx.fillText("情侣飞行棋 V2.0", CENTER.x, 248);
+        ctx.font = "700 38px Avenir Next, PingFang SC";
+        ctx.fillText("联机双人版", CENTER.x, 300);
 
         ctx.fillStyle = "#1f2937";
         ctx.font = "600 24px Avenir Next, PingFang SC";
         ctx.fillText("规则", CENTER.x, 700);
 
         const rules = [
-          "1. 掷到 6 可起飞；掷到 6 额外回合。",
+          "1. 掷到 6 可起飞，且额外回合。",
           "2. 落在同一格会把对方撞回基地。",
-          "3. 触发格按格子文字执行效果。",
-          "4. 需要刚好点数到达终点。",
+          "3. 事件格按文字执行（后退、休息、返回起点等）。",
+          "4. 必须刚好点数到达终点。",
         ];
 
-        ctx.font = "500 22px Avenir Next, PingFang SC";
+        ctx.font = "500 21px Avenir Next, PingFang SC";
         rules.forEach((line, i) => {
-          ctx.fillText(line, CENTER.x, 738 + i * 32);
+          ctx.fillText(line, CENTER.x, 736 + i * 32);
         });
 
         ctx.beginPath();
@@ -906,17 +947,13 @@
             const cell = pathPoints[toGlobalIndex(idx, p.step)];
             ctx.strokeStyle = p.color;
             ctx.lineWidth = 3;
-            ctx.strokeRect(
-              cell.x - CELL_SIZE / 2 + 2,
-              cell.y - CELL_SIZE / 2 + 2,
-              CELL_SIZE - 4,
-              CELL_SIZE - 4,
-            );
+            ctx.strokeRect(cell.x - CELL_SIZE / 2 + 2, cell.y - CELL_SIZE / 2 + 2, CELL_SIZE - 4, CELL_SIZE - 4);
           }
 
           let pt = stepToPoint(idx, p.step);
           let outerR = 14;
           let innerR = 10;
+
           if (p.step >= 0 && p.step < PATH_LEN) {
             const offset = idx === 0 ? { x: -16, y: -16 } : { x: 16, y: 16 };
             pt = { x: pt.x + offset.x, y: pt.y + offset.y };
@@ -929,7 +966,7 @@
 
           ctx.beginPath();
           ctx.arc(pt.x, pt.y, outerR, 0, Math.PI * 2);
-          ctx.fillStyle = "#ffffff";
+          ctx.fillStyle = "#fff";
           ctx.fill();
 
           ctx.beginPath();
@@ -940,149 +977,747 @@
           ctx.lineWidth = 2;
           ctx.stroke();
 
-          ctx.fillStyle = "#ffffff";
-          ctx.font = innerR <= 8 ? "700 11px Avenir Next, PingFang SC" : "700 13px Avenir Next, PingFang SC";
+          ctx.fillStyle = "#fff";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
+          ctx.font = innerR <= 8 ? "700 11px Avenir Next, PingFang SC" : "700 13px Avenir Next, PingFang SC";
           ctx.fillText(p.short, pt.x, pt.y + 0.5);
         });
+      }
+
+      function recordTurn(entry) {
+        state.turnHistory.unshift(entry);
+        state.turnHistory = state.turnHistory.slice(0, 120);
+      }
+
+      function addDiceHistory(playerIdx, dice, fromStep, toStep) {
+        state.rollCount += 1;
+        state.lastRoll = { playerIdx, dice };
+        state.diceHistory.unshift({ id: state.rollCount, playerIdx, dice, fromStep, toStep });
+        state.diceHistory = state.diceHistory.slice(0, 80);
+      }
+
+      function setMessage(msg) {
+        state.message = msg;
+      }
+
+      function canMove(player, dice) {
+        if (player.step === -1) return dice === 6;
+        return player.step + dice <= GOAL_STEP;
+      }
+
+      function handleCapture(playerIdx) {
+        const me = players[playerIdx];
+        const enemyIdx = playerIdx === 0 ? 1 : 0;
+        const enemy = players[enemyIdx];
+
+        if (me.step < 0 || me.step >= PATH_LEN || enemy.step < 0 || enemy.step >= PATH_LEN) {
+          return "";
+        }
+
+        const meGlobal = toGlobalIndex(playerIdx, me.step);
+        const enemyGlobal = toGlobalIndex(enemyIdx, enemy.step);
+        if (meGlobal === enemyGlobal) {
+          enemy.step = -1;
+          return "撞机成功，对方回基地";
+        }
+
+        return "";
+      }
+
+      function applyCellEffect(playerIdx, text) {
+        const me = players[playerIdx];
+        const enemy = players[playerIdx === 0 ? 1 : 0];
+        let extraTurn = false;
+        let effect = `触发：${text}`;
+
+        const moveMatch = text.match(/(前进|后退)(\d+)格/);
+        if (moveMatch && me.step !== -1) {
+          const sign = moveMatch[1] === "前进" ? 1 : -1;
+          const n = Number(moveMatch[2]);
+          const next = me.step + sign * n;
+          if (next >= 0 && next <= GOAL_STEP) {
+            me.step = next;
+            effect += `，位置变为${describeStep(me.step)}`;
+          }
+        }
+
+        if (text.includes("再掷一次") || text.includes("掷骰子")) {
+          extraTurn = true;
+          effect += "，获得额外回合";
+        }
+
+        if (text.includes("返回起点")) {
+          me.step = -1;
+          effect += "，回到基地";
+        }
+
+        if (text.includes("下一轮休息")) {
+          me.skip += 1;
+          effect += "，下回合休息";
+        }
+
+        if (text.includes("交换位置") && enemy.step >= 0) {
+          const t = me.step;
+          me.step = enemy.step;
+          enemy.step = t;
+          effect += "，与对方交换位置";
+        }
+
+        return { extraTurn, effect };
+      }
+
+      function endTurn(keepCurrent) {
+        state.dice = null;
+        if (!keepCurrent) {
+          state.current = state.current === 0 ? 1 : 0;
+        }
+      }
+
+      function snapshotGame() {
+        return {
+          players: players.map((p) => ({ step: p.step, skip: p.skip })),
+          game: {
+            current: state.current,
+            dice: state.dice,
+            lastRoll: state.lastRoll,
+            gameOver: state.gameOver,
+            message: state.message,
+            diceHistory: state.diceHistory,
+            rollCount: state.rollCount,
+            turnHistory: state.turnHistory,
+            selectedCellIndex: state.selectedCellIndex,
+            lastTriggeredCell: state.lastTriggeredCell,
+          },
+        };
+      }
+
+      function applySnapshot(snapshot) {
+        if (!snapshot || !snapshot.players || !snapshot.game) return;
+
+        snapshot.players.forEach((p, idx) => {
+          if (!players[idx]) return;
+          players[idx].step = typeof p.step === "number" ? p.step : -1;
+          players[idx].skip = typeof p.skip === "number" ? p.skip : 0;
+        });
+
+        state.current = snapshot.game.current ?? 0;
+        state.dice = snapshot.game.dice ?? null;
+        state.lastRoll = snapshot.game.lastRoll ?? null;
+        state.gameOver = !!snapshot.game.gameOver;
+        state.message = snapshot.game.message || "";
+        state.diceHistory = Array.isArray(snapshot.game.diceHistory) ? snapshot.game.diceHistory : [];
+        state.rollCount = Number.isFinite(snapshot.game.rollCount) ? snapshot.game.rollCount : 0;
+        state.turnHistory = Array.isArray(snapshot.game.turnHistory) ? snapshot.game.turnHistory : [];
+        state.selectedCellIndex =
+          Number.isInteger(snapshot.game.selectedCellIndex) ? snapshot.game.selectedCellIndex : null;
+        state.lastTriggeredCell = snapshot.game.lastTriggeredCell || null;
+      }
+
+      function roleByTurn() {
+        return state.current === 0 ? ROLE_RED : ROLE_BLUE;
+      }
+
+      function onlineReady() {
+        return online.seats.red && online.seats.blue;
+      }
+
+      function canCurrentClientAct() {
+        if (!online.enabled) return true;
+        if (!onlineReady()) return false;
+        return online.role === roleByTurn();
+      }
+
+      function setRoomHint(msg) {
+        roomStatus.textContent = `状态：${msg}`;
+      }
+
+      function saveRoomSession() {
+        if (!online.enabled || !online.roomId || !online.token) return;
+        localStorage.setItem(`flight_room_token_${online.roomId}`, online.token);
+      }
+
+      function clearRoomSession(roomId = online.roomId) {
+        if (!roomId) return;
+        localStorage.removeItem(`flight_room_token_${roomId}`);
+      }
+
+      function setRoomQuery(roomId) {
+        const url = new URL(window.location.href);
+        if (roomId) {
+          url.searchParams.set("room", roomId);
+        } else {
+          url.searchParams.delete("room");
+        }
+        window.history.replaceState({}, "", url.toString());
+      }
+
+      async function pullRoomState() {
+        if (!online.enabled || !online.roomId) return;
+        const payload = await api(`/api/rooms/${online.roomId}/state`);
+        online.seats = payload.seats || online.seats;
+        if (typeof payload.version === "number" && payload.version > online.version) {
+          online.applyingRemote = true;
+          applySnapshot(payload.snapshot);
+          online.version = payload.version;
+          online.applyingRemote = false;
+          render();
+        } else if (typeof payload.version === "number") {
+          online.version = payload.version;
+        }
+      }
+
+      function startPollingRoom() {
+        if (online.pollTimer) clearInterval(online.pollTimer);
+        online.pollTimer = setInterval(async () => {
+          try {
+            await pullRoomState();
+            setRoomHint(
+              `联机中 房间 ${online.roomId}｜身份 ${online.role === ROLE_RED ? "男方" : "女方"}｜${
+                onlineReady() ? "双方在线" : "等待对方加入"
+              }`,
+            );
+            render();
+          } catch (err) {
+            setRoomHint(`联机异常：${err.message}`);
+          }
+        }, ROOM_POLL_MS);
+      }
+
+      function stopPollingRoom() {
+        if (online.pollTimer) {
+          clearInterval(online.pollTimer);
+          online.pollTimer = null;
+        }
+      }
+
+      async function pushRoomState() {
+        if (!online.enabled || online.applyingRemote || !online.roomId || !online.token) return;
+
+        try {
+          const payload = await api(`/api/rooms/${online.roomId}/state`, {
+            method: "POST",
+            body: {
+              role: online.role,
+              token: online.token,
+              baseVersion: online.version,
+              snapshot: snapshotGame(),
+            },
+          });
+          online.version = payload.version;
+          online.seats = payload.seats || online.seats;
+        } catch (err) {
+          if (String(err.message).includes("版本冲突")) {
+            await pullRoomState();
+            setMessage("检测到对局更新，已同步最新状态。");
+            render();
+            return;
+          }
+          setRoomHint(`同步失败：${err.message}`);
+        }
+      }
+
+      async function createRoom() {
+        try {
+          const payload = await api("/api/rooms", {
+            method: "POST",
+            body: { snapshot: snapshotGame() },
+          });
+
+          online.enabled = true;
+          online.roomId = payload.roomId;
+          online.role = payload.role;
+          online.token = payload.token;
+          online.version = payload.version || 0;
+          online.seats = payload.seats || { red: true, blue: false };
+
+          roomInput.value = payload.roomId;
+          saveRoomSession();
+          setRoomQuery(payload.roomId);
+          setRoomHint(`已创建房间 ${payload.roomId}，等待对方加入`);
+          startPollingRoom();
+          render();
+        } catch (err) {
+          setRoomHint(`创建失败：${err.message}`);
+        }
+      }
+
+      async function joinRoom() {
+        const roomId = sanitizeRoomId(roomInput.value || new URL(window.location.href).searchParams.get("room"));
+        if (!roomId) {
+          setRoomHint("请输入有效房间号");
+          return;
+        }
+
+        try {
+          const remembered = localStorage.getItem(`flight_room_token_${roomId}`) || "";
+          const payload = await api(`/api/rooms/${roomId}/join`, {
+            method: "POST",
+            body: { token: remembered, snapshot: snapshotGame() },
+          });
+
+          online.enabled = true;
+          online.roomId = roomId;
+          online.role = payload.role;
+          online.token = payload.token;
+          online.version = payload.version || 0;
+          online.seats = payload.seats || { red: true, blue: true };
+
+          applySnapshot(payload.snapshot);
+          roomInput.value = roomId;
+          saveRoomSession();
+          setRoomQuery(roomId);
+          setRoomHint(`已加入房间 ${roomId}，身份 ${online.role === ROLE_RED ? "男方" : "女方"}`);
+          startPollingRoom();
+          render();
+        } catch (err) {
+          setRoomHint(`加入失败：${err.message}`);
+        }
+      }
+
+      async function leaveRoom() {
+        if (!online.enabled || !online.roomId) {
+          setRoomHint("当前未在联机房间");
+          return;
+        }
+
+        const roomId = online.roomId;
+        const token = online.token;
+
+        try {
+          await api(`/api/rooms/${roomId}/leave`, {
+            method: "POST",
+            body: { token },
+          });
+        } catch (_err) {
+          // ignore
+        }
+
+        clearRoomSession(roomId);
+        stopPollingRoom();
+        online.enabled = false;
+        online.roomId = "";
+        online.role = null;
+        online.token = "";
+        online.version = 0;
+        online.seats = { red: false, blue: false };
+        setRoomQuery("");
+        setRoomHint("已退出房间，当前为本地模式");
+        render();
+      }
+
+      async function copyRoomLink() {
+        try {
+          const link = roomLink();
+          await copyText(link);
+          setRoomHint(`房间链接已复制：${link}`);
+        } catch (_err) {
+          setRoomHint("复制失败，请手动复制地址栏链接");
+        }
+      }
+
+      async function systemShareRoom() {
+        const link = roomLink();
+        if (!navigator.share) {
+          setRoomHint("当前浏览器不支持系统分享，可使用复制链接");
+          return;
+        }
+        try {
+          await navigator.share({
+            title: "情侣飞行棋 V2.0（联机）",
+            text: "来加入我的房间，一起玩飞行棋。",
+            url: link,
+          });
+        } catch (err) {
+          if (!String(err).includes("AbortError")) {
+            setRoomHint("系统分享失败，请改用复制链接");
+          }
+        }
+      }
+
+      function checkWin(playerIdx) {
+        return players[playerIdx].step === GOAL_STEP;
+      }
+
+      async function rollDice() {
+        if (!canCurrentClientAct()) {
+          setMessage(online.enabled ? "当前不是你的回合，或对方尚未加入。" : "暂不可操作。");
+          render();
+          return;
+        }
+
+        if (state.gameOver || state.dice !== null) return;
+
+        const playerIdx = state.current;
+        const player = players[playerIdx];
+
+        if (player.skip > 0) {
+          player.skip -= 1;
+          const msg = `${player.name} 本回合休息。`;
+          setMessage(msg);
+          recordTurn({
+            id: state.rollCount + 1,
+            at: Date.now(),
+            player: player.name,
+            dice: 0,
+            from: describeStep(player.step),
+            to: describeStep(player.step),
+            event: "休息回合",
+          });
+          endTurn(false);
+          render();
+          await pushRoomState();
+          return;
+        }
+
+        const dice = Math.floor(Math.random() * 6) + 1;
+        state.dice = dice;
+        const fromStep = player.step;
+
+        if (!canMove(player, dice)) {
+          addDiceHistory(playerIdx, dice, fromStep, fromStep);
+          const msg = `${player.name} 掷出 ${dice}，点数无效，回合结束。`;
+          setMessage(msg);
+          recordTurn({
+            id: state.rollCount,
+            at: Date.now(),
+            player: player.name,
+            dice,
+            from: describeStep(fromStep),
+            to: describeStep(fromStep),
+            event: "点数无效",
+          });
+          endTurn(false);
+          render();
+          await pushRoomState();
+          return;
+        }
+
+        player.step = player.step === -1 ? 0 : player.step + dice;
+        let message = `${player.name} 掷出 ${dice}，移动到 ${describeStep(player.step)}。`;
+
+        const cap1 = handleCapture(playerIdx);
+        if (cap1) message += ` ${cap1}。`;
+
+        if (checkWin(playerIdx)) {
+          addDiceHistory(playerIdx, dice, fromStep, player.step);
+          state.gameOver = true;
+          message += ` ${player.name} 率先抵达终点，获胜！`;
+          setMessage(message);
+          recordTurn({
+            id: state.rollCount,
+            at: Date.now(),
+            player: player.name,
+            dice,
+            from: describeStep(fromStep),
+            to: describeStep(player.step),
+            event: "到达终点并获胜",
+          });
+          render();
+          await pushRoomState();
+          return;
+        }
+
+        let extraTurn = dice === 6;
+        let effectText = "";
+
+        if (player.step >= 0 && player.step < PATH_LEN) {
+          const cellIdx = toGlobalIndex(playerIdx, player.step);
+          const cellText = cells[cellIdx].text;
+          const effect = applyCellEffect(playerIdx, cellText);
+          effectText = effect.effect;
+          state.lastTriggeredCell = {
+            player: player.name,
+            index: cellIdx,
+            text: cellText,
+            at: Date.now(),
+          };
+          message += ` ${effectText}。`;
+          extraTurn = extraTurn || effect.extraTurn;
+
+          const cap2 = handleCapture(playerIdx);
+          if (cap2) message += ` ${cap2}。`;
+        }
+
+        addDiceHistory(playerIdx, dice, fromStep, player.step);
+
+        if (checkWin(playerIdx)) {
+          state.gameOver = true;
+          message += ` ${player.name} 率先抵达终点，获胜！`;
+        }
+
+        setMessage(message);
+
+        recordTurn({
+          id: state.rollCount,
+          at: Date.now(),
+          player: player.name,
+          dice,
+          from: describeStep(fromStep),
+          to: describeStep(player.step),
+          event: effectText || (extraTurn ? "额外回合" : "正常移动"),
+        });
+
+        if (!state.gameOver) {
+          endTurn(extraTurn);
+        }
+
+        render();
+        await pushRoomState();
+      }
+
+      async function restartGame() {
+        if (online.enabled && !canCurrentClientAct()) {
+          setMessage("联机模式下请等待你的回合后再重开。");
+          render();
+          return;
+        }
+
+        players.forEach((p) => {
+          p.step = -1;
+          p.skip = 0;
+        });
+
+        state.current = 0;
+        state.dice = null;
+        state.lastRoll = null;
+        state.gameOver = false;
+        state.message = "点击掷骰子开始。";
+        state.diceHistory = [];
+        state.rollCount = 0;
+        state.turnHistory = [];
+        state.selectedCellIndex = null;
+        state.lastTriggeredCell = null;
+
+        render();
+        await pushRoomState();
       }
 
       function renderPositionCard(playerIdx, posEl, cellEl, progressEl) {
         const p = players[playerIdx];
         const remain = p.step < 0 ? GOAL_STEP : Math.max(0, GOAL_STEP - p.step);
         posEl.textContent = `位置：${describeStep(p.step)}｜距终点 ${remain} 步`;
-        cellEl.textContent = `当前格：${getCellTextByStep(playerIdx, p.step)}`;
+
+        const cell = getCellByStep(playerIdx, p.step);
+        if (!cell) {
+          cellEl.textContent = p.step === GOAL_STEP ? "当前格：已到终点" : "当前格：未起飞（掷到6起飞）";
+        } else {
+          cellEl.textContent = `当前格：${cell.cell.text}`;
+        }
+
         progressEl.style.width = `${getProgress(p.step).toFixed(1)}%`;
       }
 
-      function renderDiceRow(playerIdx, rowEl, className) {
+      function renderDiceRow(playerIdx, rowEl, cls) {
         rowEl.innerHTML = "";
-        const items = state.diceHistory.filter((h) => h.playerIdx === playerIdx).slice(0, 20);
-        if (items.length === 0) {
-          const chip = document.createElement("span");
-          chip.className = `dice-chip ${className}`;
-          chip.textContent = "暂无";
-          rowEl.appendChild(chip);
+        const list = state.diceHistory.filter((h) => h.playerIdx === playerIdx).slice(0, 20);
+        if (!list.length) {
+          const s = document.createElement("span");
+          s.className = `chip ${cls}`;
+          s.textContent = "暂无";
+          rowEl.appendChild(s);
           return;
         }
 
-        items.forEach((item) => {
+        list.forEach((h) => {
           const chip = document.createElement("span");
-          chip.className = `dice-chip ${className}`;
-          chip.textContent = `#${item.id}:${item.dice}`;
-          chip.title = `从 ${describeStep(item.fromStep)} 到 ${describeStep(item.toStep)}`;
+          chip.className = `chip ${cls}`;
+          chip.textContent = `#${h.id}:${h.dice}`;
+          chip.title = `从 ${describeStep(h.fromStep)} 到 ${describeStep(h.toStep)}`;
           rowEl.appendChild(chip);
         });
       }
 
+      function renderDetail() {
+        const activeIdx = state.current;
+        const activeCell = getCellByStep(activeIdx, players[activeIdx].step);
+        const selectedIdx = state.selectedCellIndex;
+
+        if (Number.isInteger(selectedIdx)) {
+          cellDetailTitle.textContent = `格子 #${selectedIdx + 1}｜${cells[selectedIdx].short}`;
+          cellDetailBody.textContent = cells[selectedIdx].text;
+        } else if (activeCell) {
+          cellDetailTitle.textContent = `当前回合格子 #${activeCell.idx + 1}`;
+          cellDetailBody.textContent = activeCell.cell.text;
+        } else {
+          cellDetailTitle.textContent = "未选择格子";
+          cellDetailBody.textContent = "点击棋盘格子可查看完整文案。";
+        }
+
+        if (state.lastTriggeredCell) {
+          lastTriggerText.textContent = `最近触发：${state.lastTriggeredCell.player} 在 #${
+            state.lastTriggeredCell.index + 1
+          } 触发“${state.lastTriggeredCell.text}”`; 
+        } else {
+          lastTriggerText.textContent = "最近触发：暂无";
+        }
+      }
+
+      function renderTimeline() {
+        timelineList.innerHTML = "";
+        if (!state.turnHistory.length) {
+          const li = document.createElement("li");
+          li.textContent = "暂无回合记录";
+          timelineList.appendChild(li);
+          return;
+        }
+
+        state.turnHistory.slice(0, 60).forEach((t) => {
+          const li = document.createElement("li");
+          li.textContent = `${formatTime(t.at)}｜${t.player}｜点数 ${t.dice}｜${t.from} → ${t.to}｜${t.event}`;
+          timelineList.appendChild(li);
+        });
+      }
+
       function renderStatus() {
-        turnText.textContent = state.gameOver
-          ? "状态：游戏结束"
-          : `当前回合：${players[state.current].name}`;
+        const turnName = players[state.current].name;
+        turnText.textContent = state.gameOver ? "状态：游戏结束" : `当前回合：${turnName}`;
         diceText.textContent = state.lastRoll
           ? `上一掷：${players[state.lastRoll.playerIdx].name} 掷出 ${state.lastRoll.dice}`
           : "上一掷：-";
         msgText.textContent = `提示：${state.message}`;
 
+        const seatState = online.enabled
+          ? `座位：男方 ${online.seats.red ? "已占" : "空位"}｜女方 ${online.seats.blue ? "已占" : "空位"}`
+          : "座位：本地模式";
+        seatText.textContent = seatState;
+
         renderPositionCard(0, redPosText, redCellText, redProgress);
         renderPositionCard(1, bluePosText, blueCellText, blueProgress);
         renderDiceRow(0, redDiceRow, "red");
         renderDiceRow(1, blueDiceRow, "blue");
+        renderDetail();
+        renderTimeline();
 
-        logBox.innerHTML = "";
-        state.logs.forEach((line) => {
-          const li = document.createElement("li");
-          li.textContent = line;
-          logBox.appendChild(li);
-        });
-
-        rollBtn.disabled = state.gameOver || state.dice !== null;
+        rollBtn.disabled = state.gameOver || state.dice !== null || !canCurrentClientAct();
+        restartBtn.disabled = online.enabled && !canCurrentClientAct();
       }
 
       function render() {
         syncCanvasResolution();
-        drawBoardShape();
+        drawBoard();
         drawTokens();
         renderStatus();
       }
 
-      async function copyToClipboard(text) {
-        if (navigator.clipboard && window.isSecureContext) {
-          await navigator.clipboard.writeText(text);
-          return;
-        }
-        const ta = document.createElement("textarea");
-        ta.value = text;
-        ta.style.position = "fixed";
-        ta.style.left = "-9999px";
-        document.body.appendChild(ta);
-        ta.focus();
-        ta.select();
-        document.execCommand("copy");
-        document.body.removeChild(ta);
-      }
+      function pickCellByCanvasPoint(clientX, clientY) {
+        const rect = board.getBoundingClientRect();
+        if (!rect.width || !rect.height) return null;
+        const x = ((clientX - rect.left) / rect.width) * SIZE;
+        const y = ((clientY - rect.top) / rect.height) * SIZE;
 
-      function getShareUrl() {
-        return window.location.href;
-      }
-
-      function getInviteText() {
-        return `来玩情侣飞行棋（双人分享版）\\n${getShareUrl()}`;
-      }
-
-      async function handleCopyLink() {
-        try {
-          await copyToClipboard(getShareUrl());
-          shareHint.textContent = "分享提示：链接已复制，直接发给对方即可。";
-        } catch (e) {
-          shareHint.textContent = "分享提示：复制失败，请手动复制地址栏链接。";
-        }
-      }
-
-      async function handleCopyText() {
-        try {
-          await copyToClipboard(getInviteText());
-          shareHint.textContent = "分享提示：邀请文案已复制。";
-        } catch (e) {
-          shareHint.textContent = "分享提示：复制失败，请手动复制。";
-        }
-      }
-
-      async function handleSystemShare() {
-        if (!navigator.share) {
-          shareHint.textContent = "分享提示：当前浏览器不支持系统分享，请用“复制链接”。";
-          return;
-        }
-        try {
-          await navigator.share({
-            title: "情侣飞行棋 V1.0（双人分享版）",
-            text: "来一起玩情侣飞行棋！",
-            url: getShareUrl(),
-          });
-        } catch (e) {
-          if (String(e).includes("AbortError")) {
-            return;
+        let picked = null;
+        let minDist = Number.POSITIVE_INFINITY;
+        pathPoints.forEach((p, idx) => {
+          const dist = Math.hypot(x - p.x, y - p.y);
+          if (dist <= CELL_SIZE * 0.62 && dist < minDist) {
+            minDist = dist;
+            picked = idx;
           }
-          shareHint.textContent = "分享提示：系统分享失败，请改用“复制链接”。";
+        });
+
+        return picked;
+      }
+
+      function exportBoardImage() {
+        const link = document.createElement("a");
+        const ts = new Date().toISOString().replace(/[:.]/g, "-");
+        link.href = board.toDataURL("image/png");
+        link.download = `flight-chess-board-${ts}.png`;
+        link.click();
+      }
+
+      async function exportTimelineText() {
+        const header = [
+          `情侣飞行棋 V2.0 复盘`,
+          `时间：${new Date().toLocaleString()}`,
+          `房间：${online.enabled ? online.roomId : "本地模式"}`,
+          "",
+        ];
+
+        const lines = state.turnHistory.map(
+          (t) => `${formatTime(t.at)} | ${t.player} | 点数 ${t.dice} | ${t.from} -> ${t.to} | ${t.event}`,
+        );
+
+        const content = [...header, ...lines].join("\n");
+
+        try {
+          await copyText(content);
+          setMessage("复盘文本已复制到剪贴板。");
+        } catch (_err) {
+          // ignore clipboard failure
+        }
+
+        const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement("a");
+        a.href = url;
+        a.download = `flight-chess-replay-${Date.now()}.txt`;
+        a.click();
+        URL.revokeObjectURL(url);
+        render();
+      }
+
+      async function loadVersionInfo() {
+        try {
+          const v = await api("/api/version");
+          online.deployInfo = v;
+          versionText.textContent = `版本：${APP_VERSION}｜部署：${v.deployedAt || "-"}`;
+        } catch (_err) {
+          versionText.textContent = `版本：${APP_VERSION}｜部署：未知`;
         }
       }
 
-      function updateShareHint() {
-        if (window.location.protocol === "file:") {
-          shareHint.textContent = "分享提示：你当前是本地文件，建议上传到网盘或静态托管后再发链接。";
+      function applyInitialRoomFromUrl() {
+        const room = sanitizeRoomId(new URL(window.location.href).searchParams.get("room"));
+        if (room) {
+          roomInput.value = room;
+          setRoomHint(`检测到房间号 ${room}，点击“加入房间”即可联机。`);
         }
       }
+
+      board.addEventListener("click", (e) => {
+        const idx = pickCellByCanvasPoint(e.clientX, e.clientY);
+        state.selectedCellIndex = idx;
+        renderStatus();
+      });
+
+      window.addEventListener("resize", render);
+      window.addEventListener("online", () => setRoomHint("网络已恢复。"));
+      window.addEventListener("offline", () => setRoomHint("当前网络离线，联机同步将暂停。"));
 
       rollBtn.addEventListener("click", rollDice);
-      restartBtn.addEventListener("click", resetGame);
-      shareBtn.addEventListener("click", handleSystemShare);
-      copyBtn.addEventListener("click", handleCopyLink);
-      copyTextBtn.addEventListener("click", handleCopyText);
-      window.addEventListener("resize", render);
+      restartBtn.addEventListener("click", restartGame);
+      exportImageBtn.addEventListener("click", exportBoardImage);
+      exportTextBtn.addEventListener("click", exportTimelineText);
 
-      updateShareHint();
-      render();
+      createRoomBtn.addEventListener("click", async () => {
+        if (online.enabled) {
+          setRoomHint("已在房间中，先退出再创建。");
+          return;
+        }
+        roomInput.value = sanitizeRoomId(roomInput.value) || makeId();
+        await createRoom();
+      });
+
+      joinRoomBtn.addEventListener("click", async () => {
+        if (online.enabled) {
+          setRoomHint("已在房间中，先退出再加入新房间。");
+          return;
+        }
+        roomInput.value = sanitizeRoomId(roomInput.value);
+        await joinRoom();
+      });
+
+      leaveRoomBtn.addEventListener("click", leaveRoom);
+      copyRoomLinkBtn.addEventListener("click", copyRoomLink);
+      shareRoomBtn.addEventListener("click", systemShareRoom);
+
+      (async function bootstrap() {
+        applyInitialRoomFromUrl();
+        render();
+        await loadVersionInfo();
+      })();
     </script>
   </body>
 </html>
