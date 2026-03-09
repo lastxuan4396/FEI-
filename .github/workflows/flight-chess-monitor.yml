@@ -1,0 +1,30 @@
+name: flight-chess-monitor
+
+on:
+  schedule:
+    - cron: '*/30 * * * *'
+  workflow_dispatch:
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: flight-chess-share
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: flight-chess-share/package-lock.json
+      - name: Install deps
+        run: npm ci
+      - name: Metrics check
+        env:
+          FLIGHT_CHESS_BASE_URL: ${{ secrets.FLIGHT_CHESS_BASE_URL }}
+          MAX_ERROR_RATE: ${{ secrets.MAX_ERROR_RATE }}
+          MAX_RATE_LIMITED: ${{ secrets.MAX_RATE_LIMITED }}
+          MAX_CLIENT_ERRORS: ${{ secrets.MAX_CLIENT_ERRORS }}
+          MAX_WS_DROP: ${{ secrets.MAX_WS_DROP }}
+        run: npm run monitor:check

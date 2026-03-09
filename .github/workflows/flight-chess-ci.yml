@@ -29,3 +29,5 @@ jobs:
         run: node --check server.js
       - name: Test suite
         run: npm run test:all
+      - name: Secret scan (repo tracked files)
+        run: npm run security:scan

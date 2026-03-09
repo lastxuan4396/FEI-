@@ -139,6 +139,13 @@ async function main() {
     });
     assert.equal(r1.ok, true);
     assert.equal(r1.version, 1);
+    const events = await req(withToken(`/api/rooms/${created.roomId}/events?afterVersion=0`, created.token));
+    assert.equal(events.unchanged, false);
+    assert.ok(Array.isArray(events.events) && events.events.length >= 1);
+    const eventsUnchanged = await req(
+      withToken(`/api/rooms/${created.roomId}/events?afterVersion=${events.toVersion}`, created.token),
+    );
+    assert.equal(eventsUnchanged.unchanged, true);
 
     await expectStatus(
       `/api/rooms/${created.roomId}/action`,
@@ -166,6 +173,15 @@ async function main() {
     assert.equal(chatResp.ok, true);
     const chatList = await req(withToken(`/api/rooms/${created.roomId}/chat?limit=10`, created.token));
     assert.ok(Array.isArray(chatList.messages) && chatList.messages.length >= 1);
+    await req(`/api/rooms/${created.roomId}/chat`, {
+      method: "POST",
+      body: JSON.stringify({ token: created.token, text: "world" }),
+    });
+    const chatDelta = await req(
+      withToken(`/api/rooms/${created.roomId}/chat?afterId=${encodeURIComponent(chatList.newestId || "")}&limit=10`, created.token),
+    );
+    assert.equal(chatDelta.incremental, true);
+    assert.ok(Array.isArray(chatDelta.messages) && chatDelta.messages.length >= 1);
 
     const custom = await req(`/api/rooms/${created.roomId}/custom-pack`, {
       method: "POST",

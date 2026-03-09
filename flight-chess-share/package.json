@@ -9,7 +9,9 @@
     "test:dual": "node tests/dual-clients.mjs",
     "test:all": "npm test && npm run test:dual",
     "backup:redis": "node scripts/backup-redis-rooms.mjs",
-    "verify:logs": "node scripts/verify-room-logs.mjs"
+    "verify:logs": "node scripts/verify-room-logs.mjs",
+    "monitor:check": "node scripts/check-metrics-alert.mjs",
+    "security:scan": "node scripts/scan-secret-leaks.mjs"
   },
   "dependencies": {
     "redis": "^4.7.0",

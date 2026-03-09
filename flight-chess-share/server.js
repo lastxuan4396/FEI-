@@ -41,6 +41,7 @@ const metrics = {
   snapshotWrites: 0,
   joins: 0,
   leaves: 0,
+  rateLimitedRequests: 0,
   chatMessages: 0,
   clientErrors: 0,
   wsConnectionsAccepted: 0,
@@ -702,6 +703,11 @@ function sendJson(res, status, payload) {
   res.end(body);
 }
 
+function sendRateLimited(res, error = "请求过于频繁，请稍后再试") {
+  metrics.rateLimitedRequests += 1;
+  sendJson(res, 429, { error });
+}
+
 function sendText(res, status, text, contentType = "text/plain; charset=utf-8") {
   res.writeHead(status, {
     "content-type": contentType,
@@ -948,7 +954,7 @@ async function readJsonBody(req) {
 
         if (["/api/rooms", "/api/rooms/"].includes(pathname) || pathname.includes("/join") || pathname.includes("/leave")) {
           if (!limitCreateJoin(req)) {
-            sendJson(res, 429, { error: "请求过于频繁，请稍后再试" });
+            sendRateLimited(res);
             return;
           }
         }
@@ -956,12 +962,13 @@ async function readJsonBody(req) {
         if (
           pathname.endsWith("/state") ||
           pathname.endsWith("/logs") ||
+          pathname.endsWith("/events") ||
           pathname.endsWith("/chat") ||
           pathname.endsWith("/rules") ||
           pathname === "/api/rules"
         ) {
           if (!limitStateRead(req)) {
-            sendJson(res, 429, { error: "请求过于频繁，请稍后再试" });
+            sendRateLimited(res);
             return;
           }
         }
@@ -974,7 +981,7 @@ async function readJsonBody(req) {
           pathname.endsWith("/chat")
         ) {
           if (method === "POST" && !limitStateWrite(req)) {
-            sendJson(res, 429, { error: "请求过于频繁，请稍后再试" });
+            sendRateLimited(res);
             return;
           }
         }
@@ -1367,7 +1374,7 @@ async function readJsonBody(req) {
           const now = Date.now();
           const lastAt = room.actionMeta?.[role]?.lastAt || 0;
           if (now - lastAt < ACTION_SPAM_MS) {
-            sendJson(res, 429, { error: "操作过快，请稍后重试" });
+            sendRateLimited(res, "操作过快，请稍后重试");
             return;
           }
 
@@ -1471,7 +1478,7 @@ async function readJsonBody(req) {
           const now = Date.now();
           const lastAt = room.actionMeta?.[role]?.lastAt || 0;
           if (now - lastAt < ACTION_SPAM_MS) {
-            sendJson(res, 429, { error: "操作过快，请稍后重试" });
+            sendRateLimited(res, "操作过快，请稍后重试");
             return;
           }
 
@@ -1687,6 +1694,69 @@ async function readJsonBody(req) {
           return;
         }
 
+        const roomEventsMatch = pathname.match(/^\/api\/rooms\/([A-Za-z0-9]+)\/events$/);
+        if (roomEventsMatch && method === "GET") {
+          const roomRes = await assertRoom(roomEventsMatch[1]);
+          if (roomRes.error) {
+            sendJson(res, roomRes.error.status, roomRes.error.body);
+            return;
+          }
+          const { room } = roomRes;
+          const token = extractAuthToken(req, url);
+          const role = authorizeRoomRead(room, token);
+          if (!role) {
+            sendJson(res, 403, { error: "鉴权失败" });
+            return;
+          }
+
+          const afterVersionRaw = Number(url.searchParams.get("afterVersion") || room.version);
+          const afterVersion = Number.isInteger(afterVersionRaw) ? Math.max(0, afterVersionRaw) : NaN;
+          if (!Number.isInteger(afterVersion)) {
+            sendJson(res, 400, { error: "afterVersion 非法" });
+            return;
+          }
+
+          const logs = Array.isArray(room.logs) ? room.logs : [];
+          const minVersionAvailable = logs.length ? Number(logs[0].idx || room.version) : room.version;
+          const latestDigest = logs.length ? logs[logs.length - 1].digest : "";
+
+          if (afterVersion >= room.version) {
+            await store.setRoom(room);
+            sendJson(res, 200, {
+              unchanged: true,
+              fromVersion: afterVersion,
+              toVersion: room.version,
+              packId: room.packId,
+              seats: toSeats(room),
+              integrity: verifyLogs(logs),
+              latestDigest,
+              totalLogs: logs.length,
+            });
+            return;
+          }
+
+          const tooFarBehind = afterVersion < Math.max(0, minVersionAvailable - 1);
+          const events = tooFarBehind
+            ? logs.slice(-80)
+            : logs.filter((log) => Number(log.idx || 0) > afterVersion).slice(0, 80);
+
+          await store.setRoom(room);
+          sendJson(res, 200, {
+            unchanged: false,
+            tooFarBehind,
+            fromVersion: afterVersion,
+            toVersion: room.version,
+            packId: room.packId,
+            seats: toSeats(room),
+            integrity: verifyLogs(logs),
+            latestDigest,
+            events,
+            snapshot: room.snapshot,
+            totalLogs: logs.length,
+          });
+          return;
+        }
+
         const roomChatMatch = pathname.match(/^\/api\/rooms\/([A-Za-z0-9]+)\/chat$/);
         if (roomChatMatch && method === "GET") {
           const roomRes = await assertRoom(roomChatMatch[1]);
@@ -1702,11 +1772,21 @@ async function readJsonBody(req) {
             return;
           }
           const limit = Math.max(1, Math.min(200, Number(url.searchParams.get("limit") || 80)));
-          const messages = (room.chat || []).slice(-limit);
+          const afterId = String(url.searchParams.get("afterId") || "").trim();
+          const allMessages = room.chat || [];
+          let messages = allMessages.slice(-limit);
+          if (afterId) {
+            const idx = allMessages.findIndex((m) => m.id === afterId);
+            if (idx >= 0) {
+              messages = allMessages.slice(idx + 1, idx + 1 + limit);
+            }
+          }
           await store.setRoom(room);
           sendJson(res, 200, {
             messages,
-            total: (room.chat || []).length,
+            total: allMessages.length,
+            newestId: allMessages.length ? allMessages[allMessages.length - 1].id : "",
+            incremental: !!afterId,
           });
           return;
         }

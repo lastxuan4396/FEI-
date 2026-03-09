@@ -127,6 +127,13 @@ async function main() {
 
     const blueUpdate = await blueUpdatePromise;
     assert.ok(typeof blueUpdate.version === "number");
+    const events = await req(
+      `/api/rooms/${roomId}/events?afterVersion=0`,
+      { method: "GET" },
+      blueToken,
+    );
+    assert.equal(events.unchanged, false);
+    assert.ok(Array.isArray(events.events) && events.events.length >= 1);
 
     const chatPromise = wsWaitFor(blueWs, (d) => d.type === "chat_message");
     await req(
@@ -139,6 +146,12 @@ async function main() {
     );
     const chatMsg = await chatPromise;
     assert.equal(chatMsg.message.text, "ping from red");
+    const chatDelta = await req(
+      `/api/rooms/${roomId}/chat?afterId=${encodeURIComponent(chatMsg.message.id)}&limit=10`,
+      { method: "GET" },
+      blueToken,
+    );
+    assert.equal(chatDelta.incremental, true);
 
     const st = await req(`/api/rooms/${roomId}/state`, { method: "GET" }, redToken);
     const curRole = st.snapshot.game.current === 0 ? "red" : "blue";

@@ -1,4 +1,9 @@
 services:
+  - type: redis
+    name: flight-chess-redis
+    plan: free
+    maxmemoryPolicy: allkeys-lru
+
   - type: web
     name: flight-chess-share-fei
     runtime: node
@@ -8,3 +13,17 @@ services:
     healthCheckPath: /api/healthz
     plan: free
     autoDeploy: true
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: REDIS_URL
+        fromService:
+          type: redis
+          name: flight-chess-redis
+          property: connectionString
+      - key: REDIS_PREFIX
+        value: flightchess
+      - key: LOG_SIGNING_SECRET
+        generateValue: true
+      - key: CORS_ALLOW_ORIGINS
+        value: https://flight-chess-room-v2.onrender.com,https://flight-chess-share-fei.onrender.com

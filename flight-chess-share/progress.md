@@ -45,3 +45,14 @@ Original prompt: 都做
 - 旧域名 `flight-chess-share-fei.onrender.com` 页面已支持自动切换到主后端 `flight-chess-room-v2.onrender.com`（API + WS）。
 - 后端新增 CORS 与 OPTIONS 预检支持，允许旧域名前端跨域访问房间 API。
 - `dual-clients` 测试补充节流等待，避免偶发触发操作频率限制。
+
+## 2026-03-09 all-optimizations pass
+- 前端结构拆分：`index.html` 只保留结构，样式迁移到 `styles/main.css`，逻辑迁移到 `app/main.js`。
+- 联机增量同步：新增 `/api/rooms/:id/events?afterVersion=`，前端轮询改为优先拉增量事件。
+- 聊天增量：`GET /api/rooms/:id/chat` 支持 `afterId`，前端使用增量合并并去重。
+- 观战增强：新增“观战只读回放”开关，开启后实时状态不会覆盖当前回放视图。
+- 关键事件高亮：时间线对超时/返回起点/抵达终点等事件高亮。
+- 移动端体验：新增面板抽屉与棋盘全屏按钮，支持一键开关。
+- 运维告警：新增 `scripts/check-metrics-alert.mjs` 与定时 workflow `flight-chess-monitor.yml`。
+- 安全收口：新增 `SECURITY.md`、`.env.example`、`security:scan` 脚本与 CI token 扫描。
+- Render 蓝图升级：`render.yaml` 新增 Redis 服务并自动注入 `REDIS_URL` 与安全相关环境变量。
