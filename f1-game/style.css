@@ -324,9 +324,7 @@ select {
 }
 
 .music-toggle {
-  position: absolute;
-  right: 10px;
-  bottom: 10px;
+  position: relative;
   z-index: 12;
   appearance: none;
   border: 1px solid rgba(255, 255, 255, 0.2);
@@ -339,6 +337,15 @@ select {
   letter-spacing: 0.04em;
   cursor: pointer;
   transition: transform 120ms ease, filter 120ms ease;
+}
+
+.quick-controls {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  display: flex;
+  gap: 8px;
+  z-index: 12;
 }
 
 .music-toggle:hover {
@@ -402,10 +409,17 @@ select {
   }
 
   .music-toggle {
-    right: 8px;
-    bottom: 8px;
     padding: 8px 10px;
     font-size: 0.9rem;
+  }
+
+  .quick-controls {
+    right: 8px;
+    bottom: 8px;
+    gap: 6px;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    max-width: calc(100vw - 16px);
   }
 
   .toast-banner {

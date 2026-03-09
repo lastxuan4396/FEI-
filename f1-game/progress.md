@@ -61,3 +61,31 @@ Original prompt: 我朋友想要一个F1的游戏 你看看怎么做合适呢？
 - Verified with Playwright:
   - `output/f1-game-3d-run1` (race flow, no JS errors),
   - `output/f1-game-3d-run2` (music toggle in menu, `audio.enabled=false`, no JS errors).
+
+## 2026-03-09 - 3D complete polish pass ("都做")
+- Added race visual controls in UI:
+  - session selector (`auto/day/sunset/night`) in menu,
+  - quick buttons for `Camera`, `Lights`, and `Music`,
+  - keyboard shortcuts: `C` (camera mode), `N` (session lights), `M` (music).
+- Implemented full 3D atmosphere layer:
+  - multi-camera system (`chase`, `broadcast`, `helmet`) with auto cycling,
+  - session profiles for day/sunset/night with dynamic fog + ambient + directional lighting,
+  - trackside billboards with generated slogan textures and emissive glow,
+  - track lamp posts that activate by session mode,
+  - player headlights active in low-light sessions,
+  - improved car materials (`MeshPhysicalMaterial`) with damage tint and DRS/ERS-linked highlight strips.
+- Extended text-state output:
+  - `visual.cameraMode`, `visual.activeCamera`,
+  - `visual.sessionMode`, `visual.activeSession`.
+- Verified with Playwright (`web_game_playwright_client.js`) and screenshot checks:
+  - `/Users/xiaoxuan/Documents/Playground/output/f1-game-3d-run5` (race flow stable, no JS errors),
+  - `/Users/xiaoxuan/Documents/Playground/output/f1-game-3d-run6` (camera toggle works),
+  - `/Users/xiaoxuan/Documents/Playground/output/f1-game-3d-run7` (lights toggle works),
+  - `/Users/xiaoxuan/Documents/Playground/output/f1-game-3d-run8` (night session visual confirmed, no JS errors),
+  - `/Users/xiaoxuan/Documents/Playground/output/f1-game-3d-run10` (menu camera button -> `cameraMode: "broadcast"`),
+  - `/Users/xiaoxuan/Documents/Playground/output/f1-game-3d-run11` (menu lights button -> `sessionMode: "sunset"`).
+
+## TODO / follow-up suggestions
+- Add optional post-processing pipeline (bloom/FXAA) for higher-end devices with a quality toggle.
+- Add simple AI camera director weights (overtake proximity, sector transitions, pit entries).
+- Add optional ambient crowd/spark effects bound to weather and overtakes.

@@ -57,6 +57,15 @@
                 <option value="13">14 Cars Total</option>
               </select>
             </label>
+            <label>
+              Session
+              <select id="session-select">
+                <option value="auto" selected>Auto Cycle</option>
+                <option value="day">Day Race</option>
+                <option value="sunset">Sunset Race</option>
+                <option value="night">Night Race</option>
+              </select>
+            </label>
           </div>
 
           <div class="actions">
@@ -71,6 +80,7 @@
             <p>ERS Boost: Hold Shift</p>
             <p>Pit Request: P in pit window</p>
             <p>Pause: Esc | Fullscreen: F | Music: M</p>
+            <p>Camera: C | Session Lights: N</p>
           </div>
         </div>
       </section>
@@ -128,7 +138,11 @@
 
       <p id="status-banner" class="status-banner hidden">PAUSED</p>
       <p id="toast-banner" class="toast-banner hidden"></p>
-      <button id="music-toggle" class="music-toggle" type="button" aria-pressed="false">Music: ON</button>
+      <div class="quick-controls">
+        <button id="camera-toggle" class="music-toggle" type="button">Cam: AUTO</button>
+        <button id="lights-toggle" class="music-toggle" type="button">Lights: AUTO</button>
+        <button id="music-toggle" class="music-toggle" type="button" aria-pressed="false">Music: ON</button>
+      </div>
     </main>
 
     <script type="module" src="./game.js"></script>

@@ -14,12 +14,15 @@ const weatherSelect = document.getElementById("weather-select");
 const difficultySelect = document.getElementById("difficulty-select");
 const lapsSelect = document.getElementById("laps-select");
 const aiSelect = document.getElementById("ai-select");
+const sessionSelect = document.getElementById("session-select");
 
 const hud = document.getElementById("hud");
 const leaderboard = document.getElementById("leaderboard");
 const leaderList = document.getElementById("leader-list");
 const statusBanner = document.getElementById("status-banner");
 const toastBanner = document.getElementById("toast-banner");
+const cameraToggleButton = document.getElementById("camera-toggle");
+const lightsToggleButton = document.getElementById("lights-toggle");
 const musicToggleButton = document.getElementById("music-toggle");
 
 const hudLap = document.getElementById("hud-lap");
@@ -217,6 +220,57 @@ const CAR_COLORS = [
   "#98f6b4",
 ];
 
+const CAMERA_MODES = ["auto", "chase", "broadcast", "helmet"];
+const AUTO_CAMERA_SEQUENCE = ["chase", "broadcast", "helmet", "chase"];
+const SESSION_MODES = ["auto", "day", "sunset", "night"];
+const BILLBOARD_SLOGANS = [
+  "APEX ENERGY",
+  "TURBO VISION",
+  "STRAIGHTLINE",
+  "VECTOR GP",
+  "NIGHT CHARGE",
+  "RACE CORE",
+];
+
+const SESSION_PROFILES = {
+  day: {
+    skyTop: 0x86c8ff,
+    skyBottom: 0x21496f,
+    fogNear: 260,
+    fogFar: 2050,
+    hemiIntensity: 1.08,
+    sunIntensity: 1.12,
+    roadBrightness: 1.0,
+    trackLightIntensity: 0,
+    headlightIntensity: 0,
+    billboardGlow: 0.28,
+  },
+  sunset: {
+    skyTop: 0xf5b27a,
+    skyBottom: 0x2a3650,
+    fogNear: 220,
+    fogFar: 1750,
+    hemiIntensity: 0.92,
+    sunIntensity: 0.76,
+    roadBrightness: 0.88,
+    trackLightIntensity: 0.34,
+    headlightIntensity: 0.12,
+    billboardGlow: 0.4,
+  },
+  night: {
+    skyTop: 0x0b1730,
+    skyBottom: 0x030810,
+    fogNear: 140,
+    fogFar: 1200,
+    hemiIntensity: 0.42,
+    sunIntensity: 0.18,
+    roadBrightness: 0.58,
+    trackLightIntensity: 1.2,
+    headlightIntensity: 1.5,
+    billboardGlow: 0.75,
+  },
+};
+
 const state = {
   mode: "menu",
   paused: false,
@@ -248,6 +302,11 @@ const state = {
     requestPit: false,
     requestDrs: false,
   },
+  visual: {
+    cameraMode: "auto",
+    sessionMode: "auto",
+    activeSession: "day",
+  },
   rainDrops: [],
   temporaryMessage: "",
   temporaryMessageTimer: 0,
@@ -264,10 +323,19 @@ const graphics = {
   trackGroup: null,
   carGroup: null,
   rainGroup: null,
+  billboardGroup: null,
+  lightGroup: null,
+  roadMaterial: null,
+  shoulderMaterial: null,
+  terrainMaterial: null,
   rainGeometry: null,
   rainMaterial: null,
   rainPositions: null,
   carMeshes: new Map(),
+  trackLights: [],
+  headlightTargets: [],
+  headlightLeft: null,
+  headlightRight: null,
   cameraTarget: new THREE.Vector3(),
   cameraPos: new THREE.Vector3(),
 };
@@ -299,6 +367,52 @@ function formatTime(seconds) {
   const sec = Math.floor(seconds % 60);
   const ms = Math.floor((seconds - Math.floor(seconds)) * 1000);
   return `${String(mins).padStart(2, "0")}:${String(sec).padStart(2, "0")}.${String(ms).padStart(3, "0")}`;
+}
+
+function formatCameraLabel(mode) {
+  if (mode === "auto") return "AUTO";
+  if (mode === "chase") return "CHASE";
+  if (mode === "broadcast") return "TV";
+  if (mode === "helmet") return "HELMET";
+  return mode.toUpperCase();
+}
+
+function formatSessionLabel(mode) {
+  if (mode === "auto") return "AUTO";
+  if (mode === "day") return "DAY";
+  if (mode === "sunset") return "SUNSET";
+  if (mode === "night") return "NIGHT";
+  return mode.toUpperCase();
+}
+
+function getVisualClock() {
+  const countdownProgress = state.mode === "countdown" ? Math.max(0, 3.8 - state.countdown) : 0;
+  return state.raceTime + countdownProgress;
+}
+
+function resolveSessionMode() {
+  if (state.visual.sessionMode !== "auto") {
+    state.visual.activeSession = state.visual.sessionMode;
+    return state.visual.activeSession;
+  }
+
+  const phase = (getVisualClock() % 165) / 165;
+  if (phase < 0.44) {
+    state.visual.activeSession = "day";
+  } else if (phase < 0.72) {
+    state.visual.activeSession = "sunset";
+  } else {
+    state.visual.activeSession = "night";
+  }
+  return state.visual.activeSession;
+}
+
+function resolveCameraMode() {
+  if (state.visual.cameraMode !== "auto") {
+    return state.visual.cameraMode;
+  }
+  const index = Math.floor((getVisualClock() % 36) / 9) % AUTO_CAMERA_SEQUENCE.length;
+  return AUTO_CAMERA_SEQUENCE[index];
 }
 
 function midiToHz(midi) {
@@ -909,6 +1023,7 @@ function setupRace(config) {
   state.track = buildTrack(TRACK_PRESETS[config.track]);
   state.weather = WEATHER_PRESETS[config.weather];
   state.difficulty = DIFFICULTY_PRESETS[config.difficulty];
+  state.visual.sessionMode = SESSION_MODES.includes(config.session) ? config.session : state.visual.sessionMode;
   state.totalLaps = config.laps;
 
   state.raceTime = 0;
@@ -964,7 +1079,7 @@ function setupRace(config) {
   graphics.cameraTarget.set(0, 0, 0);
 
   updateStandings();
-  state.temporaryMessage = "Grid Locked";
+  state.temporaryMessage = `Grid Locked · ${formatSessionLabel(state.visual.sessionMode)}`;
   state.temporaryMessageTimer = 1.2;
 
   menuOverlay.classList.remove("visible");
@@ -1580,6 +1695,9 @@ function updateHud() {
   } else {
     toastBanner.classList.add("hidden");
   }
+
+  syncCameraToggleLabel();
+  syncLightsToggleLabel();
 }
 
 function renderLeaderboard() {
@@ -1695,12 +1813,15 @@ function ensureGraphics() {
   graphics.trackGroup = new THREE.Group();
   graphics.carGroup = new THREE.Group();
   graphics.rainGroup = new THREE.Group();
-  graphics.worldGroup.add(graphics.trackGroup, graphics.carGroup, graphics.rainGroup);
+  graphics.billboardGroup = new THREE.Group();
+  graphics.lightGroup = new THREE.Group();
+  graphics.worldGroup.add(graphics.trackGroup, graphics.carGroup, graphics.billboardGroup, graphics.lightGroup, graphics.rainGroup);
   graphics.scene.add(graphics.worldGroup);
 
+  graphics.terrainMaterial = new THREE.MeshStandardMaterial({ color: 0x264157, roughness: 0.98, metalness: 0 });
   const ground = new THREE.Mesh(
     new THREE.PlaneGeometry(9000, 9000),
-    new THREE.MeshStandardMaterial({ color: 0x192a3a, roughness: 1, metalness: 0 })
+    graphics.terrainMaterial
   );
   ground.rotation.x = -Math.PI * 0.5;
   ground.position.y = -1.2;
@@ -1719,6 +1840,15 @@ function ensureGraphics() {
   });
   const points = new THREE.Points(graphics.rainGeometry, graphics.rainMaterial);
   graphics.rainGroup.add(points);
+
+  graphics.headlightLeft = new THREE.SpotLight(0xd8eeff, 0, 320, Math.PI / 7.5, 0.34, 1.5);
+  graphics.headlightRight = new THREE.SpotLight(0xd8eeff, 0, 320, Math.PI / 7.5, 0.34, 1.5);
+  const leftTarget = new THREE.Object3D();
+  const rightTarget = new THREE.Object3D();
+  graphics.headlightLeft.target = leftTarget;
+  graphics.headlightRight.target = rightTarget;
+  graphics.headlightTargets = [leftTarget, rightTarget];
+  graphics.scene.add(graphics.headlightLeft, graphics.headlightRight, leftTarget, rightTarget);
 }
 
 function clearGroup(group) {
@@ -1811,6 +1941,152 @@ function createRibbonGeometry(points, tangents, width, y = 0, closed = true) {
   return geometry;
 }
 
+function createBillboardTexture(text, fromColor, toColor) {
+  const board = document.createElement("canvas");
+  board.width = 512;
+  board.height = 192;
+  const bctx = board.getContext("2d");
+  if (!bctx) {
+    return null;
+  }
+
+  const grad = bctx.createLinearGradient(0, 0, board.width, board.height);
+  grad.addColorStop(0, fromColor);
+  grad.addColorStop(1, toColor);
+  bctx.fillStyle = grad;
+  bctx.fillRect(0, 0, board.width, board.height);
+
+  bctx.strokeStyle = "rgba(255,255,255,0.45)";
+  bctx.lineWidth = 8;
+  bctx.strokeRect(8, 8, board.width - 16, board.height - 16);
+
+  bctx.fillStyle = "rgba(255,255,255,0.92)";
+  bctx.font = "700 54px 'Saira Condensed', 'Orbitron', sans-serif";
+  bctx.textAlign = "center";
+  bctx.textBaseline = "middle";
+  bctx.fillText(text, board.width * 0.5, board.height * 0.5 - 8);
+
+  bctx.font = "600 18px 'Saira Condensed', 'Orbitron', sans-serif";
+  bctx.fillStyle = "rgba(220,243,255,0.85)";
+  bctx.fillText("WORLD CHAMPIONSHIP", board.width * 0.5, board.height * 0.77);
+
+  const texture = new THREE.CanvasTexture(board);
+  texture.needsUpdate = true;
+  texture.anisotropy = 4;
+  return texture;
+}
+
+function rebuildBillboards() {
+  if (!graphics.billboardGroup || !state.track) {
+    return;
+  }
+
+  clearGroup(graphics.billboardGroup);
+
+  const palettes = [
+    ["#103b74", "#0aa5d7"],
+    ["#2a245d", "#ca3db7"],
+    ["#1a4f3d", "#27b97e"],
+    ["#49231c", "#ef7e37"],
+    ["#212d53", "#45c0ff"],
+    ["#4d2a1a", "#d5c133"],
+  ];
+
+  const total = 12;
+  for (let i = 0; i < total; i += 1) {
+    const s = (i / total) * state.track.length + state.track.length * 0.03;
+    const sample = sampleTrack(state.track, s);
+    const side = i % 2 === 0 ? 1 : -1;
+    const offset = state.track.halfWidth + 46 + (i % 3) * 6;
+    const x = sample.x + sample.normalX * offset * side;
+    const z = sample.y + sample.normalY * offset * side;
+    const angle = Math.atan2(sample.tangentY, sample.tangentX) + (side > 0 ? Math.PI * 0.5 : -Math.PI * 0.5);
+
+    const slogan = BILLBOARD_SLOGANS[i % BILLBOARD_SLOGANS.length];
+    const [fromColor, toColor] = palettes[i % palettes.length];
+    const texture = createBillboardTexture(slogan, fromColor, toColor);
+    const material = new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      map: texture,
+      emissive: 0x2a7ec2,
+      emissiveIntensity: 0.42,
+      roughness: 0.48,
+      metalness: 0.1,
+    });
+
+    const panel = new THREE.Mesh(new THREE.PlaneGeometry(52, 16), material);
+    panel.userData.isBillboard = true;
+    panel.position.set(x, 13, z);
+    panel.rotation.y = -angle;
+    graphics.billboardGroup.add(panel);
+
+    const frame = new THREE.Mesh(
+      new THREE.BoxGeometry(54.5, 17.5, 1.3),
+      new THREE.MeshStandardMaterial({ color: 0x0f1727, roughness: 0.72, metalness: 0.22 })
+    );
+    frame.position.set(x, 13, z - 0.9 * side);
+    frame.rotation.y = -angle;
+    graphics.billboardGroup.add(frame);
+
+    const leftPole = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.34, 0.34, 12, 10),
+      new THREE.MeshStandardMaterial({ color: 0x4f5b74, roughness: 0.82, metalness: 0.22 })
+    );
+    leftPole.position.set(x - Math.cos(angle) * 18, 6, z + Math.sin(angle) * 18);
+    graphics.billboardGroup.add(leftPole);
+
+    const rightPole = leftPole.clone();
+    rightPole.position.set(x + Math.cos(angle) * 18, 6, z - Math.sin(angle) * 18);
+    graphics.billboardGroup.add(rightPole);
+  }
+}
+
+function rebuildTrackLights() {
+  if (!graphics.lightGroup || !state.track) {
+    return;
+  }
+
+  clearGroup(graphics.lightGroup);
+  graphics.trackLights = [];
+
+  const total = 14;
+  for (let i = 0; i < total; i += 1) {
+    const s = (i / total) * state.track.length + 22;
+    const sample = sampleTrack(state.track, s);
+    const side = i % 2 === 0 ? 1 : -1;
+    const offset = state.track.halfWidth + 36;
+    const x = sample.x + sample.normalX * offset * side;
+    const z = sample.y + sample.normalY * offset * side;
+
+    const pole = new THREE.Mesh(
+      new THREE.CylinderGeometry(0.45, 0.48, 24, 12),
+      new THREE.MeshStandardMaterial({ color: 0x57617c, roughness: 0.88, metalness: 0.2 })
+    );
+    pole.position.set(x, 12, z);
+    graphics.lightGroup.add(pole);
+
+    const lamp = new THREE.Mesh(
+      new THREE.SphereGeometry(1.2, 16, 10),
+      new THREE.MeshStandardMaterial({
+        color: 0xffe9ba,
+        emissive: 0xffd28a,
+        emissiveIntensity: 0.75,
+        roughness: 0.24,
+        metalness: 0.04,
+      })
+    );
+    lamp.userData.isLamp = true;
+    lamp.position.set(x, 24.6, z);
+    graphics.lightGroup.add(lamp);
+
+    const light = new THREE.PointLight(0xffe7bc, 0, 120, 2.1);
+    light.position.set(x, 24.4, z);
+    light.userData.baseIntensity = 1;
+    graphics.trackLights.push(light);
+    graphics.lightGroup.add(light);
+  }
+}
+
 function rebuildTrackMeshes() {
   if (!graphics.trackGroup || !state.track) {
     return;
@@ -1819,25 +2095,28 @@ function rebuildTrackMeshes() {
   clearGroup(graphics.trackGroup);
 
   const bounds = getTrackBounds(state.track.points);
+  graphics.terrainMaterial = new THREE.MeshStandardMaterial({ color: 0x264157, roughness: 0.98, metalness: 0 });
   const terrain = new THREE.Mesh(
     new THREE.PlaneGeometry(bounds.maxX - bounds.minX + 1300, bounds.maxY - bounds.minY + 1300),
-    new THREE.MeshStandardMaterial({ color: 0x264157, roughness: 0.98, metalness: 0 })
+    graphics.terrainMaterial
   );
   terrain.rotation.x = -Math.PI * 0.5;
   terrain.position.set((bounds.minX + bounds.maxX) * 0.5, -0.3, (bounds.minY + bounds.maxY) * 0.5);
   graphics.trackGroup.add(terrain);
 
   const shoulderGeometry = createRibbonGeometry(state.track.points, state.track.tangents, state.track.width + 20, 0.02);
+  graphics.shoulderMaterial = new THREE.MeshStandardMaterial({ color: 0x131e2e, roughness: 0.9, metalness: 0.06 });
   const shoulder = new THREE.Mesh(
     shoulderGeometry,
-    new THREE.MeshStandardMaterial({ color: 0x131e2e, roughness: 0.9, metalness: 0.06 })
+    graphics.shoulderMaterial
   );
   graphics.trackGroup.add(shoulder);
 
   const roadGeometry = createRibbonGeometry(state.track.points, state.track.tangents, state.track.width, 0.06);
+  graphics.roadMaterial = new THREE.MeshStandardMaterial({ color: 0x2d3948, roughness: 0.78, metalness: 0.08 });
   const road = new THREE.Mesh(
     roadGeometry,
-    new THREE.MeshStandardMaterial({ color: 0x2d3948, roughness: 0.78, metalness: 0.08 })
+    graphics.roadMaterial
   );
   graphics.trackGroup.add(road);
 
@@ -1880,14 +2159,25 @@ function rebuildTrackMeshes() {
   startLine.rotation.z = Math.atan2(start.tangentY, start.tangentX);
   startLine.position.set(start.x, 0.14, start.y);
   graphics.trackGroup.add(startLine);
+
+  rebuildBillboards();
+  rebuildTrackLights();
 }
 
 function createCarMesh(car) {
   const group = new THREE.Group();
+  const bodyMaterial = new THREE.MeshPhysicalMaterial({
+    color: car.color,
+    roughness: 0.24,
+    metalness: 0.58,
+    clearcoat: 0.95,
+    clearcoatRoughness: 0.08,
+    reflectivity: 0.9,
+  });
 
   const body = new THREE.Mesh(
     new THREE.BoxGeometry(8.4, 2.8, 16),
-    new THREE.MeshStandardMaterial({ color: car.color, roughness: 0.45, metalness: 0.35 })
+    bodyMaterial
   );
   body.position.y = 2;
   group.add(body);
@@ -1901,10 +2191,27 @@ function createCarMesh(car) {
 
   const nose = new THREE.Mesh(
     new THREE.BoxGeometry(3.6, 1.2, 4.4),
-    new THREE.MeshStandardMaterial({ color: car.color, roughness: 0.45, metalness: 0.25 })
+    bodyMaterial
   );
   nose.position.set(0, 2.2, 9.6);
   group.add(nose);
+
+  const sideGlow = new THREE.Mesh(
+    new THREE.BoxGeometry(0.56, 0.34, 12.8),
+    new THREE.MeshStandardMaterial({
+      color: 0xffffff,
+      emissive: new THREE.Color(car.color),
+      emissiveIntensity: 0.75,
+      roughness: 0.2,
+      metalness: 0.12,
+    })
+  );
+  sideGlow.position.set(4.05, 2.7, 0.2);
+  group.add(sideGlow);
+
+  const sideGlow2 = sideGlow.clone();
+  sideGlow2.position.x = -4.05;
+  group.add(sideGlow2);
 
   const wing = new THREE.Mesh(
     new THREE.BoxGeometry(10.2, 0.7, 1.2),
@@ -1931,6 +2238,8 @@ function createCarMesh(car) {
     group.add(marker);
   }
 
+  group.userData.bodyMaterial = bodyMaterial;
+  group.userData.highlightMeshes = [sideGlow, sideGlow2];
   graphics.carGroup.add(group);
   graphics.carMeshes.set(car.id, group);
 }
@@ -1988,12 +2297,51 @@ function update3DScene() {
     return;
   }
 
-  graphics.scene.background.set(state.weather.skyBottom);
-  graphics.scene.fog.color.set(state.weather.skyBottom);
-  graphics.hemiLight.color.set(state.weather.skyTop);
+  const sessionKey = resolveSessionMode();
+  const profile = SESSION_PROFILES[sessionKey];
+  const rain = state.weather.rain;
+
+  graphics.scene.background.setHex(profile.skyBottom);
+  graphics.scene.fog.color.setHex(profile.skyBottom);
+  graphics.scene.fog.near = profile.fogNear;
+  graphics.scene.fog.far = profile.fogFar;
+  graphics.hemiLight.color.setHex(profile.skyTop);
   graphics.hemiLight.groundColor.set(0x223444);
-  graphics.hemiLight.intensity = 1.05 - state.weather.rain * 0.18;
-  graphics.sunLight.intensity = 1.08 - state.weather.rain * 0.45;
+  graphics.hemiLight.intensity = profile.hemiIntensity - rain * 0.12;
+  graphics.sunLight.intensity = profile.sunIntensity - rain * 0.24;
+
+  if (graphics.roadMaterial) {
+    graphics.roadMaterial.color.setHSL(0.6, 0.16, 0.2 * profile.roadBrightness);
+  }
+  if (graphics.shoulderMaterial) {
+    graphics.shoulderMaterial.color.setHSL(0.61, 0.2, 0.12 * profile.roadBrightness);
+  }
+  if (graphics.terrainMaterial) {
+    graphics.terrainMaterial.color.setHSL(0.58, 0.34, 0.22 * profile.roadBrightness);
+  }
+
+  const lightPulse = 0.86 + 0.14 * Math.sin(getVisualClock() * 1.8);
+  for (let i = 0; i < graphics.trackLights.length; i += 1) {
+    const light = graphics.trackLights[i];
+    const wobble = 0.9 + 0.1 * Math.sin(getVisualClock() * 2.4 + i * 0.5);
+    light.intensity = profile.trackLightIntensity * lightPulse * wobble * (1 + rain * 0.08);
+  }
+
+  if (graphics.lightGroup) {
+    for (const child of graphics.lightGroup.children) {
+      if (child.userData?.isLamp && child.material) {
+        child.material.emissiveIntensity = 0.45 + profile.trackLightIntensity * 0.55;
+      }
+    }
+  }
+
+  if (graphics.billboardGroup) {
+    for (const child of graphics.billboardGroup.children) {
+      if (child.userData?.isBillboard && child.material) {
+        child.material.emissiveIntensity = profile.billboardGlow;
+      }
+    }
+  }
 
   if (state.track && graphics.trackGroup.children.length === 0) {
     rebuildTrackMeshes();
@@ -2009,38 +2357,103 @@ function update3DScene() {
     mesh.position.set(car.worldX, 0.35, car.worldY);
     mesh.rotation.y = -car.heading + Math.PI * 0.5;
     mesh.position.y = car.inPit ? 0.42 : 0.35;
+
+    if (mesh.userData?.bodyMaterial) {
+      mesh.userData.bodyMaterial.clearcoatRoughness = clamp(0.06 + car.damage * 0.45, 0.06, 0.45);
+      mesh.userData.bodyMaterial.metalness = clamp(0.62 - car.damage * 0.2, 0.35, 0.62);
+    }
+    if (mesh.userData?.highlightMeshes) {
+      const active = car.drsTimer > 0 || car.ersActive;
+      const emission = active ? 1.15 : 0.7;
+      for (const h of mesh.userData.highlightMeshes) {
+        if (h.material) {
+          h.material.emissiveIntensity = emission;
+        }
+      }
+    }
   }
 
   if (state.player) {
     const heading = state.player.heading;
     const forwardX = Math.cos(heading);
     const forwardZ = Math.sin(heading);
+    const rightX = -forwardZ;
+    const rightZ = forwardX;
+    const activeCameraMode = resolveCameraMode();
+    const tvOrbit = Math.sin(getVisualClock() * 0.42);
 
-    const desiredCamera = new THREE.Vector3(
-      state.player.worldX - forwardX * 74,
-      42,
-      state.player.worldY - forwardZ * 74
-    );
-    const lookTarget = new THREE.Vector3(
-      state.player.worldX + forwardX * 26,
-      6.5,
-      state.player.worldY + forwardZ * 26
-    );
+    let desiredCamera = new THREE.Vector3(state.player.worldX - forwardX * 74, 42, state.player.worldY - forwardZ * 74);
+    let lookTarget = new THREE.Vector3(state.player.worldX + forwardX * 26, 6.5, state.player.worldY + forwardZ * 26);
+
+    if (activeCameraMode === "broadcast") {
+      desiredCamera = new THREE.Vector3(
+        state.player.worldX - forwardX * 14 + rightX * (46 + tvOrbit * 30),
+        68 + Math.abs(tvOrbit) * 16,
+        state.player.worldY - forwardZ * 14 + rightZ * (46 + tvOrbit * 30)
+      );
+      lookTarget = new THREE.Vector3(
+        state.player.worldX + forwardX * 26,
+        2.4,
+        state.player.worldY + forwardZ * 26
+      );
+    } else if (activeCameraMode === "helmet") {
+      desiredCamera = new THREE.Vector3(
+        state.player.worldX + forwardX * 4 - rightX * 0.8,
+        3.7,
+        state.player.worldY + forwardZ * 4 - rightZ * 0.8
+      );
+      lookTarget = new THREE.Vector3(
+        state.player.worldX + forwardX * 54,
+        3.4,
+        state.player.worldY + forwardZ * 54
+      );
+    }
 
     if (graphics.cameraPos.lengthSq() < 0.01) {
       graphics.cameraPos.copy(desiredCamera);
     } else {
-      graphics.cameraPos.lerp(desiredCamera, 0.1);
+      const smoothing = activeCameraMode === "helmet" ? 0.2 : 0.1;
+      graphics.cameraPos.lerp(desiredCamera, smoothing);
     }
-    graphics.cameraTarget.lerp(lookTarget, 0.14);
+    graphics.cameraTarget.lerp(lookTarget, activeCameraMode === "helmet" ? 0.2 : 0.14);
     graphics.camera.position.copy(graphics.cameraPos);
     graphics.camera.lookAt(graphics.cameraTarget);
+
+    const headlightStrength = profile.headlightIntensity * (0.72 + (state.player.speed / Math.max(40, state.difficulty.maxSpeed)) * 0.58);
+    if (graphics.headlightLeft && graphics.headlightRight && graphics.headlightTargets.length === 2) {
+      graphics.headlightLeft.intensity = headlightStrength;
+      graphics.headlightRight.intensity = headlightStrength;
+      graphics.headlightLeft.position.set(
+        state.player.worldX + forwardX * 6.2 + rightX * 1.8,
+        1.9,
+        state.player.worldY + forwardZ * 6.2 + rightZ * 1.8
+      );
+      graphics.headlightRight.position.set(
+        state.player.worldX + forwardX * 6.2 - rightX * 1.8,
+        1.9,
+        state.player.worldY + forwardZ * 6.2 - rightZ * 1.8
+      );
+      graphics.headlightTargets[0].position.set(
+        state.player.worldX + forwardX * 52 + rightX * 4,
+        0.2,
+        state.player.worldY + forwardZ * 52 + rightZ * 4
+      );
+      graphics.headlightTargets[1].position.set(
+        state.player.worldX + forwardX * 52 - rightX * 4,
+        0.2,
+        state.player.worldY + forwardZ * 52 - rightZ * 4
+      );
+    }
   } else if (state.track) {
     const bounds = getTrackBounds(state.track.points);
     const cx = (bounds.minX + bounds.maxX) * 0.5;
     const cz = (bounds.minY + bounds.maxY) * 0.5;
     graphics.camera.position.set(cx, 500, cz + 540);
     graphics.camera.lookAt(cx, 0, cz);
+    if (graphics.headlightLeft && graphics.headlightRight) {
+      graphics.headlightLeft.intensity = 0;
+      graphics.headlightRight.intensity = 0;
+    }
   }
 
   updateRainMesh();
@@ -2123,6 +2536,30 @@ function syncMusicToggleLabel() {
   musicToggleButton.setAttribute("aria-pressed", String(state.audioEnabled));
 }
 
+function syncCameraToggleLabel() {
+  if (!cameraToggleButton) {
+    return;
+  }
+  const selected = formatCameraLabel(state.visual.cameraMode);
+  if (state.visual.cameraMode === "auto") {
+    cameraToggleButton.textContent = `Cam: ${selected} (${formatCameraLabel(resolveCameraMode())})`;
+  } else {
+    cameraToggleButton.textContent = `Cam: ${selected}`;
+  }
+}
+
+function syncLightsToggleLabel() {
+  if (!lightsToggleButton) {
+    return;
+  }
+  const selected = formatSessionLabel(state.visual.sessionMode);
+  if (state.visual.sessionMode === "auto") {
+    lightsToggleButton.textContent = `Lights: ${selected} (${formatSessionLabel(resolveSessionMode())})`;
+  } else {
+    lightsToggleButton.textContent = `Lights: ${selected}`;
+  }
+}
+
 function toggleMusic() {
   if (!raceAudio.isAvailable()) {
     return;
@@ -2133,6 +2570,27 @@ function toggleMusic() {
   syncMusicToggleLabel();
   state.temporaryMessage = state.audioEnabled ? "Music On" : "Music Off";
   state.temporaryMessageTimer = 0.9;
+}
+
+function cycleCameraMode() {
+  const currentIndex = CAMERA_MODES.indexOf(state.visual.cameraMode);
+  const nextMode = CAMERA_MODES[(currentIndex + 1) % CAMERA_MODES.length];
+  state.visual.cameraMode = nextMode;
+  syncCameraToggleLabel();
+  state.temporaryMessage = `Camera ${formatCameraLabel(nextMode)}`;
+  state.temporaryMessageTimer = 1.1;
+}
+
+function cycleSessionMode() {
+  const currentIndex = SESSION_MODES.indexOf(state.visual.sessionMode);
+  const nextMode = SESSION_MODES[(currentIndex + 1) % SESSION_MODES.length];
+  state.visual.sessionMode = nextMode;
+  if (sessionSelect) {
+    sessionSelect.value = nextMode;
+  }
+  syncLightsToggleLabel();
+  state.temporaryMessage = `Session ${formatSessionLabel(nextMode)}`;
+  state.temporaryMessageTimer = 1.1;
 }
 
 async function toggleFullscreen() {
@@ -2172,6 +2630,16 @@ function handleKeyDown(event) {
     event.preventDefault();
     toggleMusic();
   }
+
+  if (event.code === "KeyC") {
+    event.preventDefault();
+    cycleCameraMode();
+  }
+
+  if (event.code === "KeyN") {
+    event.preventDefault();
+    cycleSessionMode();
+  }
 }
 
 function handleKeyUp(event) {
@@ -2187,8 +2655,11 @@ function handleStartButton() {
     difficulty: difficultySelect.value,
     laps: parseInt(lapsSelect.value, 10),
     aiCount: parseInt(aiSelect.value, 10),
+    session: sessionSelect.value,
   };
   setupRace(config);
+  syncCameraToggleLabel();
+  syncLightsToggleLabel();
 }
 
 function resetToMenu() {
@@ -2213,6 +2684,9 @@ function resetToMenu() {
   if (toastBanner) {
     toastBanner.classList.add("hidden");
   }
+  if (sessionSelect) {
+    sessionSelect.value = state.visual.sessionMode;
+  }
 
   menuOverlay.classList.add("visible");
   finishOverlay.classList.remove("visible");
@@ -2227,10 +2701,18 @@ function initialize() {
   resetToMenu();
   raceAudio.setEnabled(state.audioEnabled);
   syncMusicToggleLabel();
+  syncCameraToggleLabel();
+  syncLightsToggleLabel();
 
   startButton.addEventListener("click", handleStartButton);
   restartButton.addEventListener("click", resetToMenu);
+  cameraToggleButton.addEventListener("click", cycleCameraMode);
+  lightsToggleButton.addEventListener("click", cycleSessionMode);
   musicToggleButton.addEventListener("click", toggleMusic);
+  sessionSelect.addEventListener("change", () => {
+    state.visual.sessionMode = sessionSelect.value;
+    syncLightsToggleLabel();
+  });
 
   window.addEventListener("resize", resizeCanvas);
   window.addEventListener("keydown", handleKeyDown);
@@ -2281,6 +2763,12 @@ function getTextState() {
     audio: {
       available: raceAudio.isAvailable(),
       enabled: state.audioEnabled,
+    },
+    visual: {
+      cameraMode: state.visual.cameraMode,
+      activeCamera: resolveCameraMode(),
+      sessionMode: state.visual.sessionMode,
+      activeSession: resolveSessionMode(),
     },
     player: player
       ? {
