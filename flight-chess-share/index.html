@@ -3,9 +3,9 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>情侣飞行棋 V2.2（联机分享版）</title>
+    <title>情侣飞行棋 V2.3（联机分享版）</title>
     <meta name="description" content="支持联机房间、实时位置、回合时间线、截图导出的情侣飞行棋分享版。" />
-    <meta property="og:title" content="情侣飞行棋 V2.2（联机分享版）" />
+    <meta property="og:title" content="情侣飞行棋 V2.3（联机分享版）" />
     <meta property="og:description" content="创建房间后可异地对战，支持完整复盘与分享。" />
     <meta property="og:type" content="website" />
     <meta name="theme-color" content="#0f766e" />
@@ -20,6 +20,7 @@
         --danger: #dc2626;
         --blue: #2563eb;
         --green: #15803d;
+        --board-scale: 1;
       }
 
       * {
@@ -59,13 +60,14 @@
       }
 
       #board {
-        width: min(980px, calc(100vh - 48px));
+        width: min(calc((100vw - 420px) * var(--board-scale)), calc((100vh - 36px) * 1.25), 1120px);
         max-width: 100%;
         aspect-ratio: 1;
         display: block;
         background: #f8f6f1;
         border: 1px solid #c7c0b0;
         border-radius: 10px;
+        image-rendering: auto;
       }
 
       .side {
@@ -178,6 +180,13 @@
       .field label {
         font-size: 12px;
         color: #475569;
+      }
+
+      .zoom-row {
+        display: grid;
+        grid-template-columns: 1fr auto;
+        align-items: center;
+        gap: 8px;
       }
 
       .pill {
@@ -323,6 +332,68 @@
         color: #64748b;
       }
 
+      .timer-bar {
+        width: 100%;
+        height: 10px;
+        border-radius: 999px;
+        background: #e2e8f0;
+        overflow: hidden;
+      }
+
+      .timer-bar > span {
+        display: block;
+        height: 100%;
+        width: 100%;
+        background: linear-gradient(90deg, #22c55e, #f59e0b, #ef4444);
+        transform-origin: left center;
+      }
+
+      .chat-box {
+        border: 1px solid #ddd7c9;
+        border-radius: 10px;
+        background: #fff;
+        padding: 8px;
+      }
+
+      .chat-list {
+        list-style: none;
+        margin: 0 0 8px;
+        padding: 0;
+        max-height: 160px;
+        overflow: auto;
+        display: grid;
+        gap: 6px;
+      }
+
+      .chat-list li {
+        font-size: 12px;
+        line-height: 1.35;
+        border: 1px solid #ece7dd;
+        border-radius: 8px;
+        padding: 6px;
+      }
+
+      .emoji-row {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        margin-bottom: 6px;
+      }
+
+      .emoji-btn {
+        min-height: 32px;
+        padding: 4px 8px;
+      }
+
+      .qr-preview {
+        width: 160px;
+        height: 160px;
+        border: 1px solid #ddd7c9;
+        border-radius: 10px;
+        object-fit: cover;
+        background: #fff;
+      }
+
       #orientationHint {
         display: none;
         position: fixed;
@@ -343,7 +414,7 @@
         }
 
         #board {
-          width: min(980px, calc(100vw - 32px));
+          width: min(1100px, calc((100vw - 32px) * var(--board-scale)));
         }
       }
 
@@ -373,6 +444,20 @@
       <aside class="panel side">
         <section class="card">
           <h2>联机房间</h2>
+          <div class="field" style="margin-bottom: 8px">
+            <label for="langSelect">界面语言</label>
+            <select id="langSelect">
+              <option value="zh-CN">中文</option>
+              <option value="en-US">English</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom: 8px">
+            <label for="boardZoomRange">棋盘缩放</label>
+            <div class="zoom-row">
+              <input id="boardZoomRange" type="range" min="80" max="130" step="5" value="120" />
+              <span id="boardZoomText" class="tiny">120%</span>
+            </div>
+          </div>
           <div class="field">
             <label for="roomInput">房间号（4-8位）</label>
             <input id="roomInput" placeholder="例如 A7K9X2" />
@@ -399,7 +484,12 @@
           <div class="row" style="margin-top: 8px">
             <button id="copyRoomLinkBtn" class="btn-soft">复制房间链接</button>
             <button id="copyWatchLinkBtn" class="btn-soft">复制观战链接</button>
+            <button id="copyShortLinkBtn" class="btn-soft">复制短链</button>
             <button id="shareRoomBtn" class="btn-soft">系统分享</button>
+          </div>
+          <div class="row" style="margin-top: 8px; align-items: center">
+            <img id="qrPreview" class="qr-preview" alt="房间二维码" />
+            <p id="reconnectHint" class="tiny" style="margin: 0">断线重连：30 分钟内可自动恢复到原座位</p>
           </div>
           <p id="roomStatus" class="tiny" style="margin: 8px 0 0">状态：离线本地模式</p>
           <p id="realtimeStatus" class="tiny" style="margin: 4px 0 0">实时通道：未连接</p>
@@ -412,6 +502,8 @@
             <div id="diceText"></div>
             <div id="msgText"></div>
             <div id="seatText"></div>
+            <div id="countdownText"></div>
+            <div class="timer-bar"><span id="countdownBar"></span></div>
           </div>
           <div class="row" style="margin-top: 8px">
             <button id="rollBtn" class="btn-primary">掷骰子</button>
@@ -420,8 +512,28 @@
           <div class="row" style="margin-top: 8px">
             <button id="exportImageBtn" class="btn-soft">导出棋盘图</button>
             <button id="exportTextBtn" class="btn-soft">导出复盘文本</button>
+            <button id="exportReportBtn" class="btn-soft">导出赛后战报图</button>
+            <button id="enableNotifyBtn" class="btn-soft">开启到你提醒</button>
           </div>
           <div class="tiny" id="versionText" style="margin-top: 8px">版本：-</div>
+        </section>
+
+        <section class="card">
+          <h2>房间聊天</h2>
+          <div class="chat-box">
+            <ul id="chatList" class="chat-list"></ul>
+            <div class="emoji-row">
+              <button class="btn-soft emoji-btn" data-emoji="👍">👍</button>
+              <button class="btn-soft emoji-btn" data-emoji="🔥">🔥</button>
+              <button class="btn-soft emoji-btn" data-emoji="😂">😂</button>
+              <button class="btn-soft emoji-btn" data-emoji="❤️">❤️</button>
+              <button class="btn-soft emoji-btn" data-emoji="🎉">🎉</button>
+            </div>
+            <div class="row">
+              <input id="chatInput" placeholder="输入聊天内容..." />
+              <button id="chatSendBtn" class="btn-blue">发送</button>
+            </div>
+          </div>
         </section>
 
         <section class="card">
@@ -473,8 +585,42 @@
             <button id="replayNextBtn" class="btn-soft">回放下一步</button>
             <button id="replayExitBtn" class="btn-soft">退出回放</button>
           </div>
+          <div class="field" style="margin-bottom: 8px">
+            <label for="replayRange">回放滑杆</label>
+            <input id="replayRange" type="range" min="0" max="0" step="1" value="0" />
+          </div>
+          <div class="field" style="margin-bottom: 8px">
+            <label for="timelineFilterSelect">时间线筛选</label>
+            <select id="timelineFilterSelect">
+              <option value="all">全部</option>
+              <option value="男方">男方</option>
+              <option value="女方">女方</option>
+              <option value="超时">超时事件</option>
+            </select>
+          </div>
           <div id="replayStatusText" class="tiny" style="margin-bottom: 8px">回放：关闭</div>
           <ol id="timelineList" class="timeline"></ol>
+        </section>
+
+        <section class="card">
+          <h2>自定义文案包编辑器</h2>
+          <p class="tiny" style="margin: 0 0 8px">每行一个格子文案，必须 44 行。在线房间中保存后会自动同步给双方并重开。</p>
+          <div class="field">
+            <label for="customPackTitleInput">标题</label>
+            <input id="customPackTitleInput" value="情侣飞行棋 自定义版" />
+          </div>
+          <div class="field" style="margin-top: 8px">
+            <label for="customPackSubtitleInput">副标题</label>
+            <input id="customPackSubtitleInput" value="联机双人版" />
+          </div>
+          <div class="field" style="margin-top: 8px">
+            <label for="customPackCellsInput">44 格文案</label>
+            <textarea id="customPackCellsInput" style="width: 100%; min-height: 180px; border: 1px solid #d7d1c1; border-radius: 10px; padding: 8px; font-size: 12px"></textarea>
+          </div>
+          <div class="row" style="margin-top: 8px">
+            <button id="loadCurrentPackBtn" class="btn-soft">读取当前文案</button>
+            <button id="applyCustomPackBtn" class="btn-blue">应用自定义文案包</button>
+          </div>
         </section>
       </aside>
     </main>
@@ -482,7 +628,7 @@
     <div id="orientationHint">建议横屏查看，格子文案会更清晰。</div>
 
     <script>
-      const APP_VERSION = "2.2.0";
+      const APP_VERSION = "2.3.0";
       const SIZE = 980;
       const PATH_LEN = 44;
       const HOME_LEN = 3;
@@ -492,6 +638,8 @@
       const ROOM_POLL_MS = 5000;
       const ROLE_RED = "red";
       const ROLE_BLUE = "blue";
+      const TURN_TIMEOUT_SEC = 30;
+      const RECONNECT_WINDOW_MS = 30 * 60 * 1000;
 
       const board = document.getElementById("board");
       const ctx = board.getContext("2d");
@@ -502,12 +650,21 @@
       const seatText = document.getElementById("seatText");
       const roomStatus = document.getElementById("roomStatus");
       const realtimeStatus = document.getElementById("realtimeStatus");
+      const reconnectHint = document.getElementById("reconnectHint");
       const versionText = document.getElementById("versionText");
+      const langSelect = document.getElementById("langSelect");
+      const boardZoomRange = document.getElementById("boardZoomRange");
+      const boardZoomText = document.getElementById("boardZoomText");
+      const qrPreview = document.getElementById("qrPreview");
 
       const rollBtn = document.getElementById("rollBtn");
       const restartBtn = document.getElementById("restartBtn");
       const exportImageBtn = document.getElementById("exportImageBtn");
       const exportTextBtn = document.getElementById("exportTextBtn");
+      const exportReportBtn = document.getElementById("exportReportBtn");
+      const enableNotifyBtn = document.getElementById("enableNotifyBtn");
+      const countdownText = document.getElementById("countdownText");
+      const countdownBar = document.getElementById("countdownBar");
 
       const createRoomBtn = document.getElementById("createRoomBtn");
       const joinRoomBtn = document.getElementById("joinRoomBtn");
@@ -515,6 +672,7 @@
       const leaveRoomBtn = document.getElementById("leaveRoomBtn");
       const copyRoomLinkBtn = document.getElementById("copyRoomLinkBtn");
       const copyWatchLinkBtn = document.getElementById("copyWatchLinkBtn");
+      const copyShortLinkBtn = document.getElementById("copyShortLinkBtn");
       const shareRoomBtn = document.getElementById("shareRoomBtn");
       const roomInput = document.getElementById("roomInput");
       const roomPasswordInput = document.getElementById("roomPasswordInput");
@@ -540,6 +698,16 @@
       const replayNextBtn = document.getElementById("replayNextBtn");
       const replayExitBtn = document.getElementById("replayExitBtn");
       const replayStatusText = document.getElementById("replayStatusText");
+      const replayRange = document.getElementById("replayRange");
+      const timelineFilterSelect = document.getElementById("timelineFilterSelect");
+      const chatList = document.getElementById("chatList");
+      const chatInput = document.getElementById("chatInput");
+      const chatSendBtn = document.getElementById("chatSendBtn");
+      const applyCustomPackBtn = document.getElementById("applyCustomPackBtn");
+      const loadCurrentPackBtn = document.getElementById("loadCurrentPackBtn");
+      const customPackTitleInput = document.getElementById("customPackTitleInput");
+      const customPackSubtitleInput = document.getElementById("customPackSubtitleInput");
+      const customPackCellsInput = document.getElementById("customPackCellsInput");
 
       const vertices = [
         { x: 190, y: 50 },
@@ -554,7 +722,7 @@
 
       const fallbackRules = {
         version: "fallback",
-        title: "情侣飞行棋 V2.2",
+        title: "情侣飞行棋 V2.3",
         subtitle: "联机双人版",
         wheelLabels: ["1 喝一口", "2 再掷", "3 亲吻", "4 喝一口", "5 亲吻", "6 入棋盘"],
         boardRules: [
@@ -613,20 +781,19 @@
       let rulesConfig = fallbackRules;
       let selectedPackId = "classic";
       let contentPacks = [];
+      let autoJoinMode = null;
 
       function makeShortLabel(text) {
-        if (text.includes("掷骰")) return "掷骰";
-        if (text.includes("返回")) return "返回";
-        if (text.includes("再掷")) return "再掷";
-        if (text.includes("休息")) return "休息";
-        if (text.includes("后退")) return text.match(/后退\d+格/)?.[0] || "后退";
-        if (text.includes("喝一杯")) return "喝一杯";
-        if (text.includes("喝半杯")) return "喝半杯";
-        if (text.includes("脱一件衣物")) return "脱衣";
-        if (text.includes("口交")) return "口交";
-        if (text.includes("舌吻")) return "舌吻";
-        if (text.length <= 5) return text;
-        return `${text.slice(0, 4)}…`;
+        const cleaned = String(text || "").replace(/\s+/g, "");
+        if (!cleaned) return "";
+        if (cleaned.includes("掷骰")) return "掷骰子";
+        if (cleaned.includes("返回")) return "返回起点";
+        if (cleaned.includes("再掷")) return "再掷一次";
+        if (cleaned.includes("休息")) return "下轮休息";
+        if (cleaned.includes("后退")) return cleaned.match(/后退\d+格/)?.[0] || "后退";
+        const firstClause = cleaned.split(/[，。；：,.!！?？]/).find(Boolean) || cleaned;
+        if (firstClause.length <= 10) return firstClause;
+        return `${firstClause.slice(0, 8)}…`;
       }
 
       function colorByText(text, idx) {
@@ -725,6 +892,11 @@
         replayMode: false,
         replayCursor: -1,
         replayBackup: null,
+        turnDeadlineAt: 0,
+        turnTickTimer: null,
+        lastTurnRole: null,
+        notifyEnabled: false,
+        lang: "zh-CN",
       };
 
       const online = {
@@ -747,6 +919,9 @@
         wsConnected: false,
         lastWsAt: 0,
         wsHeartbeatTimer: null,
+        chat: [],
+        chatTotal: 0,
+        lastChatId: "",
       };
 
       function formatTime(ts) {
@@ -809,9 +984,13 @@
       }
 
       async function api(path, options = {}) {
+        const mergedHeaders = { "Content-Type": "application/json", ...(options.headers || {}) };
+        if (online.enabled && online.token && path.startsWith("/api/rooms/") && !mergedHeaders["x-room-token"]) {
+          mergedHeaders["x-room-token"] = online.token;
+        }
         const res = await fetch(path, {
           method: options.method || "GET",
-          headers: { "Content-Type": "application/json", ...(options.headers || {}) },
+          headers: mergedHeaders,
           body: options.body ? JSON.stringify(options.body) : undefined,
         });
 
@@ -907,6 +1086,19 @@
         });
       }
 
+      function applyBoardZoom(value) {
+        const zoom = Math.max(80, Math.min(130, Number(value) || 100));
+        document.documentElement.style.setProperty("--board-scale", String(zoom / 100));
+        boardZoomRange.value = String(zoom);
+        boardZoomText.textContent = `${zoom}%`;
+        localStorage.setItem("flight_board_zoom", String(zoom));
+      }
+
+      function initBoardZoom() {
+        const raw = Number(localStorage.getItem("flight_board_zoom") || "120");
+        applyBoardZoom(Number.isFinite(raw) ? raw : 120);
+      }
+
       function drawWheel(cx, cy, title) {
         const labels =
           (rulesConfig && Array.isArray(rulesConfig.wheelLabels) && rulesConfig.wheelLabels.length === 6
@@ -985,10 +1177,10 @@
           }
 
           ctx.fillStyle = "#111827";
-          ctx.font = "600 11px Avenir Next, PingFang SC";
+          ctx.font = "600 10px Avenir Next, PingFang SC";
           ctx.textAlign = "center";
           ctx.textBaseline = "middle";
-          wrapText(cells[idx].short, pt.x, pt.y, CELL_SIZE - 8, 12, 2);
+          wrapText(cells[idx].short, pt.x, pt.y, CELL_SIZE - 8, 10, 3);
         });
 
         const boardTitle = (rulesConfig && rulesConfig.title) || fallbackRules.title;
@@ -1219,6 +1411,7 @@
         state.selectedCellIndex =
           Number.isInteger(snapshot.game.selectedCellIndex) ? snapshot.game.selectedCellIndex : null;
         state.lastTriggeredCell = snapshot.game.lastTriggeredCell || null;
+        maybeTurnNotify();
       }
 
       function roleByTurn() {
@@ -1238,21 +1431,190 @@
       }
 
       function setRoomHint(msg) {
-        roomStatus.textContent = `状态：${msg}`;
+        roomStatus.textContent = state.lang === "en-US" ? `Status: ${msg}` : `状态：${msg}`;
       }
 
       function setRealtimeHint(msg) {
-        realtimeStatus.textContent = `实时通道：${msg}`;
+        realtimeStatus.textContent = state.lang === "en-US" ? `Realtime: ${msg}` : `实时通道：${msg}`;
+      }
+
+      function roleName(role) {
+        if (role === ROLE_RED) return "男方";
+        if (role === ROLE_BLUE) return "女方";
+        if (role === "spectator") return "观战";
+        return "-";
+      }
+
+      function nowTurnRole() {
+        return state.current === 0 ? ROLE_RED : ROLE_BLUE;
+      }
+
+      function resetTurnTimer() {
+        if (state.turnTickTimer) {
+          clearInterval(state.turnTickTimer);
+          state.turnTickTimer = null;
+        }
+        state.turnDeadlineAt = Date.now() + TURN_TIMEOUT_SEC * 1000;
+        state.turnTickTimer = setInterval(() => {
+          if (state.gameOver || state.replayMode) return;
+          const remain = state.turnDeadlineAt - Date.now();
+          if (remain <= 0) {
+            clearInterval(state.turnTickTimer);
+            state.turnTickTimer = null;
+            handleTurnTimeout();
+            return;
+          }
+          renderStatus();
+        }, 250);
+      }
+
+      async function handleTurnTimeout() {
+        if (state.gameOver || state.replayMode) return;
+        const role = nowTurnRole();
+        if (online.enabled) {
+          if (!canCurrentClientAct()) {
+            resetTurnTimer();
+            return;
+          }
+          setMessage(`${roleName(role)} 超时，系统自动跳过。`);
+          render();
+          await requestOnlineAction("timeout_skip");
+          await pullRoomLogs();
+          render();
+          resetTurnTimer();
+          return;
+        }
+
+        const idx = state.current;
+        const p = players[idx];
+        recordTurn({
+          id: state.rollCount + 1,
+          at: Date.now(),
+          player: p.name,
+          dice: 0,
+          from: describeStep(p.step),
+          to: describeStep(p.step),
+          event: "超时跳过",
+        });
+        setMessage(`${p.name} 超时，自动跳过回合。`);
+        state.current = state.current === 0 ? 1 : 0;
+        render();
+        resetTurnTimer();
+      }
+
+      function beepOnce() {
+        try {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          if (!AudioCtx) return;
+          const ctxA = new AudioCtx();
+          const osc = ctxA.createOscillator();
+          const gain = ctxA.createGain();
+          osc.type = "triangle";
+          osc.frequency.value = 880;
+          gain.gain.value = 0.04;
+          osc.connect(gain);
+          gain.connect(ctxA.destination);
+          osc.start();
+          osc.stop(ctxA.currentTime + 0.16);
+        } catch (_err) {
+          // ignore
+        }
+      }
+
+      async function maybeTurnNotify() {
+        if (state.replayMode) return;
+        if (online.enabled && !onlineReady()) {
+          if (state.turnTickTimer) {
+            clearInterval(state.turnTickTimer);
+            state.turnTickTimer = null;
+          }
+          return;
+        }
+        const role = nowTurnRole();
+        if (state.lastTurnRole === role) return;
+        state.lastTurnRole = role;
+        resetTurnTimer();
+        if (!online.enabled) return;
+        if (!canCurrentClientAct()) return;
+        if (!state.notifyEnabled) return;
+
+        beepOnce();
+        try {
+          if (Notification.permission === "granted") {
+            // eslint-disable-next-line no-new
+            new Notification("轮到你了", {
+              body: `房间 ${online.roomId}，请掷骰子`,
+            });
+          }
+        } catch (_err) {
+          // ignore
+        }
+      }
+
+      async function enableTurnNotification() {
+        if (!("Notification" in window)) {
+          setRoomHint("当前浏览器不支持通知");
+          return;
+        }
+        if (Notification.permission === "granted") {
+          state.notifyEnabled = true;
+          setRoomHint("到你提醒已开启");
+          renderStatus();
+          return;
+        }
+        const permission = await Notification.requestPermission();
+        state.notifyEnabled = permission === "granted";
+        setRoomHint(state.notifyEnabled ? "到你提醒已开启" : "通知权限未开启");
+        renderStatus();
       }
 
       function saveRoomSession() {
         if (!online.enabled || !online.roomId || !online.token) return;
-        localStorage.setItem(`flight_room_token_${online.roomId}`, online.token);
+        localStorage.setItem(
+          `flight_room_token_${online.roomId}`,
+          JSON.stringify({
+            token: online.token,
+            mode: online.mode || "player",
+            savedAt: Date.now(),
+          }),
+        );
       }
 
       function clearRoomSession(roomId = online.roomId) {
         if (!roomId) return;
         localStorage.removeItem(`flight_room_token_${roomId}`);
+      }
+
+      function readRoomSession(roomId) {
+        if (!roomId) return null;
+        const raw = localStorage.getItem(`flight_room_token_${roomId}`);
+        if (!raw) return null;
+        try {
+          const parsed = JSON.parse(raw);
+          if (!parsed || typeof parsed !== "object") return null;
+          if (!parsed.token || !parsed.savedAt) return null;
+          if (Date.now() - Number(parsed.savedAt) > RECONNECT_WINDOW_MS) return null;
+          return parsed;
+        } catch (_err) {
+          return null;
+        }
+      }
+
+      function shortInviteLink(roomId = online.roomId, mode = "player") {
+        if (!roomId) return "";
+        const url = new URL(window.location.href);
+        url.pathname = `/i/${roomId}`;
+        url.search = mode === "spectator" ? "?mode=spectator" : "";
+        return url.toString();
+      }
+
+      function renderQr(link) {
+        if (!link) {
+          qrPreview.removeAttribute("src");
+          return;
+        }
+        const apiUrl = `https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(link)}`;
+        qrPreview.src = apiUrl;
       }
 
       function setRoomQuery(roomId, mode = "player") {
@@ -1275,7 +1637,7 @@
         const payload = await api(`/api/rooms/${online.roomId}/state`);
         online.seats = payload.seats || online.seats;
         if (payload.packId && payload.packId !== selectedPackId) {
-          await loadRules(payload.packId);
+          await loadRules(payload.packId, true);
         }
 
         if (typeof payload.version === "number" && payload.version > online.version) {
@@ -1299,7 +1661,7 @@
         online.integrity = !!payload.integrity;
         online.lastLogsTotal = Number(payload.total || 0);
         if (payload.packId && payload.packId !== selectedPackId) {
-          await loadRules(payload.packId);
+          await loadRules(payload.packId, true);
         }
 
         if (!state.replayMode) {
@@ -1317,6 +1679,58 @@
               snapshot: log.snapshot || null,
             }));
         }
+      }
+
+      async function pullRoomChat() {
+        if (!online.enabled || !online.roomId) return;
+        const payload = await api(`/api/rooms/${online.roomId}/chat?limit=120`);
+        online.chat = Array.isArray(payload.messages) ? payload.messages : [];
+        online.chatTotal = Number(payload.total || 0);
+      }
+
+      async function sendChat(text) {
+        if (!online.enabled || !online.roomId || !online.token) {
+          setRoomHint("请先进入房间后再发送聊天");
+          return;
+        }
+        const trimmed = String(text || "").trim();
+        if (!trimmed) return;
+        if (trimmed.length > 200) {
+          setRoomHint("聊天消息最多 200 字");
+          return;
+        }
+        try {
+          await api(`/api/rooms/${online.roomId}/chat`, {
+            method: "POST",
+            body: {
+              token: online.token,
+              text: trimmed,
+            },
+          });
+          chatInput.value = "";
+          await pullRoomChat();
+          renderChat();
+        } catch (err) {
+          setRoomHint(`发送失败：${err.message}`);
+        }
+      }
+
+      function renderChat() {
+        chatList.innerHTML = "";
+        if (!online.chat.length) {
+          const li = document.createElement("li");
+          li.textContent = "暂无聊天消息";
+          chatList.appendChild(li);
+          return;
+        }
+        online.chat.slice(-120).forEach((m) => {
+          const li = document.createElement("li");
+          const from =
+            m.role === ROLE_RED ? "男方" : m.role === ROLE_BLUE ? "女方" : m.role === "spectator" ? "观战" : "系统";
+          li.textContent = `${formatTime(m.at || Date.now())}｜${from}：${m.text || ""}`;
+          chatList.appendChild(li);
+        });
+        chatList.scrollTop = chatList.scrollHeight;
       }
 
       function queueOperation(actionType) {
@@ -1351,7 +1765,7 @@
             online.version = Number(payload.version || online.version);
             online.seats = payload.seats || online.seats;
             if (payload.packId && payload.packId !== selectedPackId) {
-              await loadRules(payload.packId);
+              await loadRules(payload.packId, true);
             }
             if (!state.replayMode && payload.snapshot) {
               online.applyingRemote = true;
@@ -1432,9 +1846,16 @@
             if (data.type === "presence") {
               online.seats = data.seats || online.seats;
               if (data.packId && data.packId !== selectedPackId) {
-                await loadRules(data.packId);
+                await loadRules(data.packId, true);
               }
               render();
+              return;
+            }
+
+            if (data.type === "chat_message" && data.message) {
+              online.chat = [...(online.chat || []), data.message].slice(-200);
+              online.lastChatId = data.message.id || online.lastChatId;
+              renderChat();
               return;
             }
 
@@ -1444,7 +1865,7 @@
                 online.version = Math.max(online.version, data.version);
               }
               if (data.packId && data.packId !== selectedPackId) {
-                await loadRules(data.packId);
+                await loadRules(data.packId, true);
               }
               if (!state.replayMode && data.snapshot) {
                 online.applyingRemote = true;
@@ -1484,12 +1905,14 @@
             await flushOperationQueue();
             if (!online.wsConnected || Date.now() - online.lastWsAt > ROOM_POLL_MS * 2) {
               await pullRoomLogs();
+              await pullRoomChat();
             }
             setRoomHint(
               `联机中 房间 ${online.roomId}｜身份 ${
                 online.role === ROLE_RED ? "男方" : online.role === ROLE_BLUE ? "女方" : "观战"
               }｜${onlineReady() ? "双方在线" : "等待对方加入"}｜观战 ${online.seats.spectators || 0} 人`,
             );
+            renderChat();
             render();
           } catch (err) {
             setRoomHint(`联机异常：${err.message}`);
@@ -1511,7 +1934,7 @@
         await flushOperationQueue();
       }
 
-      // v2.2 起联机同步改为服务端动作流，这里保留空实现兼容本地逻辑路径。
+      // v2.3 起联机同步改为服务端动作流，这里保留空实现兼容本地逻辑路径。
       async function pushRoomState() {}
 
       async function createRoom() {
@@ -1535,17 +1958,22 @@
           online.pendingOps = [];
           online.logs = [];
           online.integrity = null;
+          online.chat = [];
+          online.chatTotal = 0;
           if (payload.packId && payload.packId !== selectedPackId) {
-            await loadRules(payload.packId);
+            await loadRules(payload.packId, true);
           }
 
           roomInput.value = payload.roomId;
           saveRoomSession();
           setRoomQuery(payload.roomId, online.mode);
+          renderQr(shortInviteLink(payload.roomId, "player"));
           setRoomHint(`已创建房间 ${payload.roomId}，等待对方加入`);
           connectRoomSocket();
           startPollingRoom();
           await pullRoomLogs();
+          await pullRoomChat();
+          renderChat();
           render();
         } catch (err) {
           setRoomHint(`创建失败：${err.message}`);
@@ -1560,7 +1988,8 @@
         }
 
         try {
-          const remembered = localStorage.getItem(`flight_room_token_${roomId}`) || "";
+          const rememberedSession = readRoomSession(roomId);
+          const remembered = rememberedSession?.token || "";
           const payload = await api(`/api/rooms/${roomId}/join`, {
             method: "POST",
             body: {
@@ -1581,14 +2010,17 @@
           online.pendingOps = [];
           online.logs = [];
           online.integrity = null;
+          online.chat = [];
+          online.chatTotal = 0;
           if (payload.packId && payload.packId !== selectedPackId) {
-            await loadRules(payload.packId);
+            await loadRules(payload.packId, true);
           }
 
           applySnapshot(payload.snapshot);
           roomInput.value = roomId;
           saveRoomSession();
           setRoomQuery(roomId, online.mode);
+          renderQr(shortInviteLink(roomId, "player"));
           setRoomHint(
             `已加入房间 ${roomId}，身份 ${
               online.role === ROLE_RED ? "男方" : online.role === ROLE_BLUE ? "女方" : "观战"
@@ -1597,6 +2029,8 @@
           connectRoomSocket();
           startPollingRoom();
           await pullRoomLogs();
+          await pullRoomChat();
+          renderChat();
           render();
         } catch (err) {
           setRoomHint(`加入失败：${err.message}`);
@@ -1634,10 +2068,14 @@
         online.pendingOps = [];
         online.logs = [];
         online.integrity = null;
+        online.chat = [];
+        online.chatTotal = 0;
         selectedPackId = packSelect.value || selectedPackId;
         setRoomQuery("");
         setRoomHint("已退出房间，当前为本地模式");
         setRealtimeHint("未连接");
+        renderQr("");
+        renderChat();
         render();
       }
 
@@ -1649,6 +2087,7 @@
         try {
           const link = roomLink(online.roomId, "player");
           await copyText(link);
+          renderQr(link);
           setRoomHint(`房间链接已复制：${link}`);
         } catch (_err) {
           setRoomHint("复制失败，请手动复制地址栏链接");
@@ -1663,9 +2102,25 @@
         try {
           const link = roomLink(online.roomId, "spectator");
           await copyText(link);
+          renderQr(link);
           setRoomHint(`观战链接已复制：${link}`);
         } catch (_err) {
           setRoomHint("复制失败，请手动复制地址栏链接");
+        }
+      }
+
+      async function copyShortLink(mode = "player") {
+        if (!online.roomId) {
+          setRoomHint("请先创建或加入房间");
+          return;
+        }
+        try {
+          const link = shortInviteLink(online.roomId, mode);
+          await copyText(link);
+          renderQr(link);
+          setRoomHint(`短链已复制：${link}`);
+        } catch (_err) {
+          setRoomHint("复制短链失败，请稍后重试");
         }
       }
 
@@ -1681,7 +2136,7 @@
         }
         try {
           await navigator.share({
-            title: "情侣飞行棋 V2.2（联机）",
+            title: "情侣飞行棋 V2.3（联机）",
             text: "来加入我的房间，一起玩飞行棋。",
             url: link,
           });
@@ -1931,14 +2386,23 @@
 
       function renderTimeline() {
         timelineList.innerHTML = "";
-        if (!state.turnHistory.length) {
+        const filter = timelineFilterSelect.value || "all";
+        const filtered = state.turnHistory
+          .filter((t) => {
+            if (filter === "all") return true;
+            if (filter === "超时") return String(t.event || "").includes("超时");
+            return t.player === filter;
+          })
+          .slice(0, 60);
+
+        if (!filtered.length) {
           const li = document.createElement("li");
-          li.textContent = "暂无回合记录";
+          li.textContent = "暂无回合记录（当前筛选无结果）";
           timelineList.appendChild(li);
           return;
         }
 
-        state.turnHistory.slice(0, 60).forEach((t) => {
+        filtered.forEach((t) => {
           const li = document.createElement("li");
           const sig = t.signature ? `｜sig ${String(t.signature).slice(0, 10)}` : "";
           li.textContent = `${formatTime(t.at)}｜${t.player}｜点数 ${t.dice}｜${t.from} → ${t.to}｜${t.event}${sig}`;
@@ -1953,6 +2417,10 @@
 
         if (!state.replayMode) {
           state.replayBackup = snapshotGame();
+        }
+        if (state.turnTickTimer) {
+          clearInterval(state.turnTickTimer);
+          state.turnTickTimer = null;
         }
         state.replayMode = true;
         state.replayCursor = cursor;
@@ -1993,10 +2461,16 @@
             // ignore
           }
         }
+        state.lastTurnRole = null;
+        resetTurnTimer();
         render();
       }
 
       function renderStatus() {
+        if (state.gameOver && state.turnTickTimer) {
+          clearInterval(state.turnTickTimer);
+          state.turnTickTimer = null;
+        }
         const turnName = players[state.current].name;
         turnText.textContent = state.gameOver ? "状态：游戏结束" : `当前回合：${turnName}`;
         diceText.textContent = state.lastRoll
@@ -2010,6 +2484,17 @@
             }｜队列 ${online.pendingOps.length}｜通道 ${online.wsConnected ? "WS" : "轮询"}｜文案包 ${selectedPackId}`
           : "座位：本地模式";
         seatText.textContent = seatState;
+
+        const remainMs = Math.max(0, state.turnDeadlineAt - Date.now());
+        const remainSec = Math.ceil(remainMs / 1000);
+        countdownText.textContent = state.gameOver
+          ? "倒计时：-"
+          : online.enabled && !onlineReady()
+            ? "回合倒计时：等待双方就位"
+            : `回合倒计时：${remainSec}s（超时自动跳过）`;
+        const ratio =
+          online.enabled && !onlineReady() ? 1 : Math.max(0, Math.min(1, remainMs / (TURN_TIMEOUT_SEC * 1000)));
+        countdownBar.style.transform = `scaleX(${ratio || 0.001})`;
 
         renderPositionCard(0, redPosText, redCellText, redProgress);
         renderPositionCard(1, bluePosText, blueCellText, blueProgress);
@@ -2030,10 +2515,14 @@
         replayStatusText.textContent = state.replayMode
           ? `回放：第 ${state.turnHistory[state.replayCursor]?.id || state.replayCursor + 1} 手`
           : "回放：关闭";
+        replayRange.max = String(Math.max(0, state.turnHistory.length - 1));
+        replayRange.value = String(state.replayMode ? state.replayCursor : 0);
         replayPrevBtn.disabled = state.turnHistory.length === 0;
         replayNextBtn.disabled = !state.replayMode || state.replayCursor <= 0;
         replayExitBtn.disabled = !state.replayMode;
         applyPackBtn.disabled = online.enabled && online.role === "spectator";
+        chatSendBtn.disabled = !online.enabled;
+        enableNotifyBtn.textContent = state.notifyEnabled ? "提醒已开启" : "开启到你提醒";
 
         rollBtn.disabled = state.gameOver || state.dice !== null || !canCurrentClientAct();
         restartBtn.disabled = online.enabled && !canCurrentClientAct();
@@ -2044,6 +2533,7 @@
         drawBoard();
         drawTokens();
         renderStatus();
+        maybeTurnNotify();
       }
 
       function pickCellByCanvasPoint(clientX, clientY) {
@@ -2073,9 +2563,59 @@
         link.click();
       }
 
+      function exportMatchReportImage() {
+        const w = 1280;
+        const h = 720;
+        const c = document.createElement("canvas");
+        c.width = w;
+        c.height = h;
+        const g = c.getContext("2d");
+        g.fillStyle = "#f8f5ec";
+        g.fillRect(0, 0, w, h);
+
+        g.fillStyle = "#b91c1c";
+        g.font = "bold 48px 'Avenir Next', 'PingFang SC', sans-serif";
+        g.fillText("情侣飞行棋 V2.3 战报", 40, 72);
+
+        g.fillStyle = "#334155";
+        g.font = "24px 'Avenir Next', 'PingFang SC', sans-serif";
+        g.fillText(`房间：${online.roomId || "本地模式"}  文案包：${selectedPackId}`, 40, 120);
+        g.fillText(`总回合：${state.rollCount}  状态：${state.gameOver ? "已结束" : "进行中"}`, 40, 156);
+
+        const left = 40;
+        const top = 200;
+        const lineH = 34;
+        players.forEach((p, idx) => {
+          const remain = p.step < 0 ? GOAL_STEP : Math.max(0, GOAL_STEP - p.step);
+          g.fillStyle = idx === 0 ? "#dc2626" : "#2563eb";
+          g.font = "bold 28px 'Avenir Next', 'PingFang SC', sans-serif";
+          g.fillText(`${p.name}: ${describeStep(p.step)}（距终点 ${remain}）`, left, top + idx * lineH * 1.6);
+        });
+
+        g.fillStyle = "#0f172a";
+        g.font = "bold 22px 'Avenir Next', 'PingFang SC', sans-serif";
+        g.fillText("关键回合（最近 6 条）", 40, 350);
+        g.font = "18px 'Avenir Next', 'PingFang SC', sans-serif";
+        const rows = state.turnHistory.slice(0, 6);
+        rows.forEach((t, i) => {
+          g.fillText(
+            `${i + 1}. ${formatTime(t.at)} ${t.player} 点数${t.dice} ${t.event}`,
+            40,
+            390 + i * 38,
+          );
+        });
+
+        g.drawImage(board, 860, 60, 360, 360);
+
+        const link = document.createElement("a");
+        link.href = c.toDataURL("image/png");
+        link.download = `flight-chess-report-${Date.now()}.png`;
+        link.click();
+      }
+
       async function exportTimelineText() {
         const header = [
-          `情侣飞行棋 V2.2 复盘`,
+          `情侣飞行棋 V2.3 复盘`,
           `时间：${new Date().toLocaleString()}`,
           `房间：${online.enabled ? online.roomId : "本地模式"}`,
           "",
@@ -2117,15 +2657,43 @@
         }
       }
 
+      function getCustomCellsText() {
+        return (rulesConfig?.cells || []).map((v) => String(v || "")).join("\n");
+      }
+
+      function loadCurrentPackToEditor() {
+        customPackTitleInput.value = String(rulesConfig?.title || "情侣飞行棋 自定义版");
+        customPackSubtitleInput.value = String(rulesConfig?.subtitle || "联机双人版");
+        customPackCellsInput.value = getCustomCellsText();
+        setRoomHint("已载入当前文案到编辑器");
+      }
+
+      function buildCustomPackPayload() {
+        const cells = String(customPackCellsInput.value || "")
+          .split(/\r?\n/)
+          .map((v) => v.trim())
+          .filter((v) => v.length > 0);
+        if (cells.length !== PATH_LEN) {
+          throw new Error(`文案行数必须为 ${PATH_LEN} 行，当前 ${cells.length} 行`);
+        }
+        return {
+          version: `custom-${Date.now()}`,
+          title: String(customPackTitleInput.value || "情侣飞行棋 自定义版").slice(0, 40),
+          subtitle: String(customPackSubtitleInput.value || "联机双人版").slice(0, 40),
+          boardRules: Array.isArray(rulesConfig?.boardRules) ? rulesConfig.boardRules : fallbackRules.boardRules,
+          wheelLabels: Array.isArray(rulesConfig?.wheelLabels) ? rulesConfig.wheelLabels : fallbackRules.wheelLabels,
+          cells,
+        };
+      }
+
       async function loadContentPacks() {
         try {
           const payload = await api("/api/content-packs");
           const packs = Array.isArray(payload.packs) ? payload.packs : [];
-          contentPacks = packs;
+          contentPacks = [...packs, { id: "custom", name: "自定义文案包", description: "手动编辑 44 格并同步" }];
           const defaultPack = payload.defaultPackId || "classic";
-          if (!packs.length) return;
           packSelect.innerHTML = "";
-          packs.forEach((pack) => {
+          contentPacks.forEach((pack) => {
             const opt = document.createElement("option");
             opt.value = pack.id;
             opt.textContent = `${pack.name}（${pack.id}）`;
@@ -2142,14 +2710,20 @@
         }
       }
 
-      async function loadRules(packId = selectedPackId) {
+      async function loadRules(packId = selectedPackId, preferRoom = false) {
         try {
-          const remote = await api(`/api/rules?pack=${encodeURIComponent(packId || "classic")}`);
+          const remote =
+            preferRoom && online.enabled && online.roomId
+              ? await api(`/api/rooms/${online.roomId}/rules`)
+              : await api(`/api/rules?pack=${encodeURIComponent(packId || "classic")}`);
           if (remote && Array.isArray(remote.cells) && remote.cells.length === PATH_LEN) {
             rulesConfig = remote;
             cells = buildCells(remote.cells);
             selectedPackId = remote.packId || packId || selectedPackId;
             packSelect.value = selectedPackId;
+            if (!customPackCellsInput.value.trim()) {
+              loadCurrentPackToEditor();
+            }
           }
         } catch (_err) {
           rulesConfig = fallbackRules;
@@ -2157,9 +2731,59 @@
         }
       }
 
+      async function applyCustomPack() {
+        let config;
+        try {
+          config = buildCustomPackPayload();
+        } catch (err) {
+          setRoomHint(err.message);
+          return;
+        }
+
+        if (!online.enabled) {
+          rulesConfig = { ...config, packId: "custom-local" };
+          selectedPackId = "custom-local";
+          cells = buildCells(config.cells);
+          setRoomHint("已应用本地自定义文案包");
+          render();
+          return;
+        }
+
+        if (online.role === "spectator") {
+          setRoomHint("观战身份不能修改文案包");
+          return;
+        }
+
+        try {
+          const payload = await api(`/api/rooms/${online.roomId}/custom-pack`, {
+            method: "POST",
+            body: {
+              token: online.token,
+              config,
+            },
+          });
+          if (typeof payload.version === "number") {
+            online.version = payload.version;
+          }
+          await loadRules("custom", true);
+          if (payload.snapshot && !state.replayMode) {
+            applySnapshot(payload.snapshot);
+          }
+          await pullRoomLogs();
+          setRoomHint(payload.summary || "自定义文案包已同步");
+          render();
+        } catch (err) {
+          setRoomHint(`自定义文案包保存失败：${err.message}`);
+        }
+      }
+
       async function applyPackChange() {
         const targetPack = String(packSelect.value || "").trim() || selectedPackId;
         if (!targetPack) return;
+        if (targetPack === "custom") {
+          await applyCustomPack();
+          return;
+        }
 
         if (!online.enabled) {
           await loadRules(targetPack);
@@ -2183,7 +2807,7 @@
             },
           });
           if (payload.packId) {
-            await loadRules(payload.packId);
+            await loadRules(payload.packId, true);
           }
           if (payload.snapshot && !state.replayMode) {
             applySnapshot(payload.snapshot);
@@ -2218,13 +2842,32 @@
         });
       }
 
+      function reportClientError(name, message, stack = "") {
+        fetch("/api/client-error", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            name,
+            message,
+            stack,
+            roomId: online.roomId || "",
+          }),
+        }).catch(() => {});
+      }
+
       function applyInitialRoomFromUrl() {
         const url = new URL(window.location.href);
         const room = sanitizeRoomId(url.searchParams.get("room"));
         const mode = url.searchParams.get("mode") === "spectator" ? "spectator" : "player";
         if (room) {
           roomInput.value = room;
-          setRoomHint(`检测到房间号 ${room}，点击“${mode === "spectator" ? "观战加入" : "加入房间"}”即可联机。`);
+          autoJoinMode = mode;
+          const session = readRoomSession(room);
+          if (session?.token) {
+            setRoomHint(`检测到房间 ${room}，正在尝试自动重连...`);
+          } else {
+            setRoomHint(`检测到房间号 ${room}，点击“${mode === "spectator" ? "观战加入" : "加入房间"}”即可联机。`);
+          }
         }
       }
 
@@ -2237,11 +2880,19 @@
       window.addEventListener("resize", render);
       window.addEventListener("online", () => setRoomHint("网络已恢复。"));
       window.addEventListener("offline", () => setRoomHint("当前网络离线，联机同步将暂停。"));
+      window.addEventListener("error", (e) => {
+        reportClientError("window.error", e.message || "unknown", e.error?.stack || "");
+      });
+      window.addEventListener("unhandledrejection", (e) => {
+        reportClientError("unhandledrejection", String(e.reason || "unknown"), e.reason?.stack || "");
+      });
 
       rollBtn.addEventListener("click", rollDice);
       restartBtn.addEventListener("click", restartGame);
       exportImageBtn.addEventListener("click", exportBoardImage);
       exportTextBtn.addEventListener("click", exportTimelineText);
+      exportReportBtn.addEventListener("click", exportMatchReportImage);
+      enableNotifyBtn.addEventListener("click", enableTurnNotification);
 
       createRoomBtn.addEventListener("click", async () => {
         if (online.enabled) {
@@ -2273,28 +2924,95 @@
       leaveRoomBtn.addEventListener("click", leaveRoom);
       copyRoomLinkBtn.addEventListener("click", copyRoomLink);
       copyWatchLinkBtn.addEventListener("click", copyWatchLink);
+      copyShortLinkBtn.addEventListener("click", () => copyShortLink("player"));
       shareRoomBtn.addEventListener("click", systemShareRoom);
       packSelect.addEventListener("change", async () => {
         if (!online.enabled) {
-          await loadRules(packSelect.value || "classic");
+          const target = packSelect.value || "classic";
+          if (target === "custom") {
+            setRoomHint("点击“应用自定义文案包”后生效");
+            return;
+          }
+          await loadRules(target);
           render();
         }
       });
       applyPackBtn.addEventListener("click", applyPackChange);
+      loadCurrentPackBtn.addEventListener("click", loadCurrentPackToEditor);
+      applyCustomPackBtn.addEventListener("click", applyCustomPack);
+      timelineFilterSelect.addEventListener("change", renderStatus);
+      replayRange.addEventListener("input", (e) => {
+        const v = Number(e.target.value || 0);
+        if (!Number.isInteger(v) || v < 0) return;
+        enterReplayByCursor(v);
+      });
+      chatSendBtn.addEventListener("click", () => {
+        sendChat(chatInput.value);
+      });
+      chatInput.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") {
+          e.preventDefault();
+          sendChat(chatInput.value);
+        }
+      });
+      document.querySelectorAll("[data-emoji]").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const emoji = btn.getAttribute("data-emoji") || "";
+          if (!emoji) return;
+          if (!chatInput.value.trim()) {
+            chatInput.value = emoji;
+          } else {
+            chatInput.value = `${chatInput.value} ${emoji}`;
+          }
+          sendChat(chatInput.value);
+        });
+      });
       replayPrevBtn.addEventListener("click", replayPrev);
       replayNextBtn.addEventListener("click", replayNext);
       replayExitBtn.addEventListener("click", () => {
         replayExit();
       });
 
+      langSelect.addEventListener("change", () => {
+        state.lang = langSelect.value || "zh-CN";
+        if (state.lang === "en-US") {
+          reconnectHint.textContent = "Reconnect: resume your seat within 30 minutes";
+          roomStatus.textContent = `Status: ${roomStatus.textContent.replace(/^状态：/, "")}`;
+          realtimeStatus.textContent = `Realtime: ${realtimeStatus.textContent.replace(/^实时通道：/, "")}`;
+        } else {
+          reconnectHint.textContent = "断线重连：30 分钟内可自动恢复到原座位";
+          if (!roomStatus.textContent.startsWith("状态：")) {
+            roomStatus.textContent = `状态：${roomStatus.textContent.replace(/^Status:\s*/, "")}`;
+          }
+          if (!realtimeStatus.textContent.startsWith("实时通道：")) {
+            realtimeStatus.textContent = `实时通道：${realtimeStatus.textContent.replace(/^Realtime:\s*/, "")}`;
+          }
+        }
+      });
+      boardZoomRange.addEventListener("input", () => {
+        applyBoardZoom(boardZoomRange.value);
+        render();
+      });
+
       (async function bootstrap() {
+        initBoardZoom();
         applyInitialRoomFromUrl();
         setRealtimeHint("未连接");
         await loadContentPacks();
         await loadRules(selectedPackId);
+        loadCurrentPackToEditor();
         render();
+        renderChat();
         await loadVersionInfo();
         registerServiceWorker();
+        const room = sanitizeRoomId(new URL(window.location.href).searchParams.get("room"));
+        if (room) {
+          const session = readRoomSession(room);
+          if (session?.token) {
+            roomInput.value = room;
+            await joinRoom(autoJoinMode || session.mode || "player");
+          }
+        }
       })();
 
       window.render_game_to_text = () =>
@@ -2315,6 +3033,12 @@
             wsConnected: online.wsConnected,
             version: online.version,
             packId: selectedPackId,
+            chatCount: online.chatTotal || online.chat.length,
+            lang: state.lang,
+          },
+          timer: {
+            remainMs: Math.max(0, state.turnDeadlineAt - Date.now()),
+            timeoutSec: TURN_TIMEOUT_SEC,
           },
         });
 

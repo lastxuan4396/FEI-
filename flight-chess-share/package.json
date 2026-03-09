@@ -1,11 +1,15 @@
 {
   "name": "flight-chess-share",
-  "version": "2.2.0",
+  "version": "2.3.0",
   "private": true,
   "type": "commonjs",
   "scripts": {
     "start": "node server.js",
-    "test": "node tests/smoke.mjs"
+    "test": "node tests/smoke.mjs",
+    "test:dual": "node tests/dual-clients.mjs",
+    "test:all": "npm test && npm run test:dual",
+    "backup:redis": "node scripts/backup-redis-rooms.mjs",
+    "verify:logs": "node scripts/verify-room-logs.mjs"
   },
   "dependencies": {
     "redis": "^4.7.0",

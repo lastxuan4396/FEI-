@@ -23,3 +23,20 @@ Original prompt: 都做
 - 冷启动从约 20-35 秒降到约 1 秒（本地 `healthz` 实测）。
 - 重新执行 `npm test`（smoke）通过。
 - 重新执行 Playwright 可视回归并检查截图：`output/web-game-flight-v22/shot-1.png`。
+
+## 2026-03-09 v2.3 feature pass
+- 前端清晰度增强：新增棋盘缩放滑杆（80%-130%），默认读取本地缓存；棋盘格文案缩略策略改为保留更多语义，提升可读性。
+- 视觉输出升级：版本统一到 v2.3（页面标题、OG、manifest、导出复盘标题）。
+- 新增运维脚本：`scripts/backup-redis-rooms.mjs`，支持按 Redis 前缀导出房间快照 JSON 备份。
+- 新增 CI：仓库根目录 `.github/workflows/flight-chess-ci.yml`，在 `flight-chess-share/**` 变更时自动跑语法检查 + `test:all`。
+- 稳定性增强：WebSocket 连接和心跳会刷新会话有效期，降低长局误判离线丢座位的概率。
+- 修复回归：`tests/dual-clients.mjs` 监听时机竞态导致的偶发超时已修复。
+
+## TODO
+- 推送到远端后观察 Render 新版本启动日志，确认线上 `v2.3.0` 与 `/api/version` 一致。
+- 在线上房间实测一次：短链、二维码、聊天、超时自动跳过、自定义文案包同步。
+
+## 2026-03-09 validation
+- `node --check server.js` 通过。
+- `npm run test:all` 通过（smoke + dual clients）。
+- Playwright 可视检查：`output/web-game-v23-local/shot-0.png`，棋盘主标题已更新为 `V2.3`。

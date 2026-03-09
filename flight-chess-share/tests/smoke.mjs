@@ -15,7 +15,7 @@ function serverStart() {
     env: {
       ...process.env,
       PORT: String(port),
-      APP_VERSION: "2.2.0-test",
+      APP_VERSION: "2.3.0-test",
     },
     stdio: "ignore",
   });
@@ -63,6 +63,12 @@ async function req(path, init) {
     throw err;
   }
   return body;
+}
+
+function withToken(path, token) {
+  if (!token) return path;
+  const hasQuery = path.includes("?");
+  return `${path}${hasQuery ? "&" : "?"}token=${encodeURIComponent(token)}`;
 }
 
 async function expectStatus(path, init, status) {
@@ -149,9 +155,33 @@ async function main() {
       409,
     );
 
-    const logs = await req(`/api/rooms/${created.roomId}/logs?limit=10`);
+    const logs = await req(withToken(`/api/rooms/${created.roomId}/logs?limit=10`, created.token));
     assert.equal(logs.integrity, true);
     assert.ok(Array.isArray(logs.logs) && logs.logs.length >= 1);
+
+    const chatResp = await req(`/api/rooms/${created.roomId}/chat`, {
+      method: "POST",
+      body: JSON.stringify({ token: created.token, text: "hello" }),
+    });
+    assert.equal(chatResp.ok, true);
+    const chatList = await req(withToken(`/api/rooms/${created.roomId}/chat?limit=10`, created.token));
+    assert.ok(Array.isArray(chatList.messages) && chatList.messages.length >= 1);
+
+    const custom = await req(`/api/rooms/${created.roomId}/custom-pack`, {
+      method: "POST",
+      body: JSON.stringify({
+        token: created.token,
+        config: {
+          version: "test-custom",
+          title: "自定义测试",
+          subtitle: "联机双人版",
+          boardRules: ["1", "2", "3", "4"],
+          wheelLabels: ["1", "2", "3", "4", "5", "6"],
+          cells: Array.from({ length: 44 }, (_, i) => `格子${i + 1}`),
+        },
+      }),
+    });
+    assert.equal(custom.packId, "custom");
 
     const switched = await req(`/api/rooms/${created.roomId}/content-pack`, {
       method: "POST",
@@ -164,6 +194,7 @@ async function main() {
 
     const metrics = await req("/api/metrics");
     assert.ok(typeof metrics.requests === "number");
+    assert.ok(typeof metrics.chatMessages === "number");
 
     console.log("smoke ok");
   } finally {

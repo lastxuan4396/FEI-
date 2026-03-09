@@ -7,7 +7,7 @@ const { WebSocketServer } = require("ws");
 let redisFactory = null;
 
 const PORT = Number(process.env.PORT || 10000);
-const APP_VERSION = process.env.APP_VERSION || "2.2.0";
+const APP_VERSION = process.env.APP_VERSION || "2.3.0";
 const DEPLOYED_AT = new Date().toISOString();
 const ROOM_TTL_MS = 12 * 60 * 60 * 1000;
 const ACTION_SPAM_MS = 260;
@@ -16,6 +16,7 @@ const HOME_LEN = 3;
 const GOAL_STEP = PATH_LEN + HOME_LEN;
 const PLAYER_START_INDEX = [0, 22];
 const DEFAULT_PACK_ID = process.env.DEFAULT_RULE_PACK || "classic";
+const SESSION_TTL_MS = Number(process.env.SESSION_TTL_MS || 30 * 60 * 1000);
 const LOG_SECRET = process.env.LOG_SIGNING_SECRET || crypto.randomBytes(24).toString("hex");
 const REDIS_URL = process.env.REDIS_URL || "";
 const REDIS_PREFIX = process.env.REDIS_PREFIX || "flightchess";
@@ -29,14 +30,19 @@ const metrics = {
   errors: 0,
   roomsCreated: 0,
   actionsHandled: 0,
+  timeoutSkips: 0,
   snapshotWrites: 0,
   joins: 0,
   leaves: 0,
+  chatMessages: 0,
+  clientErrors: 0,
   wsConnectionsAccepted: 0,
   wsConnectionsActive: 0,
   wsConnectionsPeak: 0,
   broadcasts: 0,
 };
+
+const recentErrors = [];
 
 function genId(len = 6) {
   return crypto
@@ -368,6 +374,37 @@ function findRoleByToken(room, token) {
   return null;
 }
 
+function getSessionExpiry() {
+  return Date.now() + SESSION_TTL_MS;
+}
+
+function isSeatExpired(seat) {
+  return !!(seat && seat.sessionExpiresAt && Date.now() > seat.sessionExpiresAt);
+}
+
+function touchSeatSession(seat) {
+  if (!seat) return;
+  seat.lastSeenAt = Date.now();
+  seat.sessionExpiresAt = getSessionExpiry();
+}
+
+function activePackConfig(room) {
+  if (room.packId === "custom" && room.customPack) {
+    return room.customPack;
+  }
+  return getPack(room.packId).config;
+}
+
+function purgeExpiredParticipants(room) {
+  if (isSeatExpired(room.players.red)) {
+    room.players.red = null;
+  }
+  if (isSeatExpired(room.players.blue)) {
+    room.players.blue = null;
+  }
+  room.spectators = (room.spectators || []).filter((s) => !isSeatExpired(s));
+}
+
 function toGlobalIndex(playerIdx, step) {
   return (PLAYER_START_INDEX[playerIdx] + step) % PATH_LEN;
 }
@@ -465,8 +502,7 @@ function recordTurn(snapshot, entry) {
 
 function applyServerAction(room, role, actionType) {
   const snapshot = normalizeSnapshot(room.snapshot);
-  const pack = getPack(room.packId);
-  const cells = pack.config.cells;
+  const cells = activePackConfig(room).cells;
 
   if (actionType === "restart") {
     room.snapshot = defaultSnapshot();
@@ -474,6 +510,33 @@ function applyServerAction(room, role, actionType) {
       summary: `${role === "red" ? "男方" : "女方"} 发起重开对局`,
       snapshot: room.snapshot,
     };
+  }
+
+  if (actionType === "timeout_skip") {
+    if (snapshot.game.gameOver) {
+      throw new Error("对局已结束，请重开");
+    }
+    const playerIdx = snapshot.game.current;
+    const expectedRole = playerIdx === 0 ? "red" : "blue";
+    if (role !== expectedRole) {
+      throw new Error("当前不是你的回合");
+    }
+    const playerName = playerIdx === 0 ? "男方" : "女方";
+    snapshot.game.message = `${playerName} 超时，系统自动跳过本回合。`;
+    recordTurn(snapshot, {
+      id: snapshot.game.rollCount + 1,
+      at: Date.now(),
+      player: playerName,
+      dice: 0,
+      from: describeStep(snapshot.players[playerIdx].step),
+      to: describeStep(snapshot.players[playerIdx].step),
+      event: "超时跳过",
+      signature: "",
+    });
+    snapshot.game.current = snapshot.game.current === 0 ? 1 : 0;
+    snapshot.game.dice = null;
+    room.snapshot = snapshot;
+    return { summary: snapshot.game.message, snapshot };
   }
 
   if (actionType !== "roll") {
@@ -760,6 +823,15 @@ async function readJsonBody(req) {
     });
   }
 
+  function broadcastChat(room, message) {
+    wsBroadcast(room.id, {
+      type: "chat_message",
+      roomId: room.id,
+      message,
+      at: Date.now(),
+    });
+  }
+
   async function assertRoom(roomIdRaw) {
     const roomId = sanitizeRoomId(roomIdRaw);
     if (!roomId) {
@@ -769,7 +841,51 @@ async function readJsonBody(req) {
     if (!room) {
       return { error: { status: 404, body: { error: "房间不存在" } } };
     }
+    purgeExpiredParticipants(room);
     return { roomId, room };
+  }
+
+  function extractAuthToken(req, url) {
+    const q = String(url.searchParams.get("token") || "").trim();
+    if (q) return q;
+    const headerToken = req.headers["x-room-token"];
+    if (Array.isArray(headerToken)) return String(headerToken[0] || "").trim();
+    return String(headerToken || "").trim();
+  }
+
+  function authorizeRoomRead(room, token) {
+    const role = findRoleByToken(room, token);
+    if (!role) return null;
+    if (role === "red" || role === "blue") {
+      touchSeatSession(room.players[role]);
+    } else {
+      const spectator = (room.spectators || []).find((s) => s.token === token);
+      if (spectator) {
+        spectator.lastSeenAt = Date.now();
+        spectator.sessionExpiresAt = getSessionExpiry();
+      }
+    }
+    return role;
+  }
+
+  async function touchSessionByToken(roomId, token) {
+    const room = await store.getRoom(roomId);
+    if (!room) return null;
+    const role = findRoleByToken(room, token);
+    if (!role) return null;
+    const now = Date.now();
+    if (role === "red" || role === "blue") {
+      touchSeatSession(room.players[role]);
+    } else {
+      const spectator = (room.spectators || []).find((s) => s.token === token);
+      if (spectator) {
+        spectator.lastSeenAt = now;
+        spectator.sessionExpiresAt = getSessionExpiry();
+      }
+    }
+    room.updatedAt = now;
+    await store.setRoom(room);
+    return role;
   }
 
   const server = http.createServer(async (req, res) => {
@@ -794,14 +910,26 @@ async function readJsonBody(req) {
           }
         }
 
-        if (pathname.endsWith("/state") || pathname.endsWith("/logs") || pathname === "/api/rules") {
+        if (
+          pathname.endsWith("/state") ||
+          pathname.endsWith("/logs") ||
+          pathname.endsWith("/chat") ||
+          pathname.endsWith("/rules") ||
+          pathname === "/api/rules"
+        ) {
           if (!limitStateRead(req)) {
             sendJson(res, 429, { error: "请求过于频繁，请稍后再试" });
             return;
           }
         }
 
-        if (pathname.endsWith("/action") || pathname.endsWith("/state") || pathname.endsWith("/content-pack")) {
+        if (
+          pathname.endsWith("/action") ||
+          pathname.endsWith("/state") ||
+          pathname.endsWith("/content-pack") ||
+          pathname.endsWith("/custom-pack") ||
+          pathname.endsWith("/chat")
+        ) {
           if (method === "POST" && !limitStateWrite(req)) {
             sendJson(res, 429, { error: "请求过于频繁，请稍后再试" });
             return;
@@ -843,6 +971,38 @@ async function readJsonBody(req) {
             wsRooms: wsRoomMap.size,
             uptimeSec: Math.floor((Date.now() - metrics.startedAt) / 1000),
           });
+          return;
+        }
+
+        if (method === "GET" && pathname === "/api/errors") {
+          sendJson(res, 200, {
+            recent: recentErrors.slice(-40),
+          });
+          return;
+        }
+
+        if (method === "POST" && pathname === "/api/client-error") {
+          let body;
+          try {
+            body = await readJsonBody(req);
+          } catch (err) {
+            sendJson(res, 400, { error: err.message || "请求体错误" });
+            return;
+          }
+          metrics.clientErrors += 1;
+          const item = {
+            at: Date.now(),
+            name: String(body?.name || "ClientError").slice(0, 120),
+            message: String(body?.message || "").slice(0, 500),
+            stack: String(body?.stack || "").slice(0, 1200),
+            roomId: String(body?.roomId || "").slice(0, 32),
+            ua: String(req.headers["user-agent"] || "").slice(0, 200),
+          };
+          recentErrors.push(item);
+          if (recentErrors.length > 200) {
+            recentErrors.splice(0, recentErrors.length - 200);
+          }
+          sendJson(res, 200, { ok: true });
           return;
         }
 
@@ -891,13 +1051,15 @@ async function readJsonBody(req) {
             updatedAt: now,
             version: 0,
             packId: pack.id,
+            customPack: null,
             snapshot,
             passwordHash: password ? hashPassword(roomId, password) : null,
             players: {
-              red: { token: redToken, joinedAt: now, lastSeenAt: now },
+              red: { token: redToken, joinedAt: now, lastSeenAt: now, sessionExpiresAt: getSessionExpiry() },
               blue: null,
             },
             spectators: [],
+            chat: [],
             processedActions: {},
             processedOrder: [],
             actionMeta: {
@@ -948,10 +1110,13 @@ async function readJsonBody(req) {
           const existingRole = findRoleByToken(room, token);
           if (existingRole) {
             if (existingRole === "red" || existingRole === "blue") {
-              room.players[existingRole].lastSeenAt = now;
+              touchSeatSession(room.players[existingRole]);
             } else {
               const item = room.spectators.find((s) => s.token === token);
-              if (item) item.lastSeenAt = now;
+              if (item) {
+                item.lastSeenAt = now;
+                item.sessionExpiresAt = getSessionExpiry();
+              }
             }
             room.updatedAt = now;
             await store.setRoom(room);
@@ -973,10 +1138,22 @@ async function readJsonBody(req) {
             return;
           }
 
+          if (isSeatExpired(room.players.red)) {
+            room.players.red = null;
+          }
+          if (isSeatExpired(room.players.blue)) {
+            room.players.blue = null;
+          }
+
           if (modeReq === "player") {
             if (!room.players.red) {
               const newToken = genId(24);
-              room.players.red = { token: newToken, joinedAt: now, lastSeenAt: now };
+              room.players.red = {
+                token: newToken,
+                joinedAt: now,
+                lastSeenAt: now,
+                sessionExpiresAt: getSessionExpiry(),
+              };
               room.updatedAt = now;
               await store.setRoom(room);
               metrics.joins += 1;
@@ -996,7 +1173,12 @@ async function readJsonBody(req) {
 
             if (!room.players.blue) {
               const newToken = genId(24);
-              room.players.blue = { token: newToken, joinedAt: now, lastSeenAt: now };
+              room.players.blue = {
+                token: newToken,
+                joinedAt: now,
+                lastSeenAt: now,
+                sessionExpiresAt: getSessionExpiry(),
+              };
               room.updatedAt = now;
               await store.setRoom(room);
               metrics.joins += 1;
@@ -1017,7 +1199,12 @@ async function readJsonBody(req) {
 
           const spectatorToken = genId(24);
           room.spectators = room.spectators || [];
-          room.spectators.push({ token: spectatorToken, joinedAt: now, lastSeenAt: now });
+          room.spectators.push({
+            token: spectatorToken,
+            joinedAt: now,
+            lastSeenAt: now,
+            sessionExpiresAt: getSessionExpiry(),
+          });
           room.updatedAt = now;
           await store.setRoom(room);
           metrics.joins += 1;
@@ -1037,6 +1224,31 @@ async function readJsonBody(req) {
         }
 
         const roomStateMatch = pathname.match(/^\/api\/rooms\/([A-Za-z0-9]+)\/state$/);
+        const roomRulesMatch = pathname.match(/^\/api\/rooms\/([A-Za-z0-9]+)\/rules$/);
+        if (roomRulesMatch && method === "GET") {
+          const roomRes = await assertRoom(roomRulesMatch[1]);
+          if (roomRes.error) {
+            sendJson(res, roomRes.error.status, roomRes.error.body);
+            return;
+          }
+          const { room } = roomRes;
+          const token = extractAuthToken(req, url);
+          const role = authorizeRoomRead(room, token);
+          if (!role) {
+            sendJson(res, 403, { error: "鉴权失败" });
+            return;
+          }
+          room.updatedAt = Date.now();
+          await store.setRoom(room);
+          const cfg = activePackConfig(room);
+          sendJson(res, 200, {
+            ...clone(cfg),
+            packId: room.packId,
+            packName: room.packId === "custom" ? "自定义文案包" : getPack(room.packId).name,
+          });
+          return;
+        }
+
         if (roomStateMatch && method === "GET") {
           const roomRes = await assertRoom(roomStateMatch[1]);
           if (roomRes.error) {
@@ -1045,6 +1257,12 @@ async function readJsonBody(req) {
           }
 
           const { room } = roomRes;
+          const token = extractAuthToken(req, url);
+          const role = authorizeRoomRead(room, token);
+          if (!role) {
+            sendJson(res, 403, { error: "鉴权失败" });
+            return;
+          }
           room.updatedAt = Date.now();
           await store.setRoom(room);
 
@@ -1124,7 +1342,7 @@ async function readJsonBody(req) {
           room.snapshot = normalizeSnapshot(snapshot);
           room.version += 1;
           room.updatedAt = now;
-          room.players[role].lastSeenAt = now;
+          touchSeatSession(room.players[role]);
           room.actionMeta[role].lastAt = now;
 
           const log = makeRoomLog(room, {
@@ -1235,7 +1453,7 @@ async function readJsonBody(req) {
 
           room.version += 1;
           room.updatedAt = now;
-          room.players[role].lastSeenAt = now;
+          touchSeatSession(room.players[role]);
           room.actionMeta[role].lastAt = now;
 
           const log = makeRoomLog(room, {
@@ -1259,6 +1477,9 @@ async function readJsonBody(req) {
 
           await store.setRoom(room);
           metrics.actionsHandled += 1;
+          if (actionType === "timeout_skip") {
+            metrics.timeoutSkips += 1;
+          }
           broadcastState(room, actionType);
 
           sendJson(res, 200, {
@@ -1312,9 +1533,11 @@ async function readJsonBody(req) {
           }
 
           room.packId = pack.id;
+          room.customPack = null;
           room.snapshot = defaultSnapshot();
           room.version += 1;
           room.updatedAt = Date.now();
+          touchSeatSession(room.players[role]);
 
           const actionId = `pack-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
           const summary = `${role === "red" ? "男方" : "女方"} 切换文案包为「${pack.name}」并重开`;
@@ -1345,6 +1568,159 @@ async function readJsonBody(req) {
           return;
         }
 
+        const roomCustomPackMatch = pathname.match(/^\/api\/rooms\/([A-Za-z0-9]+)\/custom-pack$/);
+        if (roomCustomPackMatch && method === "POST") {
+          const roomRes = await assertRoom(roomCustomPackMatch[1]);
+          if (roomRes.error) {
+            sendJson(res, roomRes.error.status, roomRes.error.body);
+            return;
+          }
+
+          let body;
+          try {
+            body = await readJsonBody(req);
+          } catch (err) {
+            sendJson(res, 400, { error: err.message || "请求体错误" });
+            return;
+          }
+
+          const { room } = roomRes;
+          const token = typeof body?.token === "string" ? body.token : "";
+          const role = findRoleByToken(room, token);
+          if (!role || role === "spectator") {
+            sendJson(res, 403, { error: "仅玩家可设置自定义文案包" });
+            return;
+          }
+
+          const config = body?.config && typeof body.config === "object" ? body.config : null;
+          if (!config || !Array.isArray(config.cells) || config.cells.length !== PATH_LEN) {
+            sendJson(res, 400, { error: `自定义文案需要 ${PATH_LEN} 个格子` });
+            return;
+          }
+
+          const safeConfig = {
+            version: String(config.version || `custom-${Date.now()}`).slice(0, 80),
+            title: String(config.title || "情侣飞行棋 自定义版").slice(0, 40),
+            subtitle: String(config.subtitle || "联机双人版").slice(0, 40),
+            boardRules: Array.isArray(config.boardRules) ? config.boardRules.map((v) => String(v).slice(0, 80)).slice(0, 8) : [],
+            wheelLabels: Array.isArray(config.wheelLabels)
+              ? config.wheelLabels.map((v) => String(v).slice(0, 24)).slice(0, 6)
+              : [],
+            cells: config.cells.map((v) => String(v).slice(0, 120)),
+          };
+
+          room.packId = "custom";
+          room.customPack = safeConfig;
+          room.snapshot = defaultSnapshot();
+          room.version += 1;
+          room.updatedAt = Date.now();
+          touchSeatSession(room.players[role]);
+
+          const actionId = `custom-pack-${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+          const summary = `${role === "red" ? "男方" : "女方"} 上传了自定义文案包并重开`;
+          const log = makeRoomLog(room, {
+            role,
+            actionId,
+            summary,
+            snapshot: room.snapshot,
+          });
+          room.logs.push(log);
+          if (room.logs.length > 240) {
+            room.logs = room.logs.slice(room.logs.length - 240);
+          }
+
+          await store.setRoom(room);
+          broadcastState(room, "custom_pack");
+
+          sendJson(res, 200, {
+            ok: true,
+            packId: room.packId,
+            version: room.version,
+            seats: toSeats(room),
+            snapshot: room.snapshot,
+            integrity: verifyLogs(room.logs),
+            summary,
+          });
+          return;
+        }
+
+        const roomChatMatch = pathname.match(/^\/api\/rooms\/([A-Za-z0-9]+)\/chat$/);
+        if (roomChatMatch && method === "GET") {
+          const roomRes = await assertRoom(roomChatMatch[1]);
+          if (roomRes.error) {
+            sendJson(res, roomRes.error.status, roomRes.error.body);
+            return;
+          }
+          const { room } = roomRes;
+          const token = extractAuthToken(req, url);
+          const role = authorizeRoomRead(room, token);
+          if (!role) {
+            sendJson(res, 403, { error: "鉴权失败" });
+            return;
+          }
+          const limit = Math.max(1, Math.min(200, Number(url.searchParams.get("limit") || 80)));
+          const messages = (room.chat || []).slice(-limit);
+          await store.setRoom(room);
+          sendJson(res, 200, {
+            messages,
+            total: (room.chat || []).length,
+          });
+          return;
+        }
+
+        if (roomChatMatch && method === "POST") {
+          const roomRes = await assertRoom(roomChatMatch[1]);
+          if (roomRes.error) {
+            sendJson(res, roomRes.error.status, roomRes.error.body);
+            return;
+          }
+          let body;
+          try {
+            body = await readJsonBody(req);
+          } catch (err) {
+            sendJson(res, 400, { error: err.message || "请求体错误" });
+            return;
+          }
+          const { room } = roomRes;
+          const token = typeof body?.token === "string" ? body.token : "";
+          const role = findRoleByToken(room, token);
+          if (!role) {
+            sendJson(res, 403, { error: "鉴权失败" });
+            return;
+          }
+          const rawText = String(body?.text || "").trim();
+          if (!rawText) {
+            sendJson(res, 400, { error: "消息不能为空" });
+            return;
+          }
+          const chatItem = {
+            id: `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`,
+            at: Date.now(),
+            role,
+            text: rawText.slice(0, 200),
+          };
+          room.chat = room.chat || [];
+          room.chat.push(chatItem);
+          if (room.chat.length > 200) {
+            room.chat = room.chat.slice(room.chat.length - 200);
+          }
+          room.updatedAt = Date.now();
+          if (role === "red" || role === "blue") {
+            touchSeatSession(room.players[role]);
+          } else {
+            const spectator = (room.spectators || []).find((s) => s.token === token);
+            if (spectator) {
+              spectator.lastSeenAt = room.updatedAt;
+              spectator.sessionExpiresAt = getSessionExpiry();
+            }
+          }
+          await store.setRoom(room);
+          metrics.chatMessages += 1;
+          broadcastChat(room, chatItem);
+          sendJson(res, 200, { ok: true, message: chatItem, total: room.chat.length });
+          return;
+        }
+
         const roomLogsMatch = pathname.match(/^\/api\/rooms\/([A-Za-z0-9]+)\/logs$/);
         if (roomLogsMatch && method === "GET") {
           const roomRes = await assertRoom(roomLogsMatch[1]);
@@ -1353,8 +1729,15 @@ async function readJsonBody(req) {
             return;
           }
           const { room } = roomRes;
+          const token = extractAuthToken(req, url);
+          const role = authorizeRoomRead(room, token);
+          if (!role) {
+            sendJson(res, 403, { error: "鉴权失败" });
+            return;
+          }
           const limit = Math.max(1, Math.min(240, Number(url.searchParams.get("limit") || 100)));
           const logs = room.logs.slice(-limit);
+          await store.setRoom(room);
           sendJson(res, 200, {
             logs,
             integrity: verifyLogs(logs),
@@ -1408,6 +1791,16 @@ async function readJsonBody(req) {
         return;
       }
 
+      const inviteMatch = pathname.match(/^\/i\/([A-Za-z0-9]{4,8})$/);
+      if (inviteMatch) {
+        const roomId = sanitizeRoomId(inviteMatch[1]);
+        const mode = url.searchParams.get("mode") === "spectator" ? "spectator" : "player";
+        const target = `/?room=${encodeURIComponent(roomId)}${mode === "spectator" ? "&mode=spectator" : ""}`;
+        res.writeHead(302, { location: target, "cache-control": "no-store" });
+        res.end();
+        return;
+      }
+
       if (method !== "GET" && method !== "HEAD") {
         sendText(res, 405, "Method Not Allowed");
         return;
@@ -1433,6 +1826,15 @@ async function readJsonBody(req) {
       }
     } catch (err) {
       metrics.errors += 1;
+      recentErrors.push({
+        at: Date.now(),
+        name: "ServerError",
+        message: String(err?.message || "unknown").slice(0, 500),
+        stack: String(err?.stack || "").slice(0, 1500),
+      });
+      if (recentErrors.length > 200) {
+        recentErrors.splice(0, recentErrors.length - 200);
+      }
       sendJson(res, 500, { error: "服务器内部错误", detail: process.env.NODE_ENV === "development" ? err.message : undefined });
     }
   });
@@ -1458,6 +1860,8 @@ async function readJsonBody(req) {
         return;
       }
 
+      purgeExpiredParticipants(room);
+
       const role = findRoleByToken(room, token);
       if (!role) {
         wsSend(ws, { type: "error", message: "鉴权失败" });
@@ -1465,8 +1869,22 @@ async function readJsonBody(req) {
         return;
       }
 
+      if (role === "red" || role === "blue") {
+        touchSeatSession(room.players[role]);
+      } else {
+        const spectator = (room.spectators || []).find((s) => s.token === token);
+        if (spectator) {
+          spectator.lastSeenAt = Date.now();
+          spectator.sessionExpiresAt = getSessionExpiry();
+        }
+      }
+      room.updatedAt = Date.now();
+      await store.setRoom(room);
+
       ws.__roomId = roomId;
       ws.__role = role;
+      ws.__token = token;
+      ws.__lastSessionTouchAt = 0;
       getWsSet(roomId).add(ws);
 
       metrics.wsConnectionsAccepted += 1;
@@ -1491,6 +1909,10 @@ async function readJsonBody(req) {
           const data = JSON.parse(String(raw));
           if (data?.type === "ping") {
             wsSend(ws, { type: "pong", at: Date.now() });
+            if (Date.now() - (ws.__lastSessionTouchAt || 0) > 60 * 1000) {
+              ws.__lastSessionTouchAt = Date.now();
+              touchSessionByToken(roomId, ws.__token).catch(() => {});
+            }
           }
         } catch (_err) {
           // ignore malformed frames
