@@ -21,6 +21,13 @@ const LOG_SECRET = process.env.LOG_SIGNING_SECRET || crypto.randomBytes(24).toSt
 const REDIS_URL = process.env.REDIS_URL || "";
 const REDIS_PREFIX = process.env.REDIS_PREFIX || "flightchess";
 const MAX_BODY_BYTES = 1024 * 1024;
+const CORS_ALLOW_ALL = String(process.env.CORS_ALLOW_ALL || "0") === "1";
+const CORS_ALLOW_ORIGINS = new Set(
+  String(process.env.CORS_ALLOW_ORIGINS || "")
+    .split(",")
+    .map((v) => v.trim())
+    .filter(Boolean),
+);
 
 const staticDir = __dirname;
 
@@ -43,6 +50,15 @@ const metrics = {
 };
 
 const recentErrors = [];
+
+const defaultCorsAllowOrigins = new Set([
+  "https://flight-chess-room-v2.onrender.com",
+  "https://flight-chess-share-fei.onrender.com",
+  "http://localhost:10000",
+  "http://127.0.0.1:10000",
+  "http://localhost:5173",
+  "http://127.0.0.1:5173",
+]);
 
 function genId(len = 6) {
   return crypto
@@ -719,6 +735,16 @@ function fileContentType(filePath) {
   }
 }
 
+function resolveCorsOrigin(req) {
+  const origin = String(req.headers.origin || "").trim();
+  if (!origin) return "";
+  if (CORS_ALLOW_ALL) return "*";
+  if (CORS_ALLOW_ORIGINS.has(origin) || defaultCorsAllowOrigins.has(origin)) {
+    return origin;
+  }
+  return "";
+}
+
 function isPathSafe(filePath) {
   const normalizedBase = path.resolve(staticDir);
   const normalizedFile = path.resolve(filePath);
@@ -896,8 +922,25 @@ async function readJsonBody(req) {
       const url = new URL(req.url || "/", base);
       const pathname = decodeURIComponent(url.pathname || "/");
       const method = req.method || "GET";
+      const corsOrigin = resolveCorsOrigin(req);
 
       if (pathname.startsWith("/api/")) {
+        if (corsOrigin) {
+          res.setHeader("access-control-allow-origin", corsOrigin);
+          res.setHeader("access-control-allow-methods", "GET,POST,OPTIONS");
+          res.setHeader("access-control-allow-headers", "content-type,x-room-token");
+          res.setHeader("access-control-max-age", "86400");
+          if (corsOrigin !== "*") {
+            res.setHeader("vary", "Origin");
+          }
+        }
+
+        if (method === "OPTIONS") {
+          res.writeHead(204, { "cache-control": "no-store" });
+          res.end();
+          return;
+        }
+
         if (method !== "GET" && method !== "POST") {
           sendJson(res, 405, { error: "Method Not Allowed" });
           return;

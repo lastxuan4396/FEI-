@@ -40,3 +40,8 @@ Original prompt: 都做
 - `node --check server.js` 通过。
 - `npm run test:all` 通过（smoke + dual clients）。
 - Playwright 可视检查：`output/web-game-v23-local/shot-0.png`，棋盘主标题已更新为 `V2.3`。
+
+## 2026-03-09 domain switch
+- 旧域名 `flight-chess-share-fei.onrender.com` 页面已支持自动切换到主后端 `flight-chess-room-v2.onrender.com`（API + WS）。
+- 后端新增 CORS 与 OPTIONS 预检支持，允许旧域名前端跨域访问房间 API。
+- `dual-clients` 测试补充节流等待，避免偶发触发操作频率限制。

@@ -85,6 +85,11 @@ cd /Users/xiaoxuan/Documents/Playground/flight-chess-share
 2. 选择该仓库并应用 `render.yaml`
 3. 部署完成后分享 `onrender.com` 链接
 
+### 域名切换说明
+
+- 主服务建议使用：`https://flight-chess-room-v2.onrender.com`
+- 如果从旧域名 `https://flight-chess-share-fei.onrender.com` 打开页面，前端会自动把 API/WS 切换到主服务域名。
+
 ## CI
 
 仓库根目录新增 GitHub Actions：`.github/workflows/flight-chess-ci.yml`  

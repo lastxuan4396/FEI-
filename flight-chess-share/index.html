@@ -640,6 +640,19 @@
       const ROLE_BLUE = "blue";
       const TURN_TIMEOUT_SEC = 30;
       const RECONNECT_WINDOW_MS = 30 * 60 * 1000;
+      const FALLBACK_BACKEND_ORIGIN = "https://flight-chess-room-v2.onrender.com";
+      const MIRROR_HOSTS = new Set(["flight-chess-share-fei.onrender.com"]);
+      const apiBaseFromQuery = (() => {
+        try {
+          const v = String(new URL(window.location.href).searchParams.get("apiBase") || "").trim();
+          if (!v) return "";
+          return new URL(v).origin;
+        } catch (_err) {
+          return "";
+        }
+      })();
+      const API_BASE_ORIGIN = apiBaseFromQuery || (MIRROR_HOSTS.has(window.location.host) ? FALLBACK_BACKEND_ORIGIN : window.location.origin);
+      const SHARE_BASE_ORIGIN = MIRROR_HOSTS.has(window.location.host) ? FALLBACK_BACKEND_ORIGIN : window.location.origin;
 
       const board = document.getElementById("board");
       const ctx = board.getContext("2d");
@@ -945,7 +958,7 @@
       }
 
       function roomLink(roomId = online.roomId, mode = "player") {
-        const url = new URL(window.location.href);
+        const url = new URL("/", SHARE_BASE_ORIGIN);
         if (roomId) {
           url.searchParams.set("room", roomId);
         } else {
@@ -960,11 +973,17 @@
       }
 
       function wsLink(roomId = online.roomId, token = online.token) {
-        const protocol = window.location.protocol === "https:" ? "wss" : "ws";
-        const url = new URL(`${protocol}://${window.location.host}/ws`);
+        const apiOrigin = new URL(API_BASE_ORIGIN);
+        const protocol = apiOrigin.protocol === "https:" ? "wss" : "ws";
+        const url = new URL(`${protocol}://${apiOrigin.host}/ws`);
         url.searchParams.set("room", roomId);
         url.searchParams.set("token", token);
         return url.toString();
+      }
+
+      function apiUrl(path) {
+        const normalized = String(path || "/").startsWith("/") ? String(path || "/") : `/${String(path || "")}`;
+        return new URL(normalized, `${API_BASE_ORIGIN}/`).toString();
       }
 
       async function copyText(text) {
@@ -988,7 +1007,7 @@
         if (online.enabled && online.token && path.startsWith("/api/rooms/") && !mergedHeaders["x-room-token"]) {
           mergedHeaders["x-room-token"] = online.token;
         }
-        const res = await fetch(path, {
+        const res = await fetch(apiUrl(path), {
           method: options.method || "GET",
           headers: mergedHeaders,
           body: options.body ? JSON.stringify(options.body) : undefined,
@@ -1602,7 +1621,7 @@
 
       function shortInviteLink(roomId = online.roomId, mode = "player") {
         if (!roomId) return "";
-        const url = new URL(window.location.href);
+        const url = new URL("/", SHARE_BASE_ORIGIN);
         url.pathname = `/i/${roomId}`;
         url.search = mode === "spectator" ? "?mode=spectator" : "";
         return url.toString();
@@ -2651,9 +2670,10 @@
         try {
           const v = await api("/api/version");
           online.deployInfo = v;
-          versionText.textContent = `版本：${APP_VERSION}｜部署：${v.deployedAt || "-"}｜存储：${v.storeMode || "unknown"}`;
+          const apiHost = new URL(API_BASE_ORIGIN).host;
+          versionText.textContent = `版本：${APP_VERSION}｜部署：${v.deployedAt || "-"}｜存储：${v.storeMode || "unknown"}｜服务：${apiHost}`;
         } catch (_err) {
-          versionText.textContent = `版本：${APP_VERSION}｜部署：未知`;
+          versionText.textContent = `版本：${APP_VERSION}｜部署：未知｜服务：${new URL(API_BASE_ORIGIN).host}`;
         }
       }
 
@@ -2997,6 +3017,9 @@
       (async function bootstrap() {
         initBoardZoom();
         applyInitialRoomFromUrl();
+        if (API_BASE_ORIGIN !== window.location.origin) {
+          setRoomHint(`已自动切换联机服务：${new URL(API_BASE_ORIGIN).host}`);
+        }
         setRealtimeHint("未连接");
         await loadContentPacks();
         await loadRules(selectedPackId);

@@ -143,6 +143,7 @@ async function main() {
     const st = await req(`/api/rooms/${roomId}/state`, { method: "GET" }, redToken);
     const curRole = st.snapshot.game.current === 0 ? "red" : "blue";
     const curToken = curRole === "red" ? redToken : blueToken;
+    await sleep(320);
 
     const timeoutSkip = await req(
       `/api/rooms/${roomId}/action`,
