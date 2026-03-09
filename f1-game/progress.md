@@ -45,3 +45,19 @@ Original prompt: 我朋友想要一个F1的游戏 你看看怎么做合适呢？
   - race flow still works with audio enabled (`output/f1-game-run7`),
   - menu music toggle switches `audio.enabled` false (`output/f1-game-run9`),
   - no JS errors in run artifacts.
+
+## 2026-03-09 - 3D conversion
+- Converted rendering pipeline from 2D Canvas to Three.js WebGL renderer.
+- Added local Three.js module at `f1-game/vendor/three.module.js` (no CDN dependency).
+- Implemented 3D scene systems:
+  - flat ribbon-based road meshes + shoulders,
+  - pit lane ribbon,
+  - start line and terrain planes,
+  - 3D car meshes for each racer,
+  - chase camera following player heading,
+  - 3D rain particle field tied to weather level.
+- Preserved core race gameplay logic (laps, AI, DRS/ERS, pit stops, penalties, HUD, standings).
+- Replaced on-canvas temporary text with DOM toast banner for WebGL mode.
+- Verified with Playwright:
+  - `output/f1-game-3d-run1` (race flow, no JS errors),
+  - `output/f1-game-3d-run2` (music toggle in menu, `audio.enabled=false`, no JS errors).
