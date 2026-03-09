@@ -308,6 +308,40 @@ select {
   z-index: 5;
 }
 
+.music-toggle {
+  position: absolute;
+  right: 10px;
+  bottom: 10px;
+  z-index: 12;
+  appearance: none;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 999px;
+  background: rgba(8, 17, 28, 0.9);
+  color: #dff5ff;
+  padding: 8px 12px;
+  font: inherit;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  cursor: pointer;
+  transition: transform 120ms ease, filter 120ms ease;
+}
+
+.music-toggle:hover {
+  filter: brightness(1.08);
+  transform: translateY(-1px);
+}
+
+.music-toggle.off {
+  color: #a7b8d6;
+  border-color: rgba(255, 255, 255, 0.14);
+  background: rgba(7, 11, 18, 0.88);
+}
+
+.music-toggle:disabled {
+  opacity: 0.65;
+  cursor: default;
+}
+
 .hidden {
   display: none !important;
 }
@@ -350,5 +384,12 @@ select {
   .leaderboard ol {
     max-height: 26vh;
     overflow: auto;
+  }
+
+  .music-toggle {
+    right: 8px;
+    bottom: 8px;
+    padding: 8px 10px;
+    font-size: 0.9rem;
   }
 }

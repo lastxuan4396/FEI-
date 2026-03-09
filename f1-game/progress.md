@@ -30,3 +30,18 @@ Original prompt: 我朋友想要一个F1的游戏 你看看怎么做合适呢？
 - Add optional race audio (engine + curb + rain) and configurable race length presets.
 - Add saveable championship mode (points across multiple races).
 - Post-balance verification run: `/Users/xiaoxuan/Documents/Playground/output/f1-game-run5` confirms stable early-race progression without premature retirements.
+
+## 2026-03-09 - F1 music pass
+- Added original Web Audio soundtrack system in `game.js`:
+  - sequenced drums + bass + lead,
+  - continuous engine synth that follows player speed,
+  - weather/intensity-based tone shaping.
+- Added user controls for audio:
+  - new floating `Music` toggle button,
+  - keyboard shortcut `M`,
+  - HUD toast feedback (`Music On/Off`).
+- Added audio state to `render_game_to_text` payload under `audio`.
+- Verified via Playwright runs:
+  - race flow still works with audio enabled (`output/f1-game-run7`),
+  - menu music toggle switches `audio.enabled` false (`output/f1-game-run9`),
+  - no JS errors in run artifacts.

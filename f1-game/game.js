@@ -18,6 +18,7 @@ const hud = document.getElementById("hud");
 const leaderboard = document.getElementById("leaderboard");
 const leaderList = document.getElementById("leader-list");
 const statusBanner = document.getElementById("status-banner");
+const musicToggleButton = document.getElementById("music-toggle");
 
 const hudLap = document.getElementById("hud-lap");
 const hudTime = document.getElementById("hud-time");
@@ -248,6 +249,7 @@ const state = {
   rainDrops: [],
   temporaryMessage: "",
   temporaryMessageTimer: 0,
+  audioEnabled: true,
 };
 
 function clamp(value, min, max) {
@@ -278,6 +280,362 @@ function formatTime(seconds) {
   const ms = Math.floor((seconds - Math.floor(seconds)) * 1000);
   return `${String(mins).padStart(2, "0")}:${String(sec).padStart(2, "0")}.${String(ms).padStart(3, "0")}`;
 }
+
+function midiToHz(midi) {
+  return 440 * 2 ** ((midi - 69) / 12);
+}
+
+class RaceAudio {
+  constructor() {
+    this.ctx = null;
+    this.available = Boolean(window.AudioContext || window.webkitAudioContext);
+    this.enabled = true;
+    this.started = false;
+    this.stepIndex = 0;
+    this.nextStepTime = 0;
+    this.tempo = 152;
+    this.intensity = 0.2;
+    this.noiseBuffer = null;
+    this.masterGain = null;
+    this.weatherFilter = null;
+    this.drumsGain = null;
+    this.bassGain = null;
+    this.leadGain = null;
+    this.engineGain = null;
+    this.engineOscA = null;
+    this.engineOscB = null;
+    this.engineFilter = null;
+  }
+
+  isAvailable() {
+    return this.available;
+  }
+
+  isEnabled() {
+    return this.enabled;
+  }
+
+  setEnabled(enabled) {
+    this.enabled = Boolean(enabled);
+    if (!this.ctx || !this.masterGain) {
+      return;
+    }
+    const now = this.ctx.currentTime;
+    this.masterGain.gain.cancelScheduledValues(now);
+    this.masterGain.gain.linearRampToValueAtTime(this.enabled ? 0.24 : 0, now + 0.12);
+  }
+
+  toggleEnabled() {
+    this.setEnabled(!this.enabled);
+    return this.enabled;
+  }
+
+  startFromGesture() {
+    if (!this.available) {
+      return false;
+    }
+    this.ensureContext();
+    if (!this.ctx) {
+      return false;
+    }
+    void this.ctx.resume();
+    if (!this.started) {
+      this.started = true;
+      this.stepIndex = 0;
+      this.nextStepTime = this.ctx.currentTime + 0.05;
+    }
+    return true;
+  }
+
+  ensureContext() {
+    if (this.ctx || !this.available) {
+      return;
+    }
+
+    const AudioCtor = window.AudioContext || window.webkitAudioContext;
+    this.ctx = new AudioCtor();
+
+    const compressor = this.ctx.createDynamicsCompressor();
+    compressor.threshold.value = -16;
+    compressor.knee.value = 18;
+    compressor.ratio.value = 4;
+    compressor.attack.value = 0.002;
+    compressor.release.value = 0.16;
+
+    this.masterGain = this.ctx.createGain();
+    this.masterGain.gain.value = 0;
+
+    this.weatherFilter = this.ctx.createBiquadFilter();
+    this.weatherFilter.type = "lowpass";
+    this.weatherFilter.frequency.value = 5400;
+    this.weatherFilter.Q.value = 0.7;
+
+    this.drumsGain = this.ctx.createGain();
+    this.bassGain = this.ctx.createGain();
+    this.leadGain = this.ctx.createGain();
+    this.engineGain = this.ctx.createGain();
+    this.drumsGain.gain.value = 0.22;
+    this.bassGain.gain.value = 0.15;
+    this.leadGain.gain.value = 0.12;
+    this.engineGain.gain.value = 0.03;
+
+    this.drumsGain.connect(this.weatherFilter);
+    this.bassGain.connect(this.weatherFilter);
+    this.leadGain.connect(this.weatherFilter);
+    this.engineGain.connect(this.weatherFilter);
+    this.weatherFilter.connect(compressor);
+    compressor.connect(this.masterGain);
+    this.masterGain.connect(this.ctx.destination);
+
+    this.engineFilter = this.ctx.createBiquadFilter();
+    this.engineFilter.type = "bandpass";
+    this.engineFilter.frequency.value = 420;
+    this.engineFilter.Q.value = 0.9;
+
+    this.engineOscA = this.ctx.createOscillator();
+    this.engineOscB = this.ctx.createOscillator();
+    this.engineOscA.type = "sawtooth";
+    this.engineOscB.type = "square";
+    this.engineOscA.frequency.value = 90;
+    this.engineOscB.frequency.value = 180;
+    this.engineOscB.detune.value = 8;
+
+    const engineBlend = this.ctx.createGain();
+    engineBlend.gain.value = 0.5;
+    this.engineOscA.connect(this.engineFilter);
+    this.engineOscB.connect(engineBlend);
+    engineBlend.connect(this.engineFilter);
+    this.engineFilter.connect(this.engineGain);
+
+    const wobbleOsc = this.ctx.createOscillator();
+    const wobbleGain = this.ctx.createGain();
+    wobbleOsc.type = "sine";
+    wobbleOsc.frequency.value = 7.5;
+    wobbleGain.gain.value = 2.8;
+    wobbleOsc.connect(wobbleGain);
+    wobbleGain.connect(this.engineOscB.frequency);
+
+    this.noiseBuffer = this.createNoiseBuffer();
+
+    this.engineOscA.start();
+    this.engineOscB.start();
+    wobbleOsc.start();
+  }
+
+  createNoiseBuffer() {
+    if (!this.ctx) {
+      return null;
+    }
+    const length = this.ctx.sampleRate;
+    const buffer = this.ctx.createBuffer(1, length, this.ctx.sampleRate);
+    const channel = buffer.getChannelData(0);
+    for (let i = 0; i < channel.length; i += 1) {
+      channel[i] = Math.random() * 2 - 1;
+    }
+    return buffer;
+  }
+
+  update(gameState, dt) {
+    if (!this.ctx || !this.started) {
+      return;
+    }
+
+    const now = this.ctx.currentTime;
+    const playerSpeed = gameState.player ? gameState.player.speed : 0;
+    let targetIntensity = 0.14;
+
+    if (gameState.mode === "countdown") {
+      targetIntensity = 0.5;
+    } else if (gameState.mode === "race") {
+      targetIntensity = clamp(playerSpeed / 94, 0.26, 1);
+    } else if (gameState.mode === "finished") {
+      targetIntensity = 0.62;
+    }
+
+    if (gameState.paused) {
+      targetIntensity *= 0.35;
+    }
+    targetIntensity *= 1 - (gameState.weather?.rain || 0) * 0.14;
+
+    this.intensity = lerp(this.intensity, targetIntensity, 1 - Math.exp(-dt * 6));
+    const targetTempo = 146 + this.intensity * 28;
+    this.tempo = lerp(this.tempo, targetTempo, 1 - Math.exp(-dt * 5));
+
+    const targetMaster = this.enabled ? (gameState.mode === "menu" ? 0.08 : 0.24) : 0;
+    this.ramp(this.masterGain.gain, targetMaster, now, 0.12);
+    this.ramp(this.weatherFilter.frequency, 5600 - (gameState.weather?.rain || 0) * 2400, now, 0.1);
+
+    const rpmHz = 75 + playerSpeed * 2.9 + this.intensity * 65;
+    this.ramp(this.engineOscA.frequency, rpmHz, now, 0.06);
+    this.ramp(this.engineOscB.frequency, rpmHz * 2.02, now, 0.06);
+    this.ramp(this.engineFilter.frequency, 290 + playerSpeed * 11 + this.intensity * 120, now, 0.08);
+    const targetEngineGain = this.enabled ? (gameState.mode === "menu" ? 0.02 : 0.05 + this.intensity * 0.08) : 0;
+    this.ramp(this.engineGain.gain, targetEngineGain, now, 0.1);
+
+    if (!this.enabled || gameState.paused) {
+      return;
+    }
+
+    if (gameState.mode === "countdown" || gameState.mode === "race" || gameState.mode === "finished") {
+      this.scheduleUntil(now + 0.16, gameState);
+    }
+  }
+
+  ramp(param, target, now, time) {
+    param.cancelScheduledValues(now);
+    param.linearRampToValueAtTime(target, now + time);
+  }
+
+  scheduleUntil(horizon, gameState) {
+    while (this.nextStepTime < horizon) {
+      this.scheduleStep(this.nextStepTime, this.stepIndex, gameState);
+      const stepDuration = 60 / this.tempo / 4;
+      this.nextStepTime += stepDuration;
+      this.stepIndex = (this.stepIndex + 1) % 16;
+    }
+  }
+
+  scheduleStep(time, step, gameState) {
+    const kickSteps = step === 0 || step === 4 || step === 8 || step === 12 || (this.intensity > 0.72 && step === 14);
+    if (kickSteps) {
+      this.triggerKick(time, step === 0 ? 1 : 0.78 + this.intensity * 0.16);
+    }
+
+    if (step % 2 === 1) {
+      this.triggerHat(time, 0.11 + this.intensity * 0.12);
+    }
+
+    const bassPattern = [40, null, 40, null, 43, null, 45, null, 38, null, 40, null, 43, null, 47, null];
+    const bassNote = bassPattern[step];
+    if (bassNote !== null) {
+      this.triggerBass(time, bassNote, this.intensity);
+    }
+
+    const leadPattern = [null, 64, null, 67, null, 69, null, 71, null, 67, null, 69, null, 72, null, 74];
+    const leadNote = leadPattern[step];
+    if (leadNote !== null && this.intensity > 0.34) {
+      const bonus = gameState.mode === "finished" ? 5 : 0;
+      this.triggerLead(time, leadNote + bonus, this.intensity);
+    }
+  }
+
+  triggerKick(time, velocity) {
+    if (!this.ctx) {
+      return;
+    }
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(145, time);
+    osc.frequency.exponentialRampToValueAtTime(46, time + 0.13);
+
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(0.38 * velocity, time + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.16);
+
+    osc.connect(gain);
+    gain.connect(this.drumsGain);
+    osc.start(time);
+    osc.stop(time + 0.17);
+    osc.onended = () => {
+      osc.disconnect();
+      gain.disconnect();
+    };
+  }
+
+  triggerHat(time, velocity) {
+    if (!this.ctx || !this.noiseBuffer) {
+      return;
+    }
+    const source = this.ctx.createBufferSource();
+    const filter = this.ctx.createBiquadFilter();
+    const gain = this.ctx.createGain();
+
+    source.buffer = this.noiseBuffer;
+    filter.type = "highpass";
+    filter.frequency.value = 6400;
+
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(velocity, time + 0.004);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.045);
+
+    source.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.drumsGain);
+    source.start(time);
+    source.stop(time + 0.05);
+    source.onended = () => {
+      source.disconnect();
+      filter.disconnect();
+      gain.disconnect();
+    };
+  }
+
+  triggerBass(time, midi, intensity) {
+    if (!this.ctx) {
+      return;
+    }
+    const osc = this.ctx.createOscillator();
+    const filter = this.ctx.createBiquadFilter();
+    const gain = this.ctx.createGain();
+
+    osc.type = "sawtooth";
+    osc.frequency.setValueAtTime(midiToHz(midi), time);
+
+    filter.type = "lowpass";
+    filter.frequency.setValueAtTime(210 + intensity * 220, time);
+    filter.Q.value = 1.2;
+
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(0.14 + intensity * 0.12, time + 0.014);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.2);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.bassGain);
+    osc.start(time);
+    osc.stop(time + 0.22);
+    osc.onended = () => {
+      osc.disconnect();
+      filter.disconnect();
+      gain.disconnect();
+    };
+  }
+
+  triggerLead(time, midi, intensity) {
+    if (!this.ctx) {
+      return;
+    }
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+
+    osc.type = "triangle";
+    osc.frequency.setValueAtTime(midiToHz(midi), time);
+    osc.frequency.exponentialRampToValueAtTime(midiToHz(midi) * 0.996, time + 0.16);
+
+    filter.type = "bandpass";
+    filter.frequency.setValueAtTime(1200 + intensity * 900, time);
+    filter.Q.value = 1.4;
+
+    gain.gain.setValueAtTime(0.0001, time);
+    gain.gain.exponentialRampToValueAtTime(0.08 + intensity * 0.08, time + 0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, time + 0.18);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.leadGain);
+    osc.start(time);
+    osc.stop(time + 0.2);
+    osc.onended = () => {
+      osc.disconnect();
+      filter.disconnect();
+      gain.disconnect();
+    };
+  }
+}
+
+const raceAudio = new RaceAudio();
 
 function catmullRom(p0, p1, p2, p3, t) {
   const t2 = t * t;
@@ -1534,6 +1892,7 @@ function updateFrame(timestamp) {
     }
   }
 
+  raceAudio.update(state, frameDt);
   render();
   requestAnimationFrame(updateFrame);
 }
@@ -1559,6 +1918,37 @@ function togglePause() {
   if (!state.paused) {
     state.lastFrameTs = performance.now();
   }
+}
+
+function syncMusicToggleLabel() {
+  if (!musicToggleButton) {
+    return;
+  }
+
+  if (!raceAudio.isAvailable()) {
+    musicToggleButton.textContent = "Music: N/A";
+    musicToggleButton.disabled = true;
+    musicToggleButton.classList.add("off");
+    musicToggleButton.setAttribute("aria-pressed", "false");
+    return;
+  }
+
+  musicToggleButton.disabled = false;
+  musicToggleButton.textContent = state.audioEnabled ? "Music: ON" : "Music: OFF";
+  musicToggleButton.classList.toggle("off", !state.audioEnabled);
+  musicToggleButton.setAttribute("aria-pressed", String(state.audioEnabled));
+}
+
+function toggleMusic() {
+  if (!raceAudio.isAvailable()) {
+    return;
+  }
+
+  raceAudio.startFromGesture();
+  state.audioEnabled = raceAudio.toggleEnabled();
+  syncMusicToggleLabel();
+  state.temporaryMessage = state.audioEnabled ? "Music On" : "Music Off";
+  state.temporaryMessageTimer = 0.9;
 }
 
 async function toggleFullscreen() {
@@ -1593,6 +1983,11 @@ function handleKeyDown(event) {
   if (event.code === "KeyD") {
     state.commands.requestDrs = true;
   }
+
+  if (event.code === "KeyM") {
+    event.preventDefault();
+    toggleMusic();
+  }
 }
 
 function handleKeyUp(event) {
@@ -1600,6 +1995,8 @@ function handleKeyUp(event) {
 }
 
 function handleStartButton() {
+  raceAudio.startFromGesture();
+  raceAudio.setEnabled(state.audioEnabled);
   const config = {
     track: trackSelect.value,
     weather: weatherSelect.value,
@@ -1632,9 +2029,12 @@ function resetToMenu() {
 function initialize() {
   resizeCanvas();
   resetToMenu();
+  raceAudio.setEnabled(state.audioEnabled);
+  syncMusicToggleLabel();
 
   startButton.addEventListener("click", handleStartButton);
   restartButton.addEventListener("click", resetToMenu);
+  musicToggleButton.addEventListener("click", toggleMusic);
 
   window.addEventListener("resize", resizeCanvas);
   window.addEventListener("keydown", handleKeyDown);
@@ -1681,6 +2081,10 @@ function getTextState() {
     weather: state.weather.key,
     raceTimeSec: Number(state.raceTime.toFixed(2)),
     totalLaps: state.totalLaps,
+    audio: {
+      available: raceAudio.isAvailable(),
+      enabled: state.audioEnabled,
+    },
     player: player
       ? {
           lap: Math.min(player.lap, state.totalLaps),
@@ -1717,6 +2121,7 @@ window.advanceTime = (ms) => {
       updateRace(FIXED_DT);
     }
   }
+  raceAudio.update(state, total);
   render();
   return Promise.resolve();
 };
