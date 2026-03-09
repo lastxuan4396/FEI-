@@ -5,5 +5,6 @@ services:
     rootDir: flight-chess-share
     buildCommand: npm install
     startCommand: npm start
+    healthCheckPath: /api/healthz
     plan: free
     autoDeploy: true

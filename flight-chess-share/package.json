@@ -1,13 +1,14 @@
 {
   "name": "flight-chess-share",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "private": true,
   "type": "commonjs",
   "scripts": {
-    "start": "node server.js"
+    "start": "node server.js",
+    "test": "node tests/smoke.mjs"
   },
   "dependencies": {
-    "express": "^4.21.2",
-    "redis": "^4.7.0"
+    "redis": "^4.7.0",
+    "ws": "^8.18.3"
   }
 }

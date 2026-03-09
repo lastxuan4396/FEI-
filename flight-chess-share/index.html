@@ -3,11 +3,13 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>情侣飞行棋 V2.0（联机分享版）</title>
+    <title>情侣飞行棋 V2.2（联机分享版）</title>
     <meta name="description" content="支持联机房间、实时位置、回合时间线、截图导出的情侣飞行棋分享版。" />
-    <meta property="og:title" content="情侣飞行棋 V2.0（联机分享版）" />
+    <meta property="og:title" content="情侣飞行棋 V2.2（联机分享版）" />
     <meta property="og:description" content="创建房间后可异地对战，支持完整复盘与分享。" />
     <meta property="og:type" content="website" />
+    <meta name="theme-color" content="#0f766e" />
+    <link rel="manifest" href="/manifest.webmanifest" />
     <style>
       :root {
         --bg: #ece6d9;
@@ -113,7 +115,8 @@
       }
 
       button,
-      input {
+      input,
+      select {
         border-radius: 10px;
         border: 1px solid #d7d1c1;
         font-size: 14px;
@@ -136,7 +139,8 @@
         cursor: not-allowed;
       }
 
-      input {
+      input,
+      select {
         min-height: 44px;
         padding: 8px 10px;
         width: 100%;
@@ -377,6 +381,15 @@
             <label for="roomPasswordInput">房间密码（可选）</label>
             <input id="roomPasswordInput" type="password" placeholder="创建时可设置，加入需填写" />
           </div>
+          <div class="field" style="margin-top: 8px">
+            <label for="packSelect">文案包</label>
+            <div class="row">
+              <select id="packSelect" style="min-height: 44px; flex: 1">
+                <option value="classic">加载中...</option>
+              </select>
+              <button id="applyPackBtn" class="btn-soft">切换文案包</button>
+            </div>
+          </div>
           <div class="row" style="margin-top: 8px">
             <button id="createRoomBtn" class="btn-blue">创建房间</button>
             <button id="joinRoomBtn" class="btn-blue">加入房间</button>
@@ -389,6 +402,7 @@
             <button id="shareRoomBtn" class="btn-soft">系统分享</button>
           </div>
           <p id="roomStatus" class="tiny" style="margin: 8px 0 0">状态：离线本地模式</p>
+          <p id="realtimeStatus" class="tiny" style="margin: 4px 0 0">实时通道：未连接</p>
         </section>
 
         <section class="card">
@@ -468,14 +482,14 @@
     <div id="orientationHint">建议横屏查看，格子文案会更清晰。</div>
 
     <script>
-      const APP_VERSION = "2.1.0";
+      const APP_VERSION = "2.2.0";
       const SIZE = 980;
       const PATH_LEN = 44;
       const HOME_LEN = 3;
       const GOAL_STEP = PATH_LEN + HOME_LEN;
       const CELL_SIZE = 58;
       const CENTER = { x: SIZE / 2, y: SIZE / 2 };
-      const ROOM_POLL_MS = 1200;
+      const ROOM_POLL_MS = 5000;
       const ROLE_RED = "red";
       const ROLE_BLUE = "blue";
 
@@ -487,6 +501,7 @@
       const msgText = document.getElementById("msgText");
       const seatText = document.getElementById("seatText");
       const roomStatus = document.getElementById("roomStatus");
+      const realtimeStatus = document.getElementById("realtimeStatus");
       const versionText = document.getElementById("versionText");
 
       const rollBtn = document.getElementById("rollBtn");
@@ -503,6 +518,8 @@
       const shareRoomBtn = document.getElementById("shareRoomBtn");
       const roomInput = document.getElementById("roomInput");
       const roomPasswordInput = document.getElementById("roomPasswordInput");
+      const packSelect = document.getElementById("packSelect");
+      const applyPackBtn = document.getElementById("applyPackBtn");
 
       const redPosText = document.getElementById("redPosText");
       const redCellText = document.getElementById("redCellText");
@@ -537,7 +554,7 @@
 
       const fallbackRules = {
         version: "fallback",
-        title: "情侣飞行棋 V2.1",
+        title: "情侣飞行棋 V2.2",
         subtitle: "联机双人版",
         wheelLabels: ["1 喝一口", "2 再掷", "3 亲吻", "4 喝一口", "5 亲吻", "6 入棋盘"],
         boardRules: [
@@ -594,6 +611,8 @@
         ],
       };
       let rulesConfig = fallbackRules;
+      let selectedPackId = "classic";
+      let contentPacks = [];
 
       function makeShortLabel(text) {
         if (text.includes("掷骰")) return "掷骰";
@@ -724,6 +743,10 @@
         logs: [],
         integrity: null,
         lastLogsTotal: 0,
+        ws: null,
+        wsConnected: false,
+        lastWsAt: 0,
+        wsHeartbeatTimer: null,
       };
 
       function formatTime(ts) {
@@ -758,6 +781,14 @@
         } else {
           url.searchParams.delete("mode");
         }
+        return url.toString();
+      }
+
+      function wsLink(roomId = online.roomId, token = online.token) {
+        const protocol = window.location.protocol === "https:" ? "wss" : "ws";
+        const url = new URL(`${protocol}://${window.location.host}/ws`);
+        url.searchParams.set("room", roomId);
+        url.searchParams.set("token", token);
         return url.toString();
       }
 
@@ -1210,6 +1241,10 @@
         roomStatus.textContent = `状态：${msg}`;
       }
 
+      function setRealtimeHint(msg) {
+        realtimeStatus.textContent = `实时通道：${msg}`;
+      }
+
       function saveRoomSession() {
         if (!online.enabled || !online.roomId || !online.token) return;
         localStorage.setItem(`flight_room_token_${online.roomId}`, online.token);
@@ -1239,6 +1274,9 @@
         if (!online.enabled || !online.roomId) return;
         const payload = await api(`/api/rooms/${online.roomId}/state`);
         online.seats = payload.seats || online.seats;
+        if (payload.packId && payload.packId !== selectedPackId) {
+          await loadRules(payload.packId);
+        }
 
         if (typeof payload.version === "number" && payload.version > online.version) {
           if (!state.replayMode) {
@@ -1260,6 +1298,9 @@
         online.logs = Array.isArray(payload.logs) ? payload.logs : [];
         online.integrity = !!payload.integrity;
         online.lastLogsTotal = Number(payload.total || 0);
+        if (payload.packId && payload.packId !== selectedPackId) {
+          await loadRules(payload.packId);
+        }
 
         if (!state.replayMode) {
           state.turnHistory = [...online.logs]
@@ -1278,12 +1319,11 @@
         }
       }
 
-      function queueOperation(summary) {
+      function queueOperation(actionType) {
         if (!online.enabled || online.role === "spectator") return;
         const op = {
           actionId: makeActionId(),
-          summary: typeof summary === "string" ? summary.slice(0, 200) : "state_update",
-          snapshot: snapshotGame(),
+          actionType,
           baseVersion: online.version + online.pendingOps.length,
         };
         online.pendingOps.push(op);
@@ -1298,19 +1338,29 @@
         try {
           while (online.pendingOps.length) {
             const op = online.pendingOps[0];
-            const payload = await api(`/api/rooms/${online.roomId}/state`, {
+            const payload = await api(`/api/rooms/${online.roomId}/action`, {
               method: "POST",
               body: {
                 role: online.role,
                 token: online.token,
                 actionId: op.actionId,
-                summary: op.summary,
+                actionType: op.actionType,
                 baseVersion: op.baseVersion,
-                snapshot: op.snapshot,
               },
             });
             online.version = Number(payload.version || online.version);
             online.seats = payload.seats || online.seats;
+            if (payload.packId && payload.packId !== selectedPackId) {
+              await loadRules(payload.packId);
+            }
+            if (!state.replayMode && payload.snapshot) {
+              online.applyingRemote = true;
+              applySnapshot(payload.snapshot);
+              online.applyingRemote = false;
+            }
+            if (typeof payload.integrity === "boolean") {
+              online.integrity = payload.integrity;
+            }
             online.pendingOps.shift();
           }
         } catch (err) {
@@ -1328,13 +1378,113 @@
         }
       }
 
+      function disconnectRoomSocket() {
+        if (online.wsHeartbeatTimer) {
+          clearInterval(online.wsHeartbeatTimer);
+          online.wsHeartbeatTimer = null;
+        }
+        if (online.ws) {
+          try {
+            online.ws.onclose = null;
+            online.ws.close();
+          } catch (_err) {
+            // ignore
+          }
+        }
+        online.ws = null;
+        online.wsConnected = false;
+        setRealtimeHint("未连接（使用轮询）");
+      }
+
+      function connectRoomSocket() {
+        disconnectRoomSocket();
+        if (!online.enabled || !online.roomId || !online.token) return;
+        try {
+          const ws = new WebSocket(wsLink(online.roomId, online.token));
+          online.ws = ws;
+          setRealtimeHint("连接中...");
+
+          ws.onopen = () => {
+            online.wsConnected = true;
+            online.lastWsAt = Date.now();
+            setRealtimeHint("已连接");
+            if (online.wsHeartbeatTimer) clearInterval(online.wsHeartbeatTimer);
+            online.wsHeartbeatTimer = setInterval(() => {
+              if (!online.ws || online.ws.readyState !== WebSocket.OPEN) return;
+              online.ws.send(JSON.stringify({ type: "ping", at: Date.now() }));
+              if (Date.now() - online.lastWsAt > 15000) {
+                setRealtimeHint("连接超时，等待重连");
+              }
+            }, 5000);
+          };
+
+          ws.onmessage = async (event) => {
+            online.lastWsAt = Date.now();
+            let data = null;
+            try {
+              data = JSON.parse(event.data);
+            } catch (_err) {
+              return;
+            }
+
+            if (!data || typeof data !== "object") return;
+
+            if (data.type === "presence") {
+              online.seats = data.seats || online.seats;
+              if (data.packId && data.packId !== selectedPackId) {
+                await loadRules(data.packId);
+              }
+              render();
+              return;
+            }
+
+            if (data.type === "room_update" || data.type === "welcome") {
+              online.seats = data.seats || online.seats;
+              if (typeof data.version === "number") {
+                online.version = Math.max(online.version, data.version);
+              }
+              if (data.packId && data.packId !== selectedPackId) {
+                await loadRules(data.packId);
+              }
+              if (!state.replayMode && data.snapshot) {
+                online.applyingRemote = true;
+                applySnapshot(data.snapshot);
+                online.applyingRemote = false;
+              }
+              if (typeof data.integrity === "boolean") {
+                online.integrity = data.integrity;
+              }
+              render();
+            }
+          };
+
+          ws.onclose = () => {
+            online.wsConnected = false;
+            setRealtimeHint("已断开，自动重连中");
+            if (online.enabled) {
+              setTimeout(() => {
+                if (online.enabled) connectRoomSocket();
+              }, 1200);
+            }
+          };
+
+          ws.onerror = () => {
+            setRealtimeHint("连接异常，回退轮询");
+          };
+        } catch (_err) {
+          setRealtimeHint("浏览器不支持 WebSocket");
+        }
+      }
+
       function startPollingRoom() {
         if (online.pollTimer) clearInterval(online.pollTimer);
         online.pollTimer = setInterval(async () => {
           try {
             await pullRoomState();
-            await pullRoomLogs();
             await flushOperationQueue();
+            if (!online.wsConnected || Date.now() - online.lastWsAt > ROOM_POLL_MS * 2) {
+              await pullRoomLogs();
+            }
             setRoomHint(
               `联机中 房间 ${online.roomId}｜身份 ${
                 online.role === ROLE_RED ? "男方" : online.role === ROLE_BLUE ? "女方" : "观战"
@@ -1352,13 +1502,17 @@
           clearInterval(online.pollTimer);
           online.pollTimer = null;
         }
+        disconnectRoomSocket();
       }
 
-      async function pushRoomState(summary = "") {
+      async function requestOnlineAction(actionType) {
         if (!online.enabled || online.applyingRemote || !online.roomId || !online.token) return;
-        queueOperation(summary || state.message || "state_update");
+        queueOperation(actionType);
         await flushOperationQueue();
       }
+
+      // v2.2 起联机同步改为服务端动作流，这里保留空实现兼容本地逻辑路径。
+      async function pushRoomState() {}
 
       async function createRoom() {
         try {
@@ -1367,6 +1521,7 @@
             body: {
               snapshot: snapshotGame(),
               password: roomPasswordInput.value || "",
+              packId: selectedPackId,
             },
           });
 
@@ -1380,11 +1535,15 @@
           online.pendingOps = [];
           online.logs = [];
           online.integrity = null;
+          if (payload.packId && payload.packId !== selectedPackId) {
+            await loadRules(payload.packId);
+          }
 
           roomInput.value = payload.roomId;
           saveRoomSession();
           setRoomQuery(payload.roomId, online.mode);
           setRoomHint(`已创建房间 ${payload.roomId}，等待对方加入`);
+          connectRoomSocket();
           startPollingRoom();
           await pullRoomLogs();
           render();
@@ -1422,6 +1581,9 @@
           online.pendingOps = [];
           online.logs = [];
           online.integrity = null;
+          if (payload.packId && payload.packId !== selectedPackId) {
+            await loadRules(payload.packId);
+          }
 
           applySnapshot(payload.snapshot);
           roomInput.value = roomId;
@@ -1432,6 +1594,7 @@
               online.role === ROLE_RED ? "男方" : online.role === ROLE_BLUE ? "女方" : "观战"
             }`,
           );
+          connectRoomSocket();
           startPollingRoom();
           await pullRoomLogs();
           render();
@@ -1471,8 +1634,10 @@
         online.pendingOps = [];
         online.logs = [];
         online.integrity = null;
+        selectedPackId = packSelect.value || selectedPackId;
         setRoomQuery("");
         setRoomHint("已退出房间，当前为本地模式");
+        setRealtimeHint("未连接");
         render();
       }
 
@@ -1516,7 +1681,7 @@
         }
         try {
           await navigator.share({
-            title: "情侣飞行棋 V2.0（联机）",
+            title: "情侣飞行棋 V2.2（联机）",
             text: "来加入我的房间，一起玩飞行棋。",
             url: link,
           });
@@ -1532,6 +1697,18 @@
       }
 
       async function rollDice() {
+        if (online.enabled) {
+          if (!canCurrentClientAct()) {
+            setMessage("当前不是你的回合，或对方尚未加入。");
+            render();
+            return;
+          }
+          await requestOnlineAction("roll");
+          await pullRoomLogs();
+          render();
+          return;
+        }
+
         if (!canCurrentClientAct()) {
           setMessage(online.enabled ? "当前不是你的回合，或对方尚未加入。" : "暂不可操作。");
           render();
@@ -1660,8 +1837,14 @@
 
       async function restartGame() {
         await replayExit();
-        if (online.enabled && !canCurrentClientAct()) {
-          setMessage("联机模式下请等待你的回合后再重开。");
+        if (online.enabled) {
+          if (!canCurrentClientAct()) {
+            setMessage("联机模式下请等待你的回合后再重开。");
+            render();
+            return;
+          }
+          await requestOnlineAction("restart");
+          await pullRoomLogs();
           render();
           return;
         }
@@ -1824,7 +2007,7 @@
         const seatState = online.enabled
           ? `座位：男方 ${online.seats.red ? "已占" : "空位"}｜女方 ${online.seats.blue ? "已占" : "空位"}｜观战 ${
               online.seats.spectators || 0
-            }｜队列 ${online.pendingOps.length}`
+            }｜队列 ${online.pendingOps.length}｜通道 ${online.wsConnected ? "WS" : "轮询"}｜文案包 ${selectedPackId}`
           : "座位：本地模式";
         seatText.textContent = seatState;
 
@@ -1850,6 +2033,7 @@
         replayPrevBtn.disabled = state.turnHistory.length === 0;
         replayNextBtn.disabled = !state.replayMode || state.replayCursor <= 0;
         replayExitBtn.disabled = !state.replayMode;
+        applyPackBtn.disabled = online.enabled && online.role === "spectator";
 
         rollBtn.disabled = state.gameOver || state.dice !== null || !canCurrentClientAct();
         restartBtn.disabled = online.enabled && !canCurrentClientAct();
@@ -1891,7 +2075,7 @@
 
       async function exportTimelineText() {
         const header = [
-          `情侣飞行棋 V2.0 复盘`,
+          `情侣飞行棋 V2.2 复盘`,
           `时间：${new Date().toLocaleString()}`,
           `房间：${online.enabled ? online.roomId : "本地模式"}`,
           "",
@@ -1933,17 +2117,105 @@
         }
       }
 
-      async function loadRules() {
+      async function loadContentPacks() {
         try {
-          const remote = await api("/api/rules");
+          const payload = await api("/api/content-packs");
+          const packs = Array.isArray(payload.packs) ? payload.packs : [];
+          contentPacks = packs;
+          const defaultPack = payload.defaultPackId || "classic";
+          if (!packs.length) return;
+          packSelect.innerHTML = "";
+          packs.forEach((pack) => {
+            const opt = document.createElement("option");
+            opt.value = pack.id;
+            opt.textContent = `${pack.name}（${pack.id}）`;
+            packSelect.appendChild(opt);
+          });
+          if (!packs.find((p) => p.id === selectedPackId)) {
+            selectedPackId = defaultPack;
+          }
+          packSelect.value = selectedPackId;
+        } catch (_err) {
+          contentPacks = [{ id: "classic", name: "情侣飞行棋（原版）" }];
+          packSelect.innerHTML = '<option value="classic">情侣飞行棋（原版）</option>';
+          selectedPackId = "classic";
+        }
+      }
+
+      async function loadRules(packId = selectedPackId) {
+        try {
+          const remote = await api(`/api/rules?pack=${encodeURIComponent(packId || "classic")}`);
           if (remote && Array.isArray(remote.cells) && remote.cells.length === PATH_LEN) {
             rulesConfig = remote;
             cells = buildCells(remote.cells);
+            selectedPackId = remote.packId || packId || selectedPackId;
+            packSelect.value = selectedPackId;
           }
         } catch (_err) {
           rulesConfig = fallbackRules;
           cells = buildCells(fallbackRules.cells);
         }
+      }
+
+      async function applyPackChange() {
+        const targetPack = String(packSelect.value || "").trim() || selectedPackId;
+        if (!targetPack) return;
+
+        if (!online.enabled) {
+          await loadRules(targetPack);
+          setRoomHint(`已切换本地文案包：${targetPack}`);
+          render();
+          return;
+        }
+
+        if (online.role === "spectator") {
+          setRoomHint("观战身份不能切换文案包");
+          packSelect.value = selectedPackId;
+          return;
+        }
+
+        try {
+          const payload = await api(`/api/rooms/${online.roomId}/content-pack`, {
+            method: "POST",
+            body: {
+              token: online.token,
+              packId: targetPack,
+            },
+          });
+          if (payload.packId) {
+            await loadRules(payload.packId);
+          }
+          if (payload.snapshot && !state.replayMode) {
+            applySnapshot(payload.snapshot);
+          }
+          if (typeof payload.version === "number") {
+            online.version = payload.version;
+          }
+          if (payload.seats) {
+            online.seats = payload.seats;
+          }
+          if (typeof payload.integrity === "boolean") {
+            online.integrity = payload.integrity;
+          }
+          await pullRoomLogs();
+          setRoomHint(payload.summary || `文案包已切换为 ${targetPack}`);
+          render();
+        } catch (err) {
+          packSelect.value = selectedPackId;
+          setRoomHint(`切换失败：${err.message}`);
+        }
+      }
+
+      function registerServiceWorker() {
+        if (!("serviceWorker" in navigator)) return;
+        const canRegister =
+          window.location.protocol === "https:" ||
+          window.location.hostname === "localhost" ||
+          window.location.hostname === "127.0.0.1";
+        if (!canRegister) return;
+        navigator.serviceWorker.register("/service-worker.js").catch(() => {
+          // ignore registration errors
+        });
       }
 
       function applyInitialRoomFromUrl() {
@@ -2002,6 +2274,13 @@
       copyRoomLinkBtn.addEventListener("click", copyRoomLink);
       copyWatchLinkBtn.addEventListener("click", copyWatchLink);
       shareRoomBtn.addEventListener("click", systemShareRoom);
+      packSelect.addEventListener("change", async () => {
+        if (!online.enabled) {
+          await loadRules(packSelect.value || "classic");
+          render();
+        }
+      });
+      applyPackBtn.addEventListener("click", applyPackChange);
       replayPrevBtn.addEventListener("click", replayPrev);
       replayNextBtn.addEventListener("click", replayNext);
       replayExitBtn.addEventListener("click", () => {
@@ -2010,10 +2289,38 @@
 
       (async function bootstrap() {
         applyInitialRoomFromUrl();
-        await loadRules();
+        setRealtimeHint("未连接");
+        await loadContentPacks();
+        await loadRules(selectedPackId);
         render();
         await loadVersionInfo();
+        registerServiceWorker();
       })();
+
+      window.render_game_to_text = () =>
+        JSON.stringify({
+          coordinate: "origin:top-left,x:right,y:down",
+          players: players.map((p) => ({ name: p.name, step: p.step, skip: p.skip })),
+          game: {
+            current: state.current,
+            gameOver: state.gameOver,
+            message: state.message,
+            rollCount: state.rollCount,
+            diceHistory: state.diceHistory.slice(0, 8),
+          },
+          online: {
+            enabled: online.enabled,
+            roomId: online.roomId,
+            role: online.role,
+            wsConnected: online.wsConnected,
+            version: online.version,
+            packId: selectedPackId,
+          },
+        });
+
+      window.advanceTime = (_ms = 0) => {
+        render();
+      };
     </script>
   </body>
 </html>

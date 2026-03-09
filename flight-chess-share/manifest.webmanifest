@@ -1,0 +1,10 @@
+{
+  "name": "情侣飞行棋 V2.2",
+  "short_name": "飞行棋",
+  "description": "支持房间联机、实时同步与复盘的情侣飞行棋。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#ece6d9",
+  "theme_color": "#0f766e",
+  "lang": "zh-CN"
+}
