@@ -3,7 +3,7 @@ services:
     name: sanguan-cognition-test
     runtime: static
     repo: https://github.com/lastxuan4396/FEI-.git
-    rootDir: interactive-test-site
+    rootDir: apple-inspired-lab
     branch: main
     autoDeploy: true
     buildCommand: echo "Static site deploy"
