@@ -75,7 +75,7 @@
             <h2>The latest. In a card rail.</h2>
             <p>
               Rounded cards, subtle shadow, mixed light and dark themes, and
-              horizontal snap scrolling.
+              horizontal snap scrolling with depth transitions.
             </p>
             <div class="rail-controls" aria-label="Store card controls">
               <button class="rail-btn" type="button" data-rail-prev disabled>Prev</button>
@@ -83,36 +83,48 @@
             </div>
           </div>
 
+          <div class="store-rail-frame" aria-hidden="true">
+            <div class="store-progress">
+              <span class="store-progress-bar" data-store-progress></span>
+            </div>
+            <div class="store-dots" data-store-dots></div>
+          </div>
+
           <div class="store-rail" data-store-rail>
-            <article class="store-card theme-light">
+            <article class="store-card theme-light" data-card-theme="light">
+              <div class="store-card-visual visual-air" aria-hidden="true"></div>
               <p class="label">New</p>
               <h3>NeoBook Air</h3>
               <p>Thin profile. Full-day battery. Calm confidence.</p>
               <p class="price">From $999</p>
             </article>
 
-            <article class="store-card theme-dark">
+            <article class="store-card theme-dark" data-card-theme="dark">
+              <div class="store-card-visual visual-display" aria-hidden="true"></div>
               <p class="label">Pro</p>
               <h3>Studio Display X</h3>
               <p>Pin-sharp contrast, controlled highlights, minimal frame.</p>
               <p class="price">From $2,499</p>
             </article>
 
-            <article class="store-card theme-light">
+            <article class="store-card theme-light" data-card-theme="light">
+              <div class="store-card-visual visual-phone" aria-hidden="true"></div>
               <p class="label">Popular</p>
               <h3>Phone 17</h3>
               <p>Balanced camera system and durable daily design.</p>
               <p class="price">From $799</p>
             </article>
 
-            <article class="store-card theme-light">
+            <article class="store-card theme-light" data-card-theme="light">
+              <div class="store-card-visual visual-watch" aria-hidden="true"></div>
               <p class="label">Watch</p>
               <h3>Watch Series 11</h3>
               <p>Health-first hardware with a calmer visual interface.</p>
               <p class="price">From $399</p>
             </article>
 
-            <article class="store-card theme-dark">
+            <article class="store-card theme-dark" data-card-theme="dark">
+              <div class="store-card-visual visual-pro" aria-hidden="true"></div>
               <p class="label">Performance</p>
               <h3>ProBook 16</h3>
               <p>Heavy workflows, quiet thermal profile, steady responsiveness.</p>
@@ -206,19 +218,43 @@
 
         <div class="story-layout section-inner">
           <aside class="story-sticky" aria-live="polite">
-            <div class="story-panel">
+            <div class="story-panel" data-story-panel data-story-theme="chip">
               <p class="label">Performance story</p>
+              <div class="story-stage" aria-hidden="true">
+                <div class="stage-shell">
+                  <div class="stage-screen">
+                    <span class="stage-orb orb-a"></span>
+                    <span class="stage-orb orb-b"></span>
+                    <span class="stage-orb orb-c"></span>
+                  </div>
+                  <div class="stage-gloss"></div>
+                </div>
+                <div class="stage-metrics">
+                  <p data-story-metric>Up to 8x AI throughput</p>
+                  <p data-story-meta>M5 family Neural Engine path</p>
+                </div>
+              </div>
               <h2 data-story-title>M5 family. One fast direction.</h2>
               <p data-story-copy>
                 Sticky media plus scroll-linked content keeps focus while detail
                 accumulates section by section.
               </p>
+              <div class="story-progress" aria-hidden="true">
+                <span data-story-progress></span>
+              </div>
               <div class="panel-glow" aria-hidden="true"></div>
             </div>
           </aside>
 
           <div class="story-steps">
-            <article class="story-step is-active" data-title="M5 family. One fast direction." data-copy="Sticky media plus scroll-linked content keeps focus while detail accumulates section by section.">
+            <article
+              class="story-step is-active"
+              data-title="M5 family. One fast direction."
+              data-copy="Sticky media plus scroll-linked content keeps focus while detail accumulates section by section."
+              data-theme="chip"
+              data-metric="Up to 8x AI throughput"
+              data-meta="M5 family Neural Engine path"
+            >
               <h3>01. Chip family framing</h3>
               <p>
                 Open with the broad promise, then break into specific capability
@@ -226,7 +262,14 @@
               </p>
             </article>
 
-            <article class="story-step" data-title="AI ready from silicon to software." data-copy="Large performance claims are paired with practical app examples to keep the story grounded.">
+            <article
+              class="story-step"
+              data-title="AI ready from silicon to software."
+              data-copy="Large performance claims are paired with practical app examples to keep the story grounded."
+              data-theme="ai"
+              data-metric="Private on-device model pipeline"
+              data-meta="Local acceleration with low power draw"
+            >
               <h3>02. AI narrative stack</h3>
               <p>
                 Pair system-level claims with creator and developer examples to
@@ -234,7 +277,14 @@
               </p>
             </article>
 
-            <article class="story-step" data-title="Battery, thermals, and sustained speed." data-copy="Apple-style pages prioritize sustained experience over one benchmark number.">
+            <article
+              class="story-step"
+              data-title="Battery, thermals, and sustained speed."
+              data-copy="Apple-style pages prioritize sustained experience over one benchmark number."
+              data-theme="battery"
+              data-metric="Up to 24 hours practical runtime"
+              data-meta="Sustained performance under long sessions"
+            >
               <h3>03. Practical confidence</h3>
               <p>
                 Keep claims measurable, but always tie them back to travel,
@@ -242,7 +292,14 @@
               </p>
             </article>
 
-            <article class="story-step" data-title="Strong finish with a single action." data-copy="End on one clear CTA after visual and narrative momentum have built trust.">
+            <article
+              class="story-step"
+              data-title="Strong finish with a single action."
+              data-copy="End on one clear CTA after visual and narrative momentum have built trust."
+              data-theme="finish"
+              data-metric="One clear call to action"
+              data-meta="Confidence first, friction last"
+            >
               <h3>04. CTA conversion close</h3>
               <p>
                 After the story ends, remove friction: one button, one outcome,
