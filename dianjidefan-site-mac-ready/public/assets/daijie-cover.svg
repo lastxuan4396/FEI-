@@ -1,0 +1,38 @@
+<svg width="1200" height="900" viewBox="0 0 1200 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="900" rx="48" fill="#F6EEDD"/>
+  <rect x="30" y="30" width="1140" height="840" rx="40" fill="url(#bg)"/>
+  <g opacity="0.9">
+    <circle cx="1020" cy="180" r="180" fill="#D9E8D6"/>
+    <circle cx="180" cy="180" r="170" fill="#F7D9B4"/>
+  </g>
+  <rect x="650" y="170" width="330" height="188" rx="28" transform="rotate(8 650 170)" fill="#FFF7EB" stroke="#D7C3A8"/>
+  <rect x="725" y="95" width="298" height="172" rx="28" transform="rotate(11 725 95)" fill="#FFF7EB" stroke="#D7C3A8"/>
+  <rect x="742" y="305" width="304" height="180" rx="28" transform="rotate(-4 742 305)" fill="#FFF7EB" stroke="#D7C3A8"/>
+  <rect x="530" y="255" width="382" height="270" rx="34" fill="#FFF9F0" stroke="#D4BEA0" stroke-width="2"/>
+  <rect x="565" y="290" width="96" height="24" rx="12" fill="#EFE3CD"/>
+  <rect x="565" y="330" width="240" height="38" rx="19" fill="#201A15"/>
+  <rect x="565" y="384" width="282" height="18" rx="9" fill="#DDD0BC"/>
+  <rect x="565" y="418" width="250" height="18" rx="9" fill="#E8DAC6"/>
+  <rect x="565" y="462" width="82" height="30" rx="15" fill="#F07B4C"/>
+  <rect x="659" y="462" width="82" height="30" rx="15" fill="#EFE4D1"/>
+  <rect x="753" y="462" width="62" height="30" rx="15" fill="#EFE4D1"/>
+  <text x="110" y="208" fill="#A78A67" font-family="Arial, sans-serif" font-size="20" letter-spacing="4">LIFE CHECKOUT COUNTER</text>
+  <text x="110" y="330" fill="#201A15" font-family="Georgia, serif" font-size="92" font-weight="700">待结</text>
+  <text x="110" y="420" fill="#201A15" font-family="Georgia, serif" font-size="74" font-weight="700">把挂着的小事</text>
+  <text x="110" y="500" fill="#201A15" font-family="Georgia, serif" font-size="74" font-weight="700">一张张结掉</text>
+  <text x="112" y="594" fill="#5C534B" font-family="Arial, sans-serif" font-size="28">
+    把下载文件、收藏链接、没回的消息和零散念头排成队
+  </text>
+  <text x="112" y="638" fill="#5C534B" font-family="Arial, sans-serif" font-size="28">
+    你每天只花几分钟，结掉一点，轻一点
+  </text>
+  <rect x="112" y="690" width="166" height="58" rx="29" fill="#F07B4C"/>
+  <text x="145" y="727" fill="#FFF8EE" font-family="Arial, sans-serif" font-size="24" font-weight="700">打开待结</text>
+  <defs>
+    <linearGradient id="bg" x1="104" y1="84" x2="1084" y2="830" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FFF6EA"/>
+      <stop offset="0.56" stop-color="#F6EDD9"/>
+      <stop offset="1" stop-color="#EDF0E0"/>
+    </linearGradient>
+  </defs>
+</svg>

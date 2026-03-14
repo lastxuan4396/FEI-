@@ -220,6 +220,22 @@ const directWorksSeed: ShowcaseWork[] = [
     tone: "citrus"
   },
   {
+    slug: "daijie",
+    title: "待结 / 人生待处理收银台",
+    eyebrow: "Product concept page",
+    summary: "把一次关于“我也可以做软件”的对话，整理成真正能浏览的产品页面：创意库、收敛路径、悬账队列与 MVP 都在里面。",
+    category: "tool",
+    categoryLabel: "工具",
+    stack: "Astro / JavaScript / Product thinking",
+    origin: "conversation -> daijie",
+    href: "/daijie/",
+    coverImage: "/assets/daijie-cover.svg",
+    coverAlt: "待结产品页面封面图",
+    ...withTimeline("2026-03-14", "2026-03-14"),
+    badges: ["产品概念", "交互 demo", "对话沉淀"],
+    tone: "lagoon"
+  },
+  {
     slug: "ims-dashboard",
     title: "IMS 小组项目作战面板",
     eyebrow: "Project board",
