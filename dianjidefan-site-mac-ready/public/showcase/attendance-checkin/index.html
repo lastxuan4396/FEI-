@@ -1,0 +1,564 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>课堂签到工具</title>
+  <style>
+    :root {
+      --bg: #f3f6fb;
+      --card: #ffffff;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --line: #dbe2ee;
+      --primary: #0f766e;
+      --primary-2: #14b8a6;
+      --danger: #dc2626;
+      --ok: #16a34a;
+    }
+
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(900px 500px at -10% -20%, #d1fae5 0%, transparent 60%),
+        radial-gradient(900px 500px at 110% 120%, #bfdbfe 0%, transparent 55%),
+        var(--bg);
+      min-height: 100vh;
+      padding: 24px;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      display: grid;
+      gap: 16px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.06);
+      padding: 16px;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 28px;
+      line-height: 1.2;
+    }
+
+    p.sub {
+      margin: 8px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .grid {
+      display: grid;
+      gap: 12px;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      color: var(--muted);
+      margin-bottom: 6px;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px 12px;
+      font-size: 14px;
+      color: var(--text);
+      background: #fff;
+    }
+
+    textarea { min-height: 90px; resize: vertical; }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 12px;
+    }
+
+    button {
+      border: 0;
+      border-radius: 10px;
+      padding: 10px 14px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: 0.18s ease;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary), var(--primary-2));
+      color: #fff;
+    }
+
+    .btn-secondary {
+      background: #eef2ff;
+      color: #3730a3;
+    }
+
+    .btn-danger {
+      background: #fee2e2;
+      color: var(--danger);
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .stats {
+      display: grid;
+      gap: 10px;
+      grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+      margin-top: 6px;
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 10px;
+      background: #fafcff;
+    }
+
+    .stat b {
+      font-size: 22px;
+      display: block;
+      margin-top: 4px;
+    }
+
+    .table-wrap { overflow: auto; margin-top: 12px; }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 680px;
+    }
+
+    th, td {
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      padding: 10px;
+      font-size: 14px;
+      vertical-align: top;
+    }
+
+    th { color: var(--muted); font-weight: 600; }
+
+    .pill {
+      display: inline-block;
+      border-radius: 999px;
+      padding: 4px 10px;
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    .ok { background: #dcfce7; color: #166534; }
+    .pending { background: #fef3c7; color: #92400e; }
+
+    .row-actions { display: flex; gap: 8px; }
+
+    .hint {
+      margin-top: 8px;
+      font-size: 13px;
+      color: var(--muted);
+    }
+
+    .empty {
+      color: var(--muted);
+      padding: 12px 6px;
+    }
+
+    @media (max-width: 640px) {
+      body { padding: 12px; }
+      h1 { font-size: 22px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="wrap">
+    <section class="card">
+      <h1>课堂签到工具</h1>
+      <p class="sub">适合老师/助教快速统计：谁来上课了、谁还没签到，并可导出记录。</p>
+    </section>
+
+    <section class="card">
+      <div class="grid">
+        <div>
+          <label for="sessionSelect">选择场次</label>
+          <select id="sessionSelect"></select>
+        </div>
+        <div>
+          <label for="className">课程名称</label>
+          <input id="className" placeholder="例如：现代文学导论" />
+        </div>
+        <div>
+          <label for="classDate">上课日期</label>
+          <input id="classDate" type="date" />
+        </div>
+      </div>
+
+      <div style="margin-top: 12px;">
+        <label for="keyPoints">课程要点</label>
+        <textarea id="keyPoints" placeholder="例如：1) 新诗流派 2) 关键作家 3) 下周阅读任务"></textarea>
+      </div>
+
+      <div style="margin-top: 12px;">
+        <label for="studentInput">学生名单（每行一个名字）</label>
+        <textarea id="studentInput" placeholder="张三\n李四\n王五"></textarea>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary" id="saveSessionBtn">保存/更新场次</button>
+        <button class="btn-secondary" id="newSessionBtn">新建场次</button>
+        <button class="btn-danger" id="deleteSessionBtn">删除当前场次</button>
+      </div>
+      <p class="hint">数据会自动保存在当前浏览器中（本地存储）。</p>
+    </section>
+
+    <section class="card">
+      <div class="stats">
+        <div class="stat">应到人数<b id="totalCount">0</b></div>
+        <div class="stat">已签到<b id="checkedCount">0</b></div>
+        <div class="stat">未签到<b id="absentCount">0</b></div>
+      </div>
+
+      <div class="actions" style="margin-top: 14px;">
+        <button class="btn-secondary" id="checkAllBtn">全部设为已签到</button>
+        <button class="btn-secondary" id="resetCheckBtn">重置签到</button>
+        <button class="btn-primary" id="exportBtn">导出 CSV</button>
+      </div>
+
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>姓名</th>
+              <th>状态</th>
+              <th>签到时间</th>
+              <th>操作</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody"></tbody>
+        </table>
+      </div>
+      <div id="emptyState" class="empty">当前场次还没有学生，请先在上方填写名单并保存。</div>
+    </section>
+  </main>
+
+  <script>
+    const STORE_KEY = 'attendance_tool_data_v1';
+
+    const el = {
+      sessionSelect: document.getElementById('sessionSelect'),
+      className: document.getElementById('className'),
+      classDate: document.getElementById('classDate'),
+      keyPoints: document.getElementById('keyPoints'),
+      studentInput: document.getElementById('studentInput'),
+      saveSessionBtn: document.getElementById('saveSessionBtn'),
+      newSessionBtn: document.getElementById('newSessionBtn'),
+      deleteSessionBtn: document.getElementById('deleteSessionBtn'),
+      totalCount: document.getElementById('totalCount'),
+      checkedCount: document.getElementById('checkedCount'),
+      absentCount: document.getElementById('absentCount'),
+      checkAllBtn: document.getElementById('checkAllBtn'),
+      resetCheckBtn: document.getElementById('resetCheckBtn'),
+      exportBtn: document.getElementById('exportBtn'),
+      tableBody: document.getElementById('tableBody'),
+      emptyState: document.getElementById('emptyState')
+    };
+
+    const state = {
+      sessions: [],
+      activeSessionId: null
+    };
+
+    function nowISODate() {
+      return new Date().toISOString().slice(0, 10);
+    }
+
+    function formatTime(iso) {
+      if (!iso) return '-';
+      const d = new Date(iso);
+      return d.toLocaleString('zh-CN', { hour12: false });
+    }
+
+    function createSession() {
+      const id = crypto.randomUUID();
+      return {
+        id,
+        className: '未命名课程',
+        classDate: nowISODate(),
+        keyPoints: '',
+        students: [],
+        createdAt: new Date().toISOString()
+      };
+    }
+
+    function parseStudentLines(text) {
+      const names = text.split('\n').map(v => v.trim()).filter(Boolean);
+      const unique = Array.from(new Set(names));
+      return unique.map(name => ({
+        name,
+        checkedIn: false,
+        checkedInAt: ''
+      }));
+    }
+
+    function saveToStorage() {
+      localStorage.setItem(STORE_KEY, JSON.stringify(state));
+    }
+
+    function loadFromStorage() {
+      try {
+        const raw = localStorage.getItem(STORE_KEY);
+        if (!raw) {
+          const first = createSession();
+          state.sessions = [first];
+          state.activeSessionId = first.id;
+          saveToStorage();
+          return;
+        }
+        const parsed = JSON.parse(raw);
+        state.sessions = parsed.sessions || [];
+        state.activeSessionId = parsed.activeSessionId || (state.sessions[0] && state.sessions[0].id);
+        if (state.sessions.length === 0) {
+          const first = createSession();
+          state.sessions = [first];
+          state.activeSessionId = first.id;
+        }
+      } catch {
+        const first = createSession();
+        state.sessions = [first];
+        state.activeSessionId = first.id;
+      }
+      saveToStorage();
+    }
+
+    function getActiveSession() {
+      return state.sessions.find(s => s.id === state.activeSessionId) || null;
+    }
+
+    function renderSessionSelect() {
+      const options = state.sessions
+        .sort((a, b) => new Date(b.classDate) - new Date(a.classDate))
+        .map(s => {
+          const label = `${s.classDate} | ${s.className}`;
+          return `<option value="${s.id}">${label}</option>`;
+        })
+        .join('');
+      el.sessionSelect.innerHTML = options;
+      el.sessionSelect.value = state.activeSessionId;
+    }
+
+    function renderForm() {
+      const s = getActiveSession();
+      if (!s) return;
+      el.className.value = s.className;
+      el.classDate.value = s.classDate;
+      el.keyPoints.value = s.keyPoints;
+      el.studentInput.value = s.students.map(stu => stu.name).join('\n');
+    }
+
+    function renderTable() {
+      const s = getActiveSession();
+      if (!s) return;
+
+      const total = s.students.length;
+      const checked = s.students.filter(stu => stu.checkedIn).length;
+      const absent = total - checked;
+
+      el.totalCount.textContent = String(total);
+      el.checkedCount.textContent = String(checked);
+      el.absentCount.textContent = String(absent);
+
+      if (total === 0) {
+        el.tableBody.innerHTML = '';
+        el.emptyState.style.display = 'block';
+        return;
+      }
+
+      el.emptyState.style.display = 'none';
+      el.tableBody.innerHTML = s.students.map((stu, idx) => `
+        <tr>
+          <td>${escapeHtml(stu.name)}</td>
+          <td>
+            <span class="pill ${stu.checkedIn ? 'ok' : 'pending'}">${stu.checkedIn ? '已签到' : '未签到'}</span>
+          </td>
+          <td>${formatTime(stu.checkedInAt)}</td>
+          <td>
+            <div class="row-actions">
+              <button class="btn-primary" data-action="toggle" data-index="${idx}">${stu.checkedIn ? '取消签到' : '签到'}</button>
+            </div>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function escapeHtml(str) {
+      return str
+        .replaceAll('&', '&amp;')
+        .replaceAll('<', '&lt;')
+        .replaceAll('>', '&gt;')
+        .replaceAll('"', '&quot;')
+        .replaceAll("'", '&#39;');
+    }
+
+    function renderAll() {
+      renderSessionSelect();
+      renderForm();
+      renderTable();
+    }
+
+    function updateSessionFromForm() {
+      const s = getActiveSession();
+      if (!s) return;
+      s.className = el.className.value.trim() || '未命名课程';
+      s.classDate = el.classDate.value || nowISODate();
+      s.keyPoints = el.keyPoints.value.trim();
+
+      const newStudents = parseStudentLines(el.studentInput.value);
+
+      // 保留旧签到状态：相同姓名沿用历史签到记录
+      const map = new Map(s.students.map(stu => [stu.name, stu]));
+      s.students = newStudents.map(stu => {
+        const old = map.get(stu.name);
+        return old ? old : stu;
+      });
+
+      saveToStorage();
+      renderAll();
+    }
+
+    function exportCSV() {
+      const s = getActiveSession();
+      if (!s) return;
+
+      const rows = [
+        ['课程名称', s.className],
+        ['上课日期', s.classDate],
+        ['课程要点', s.keyPoints.replaceAll('\n', ' / ')],
+        [],
+        ['姓名', '状态', '签到时间']
+      ];
+
+      s.students.forEach(stu => {
+        rows.push([
+          stu.name,
+          stu.checkedIn ? '已签到' : '未签到',
+          stu.checkedIn ? formatTime(stu.checkedInAt) : ''
+        ]);
+      });
+
+      const csv = rows
+        .map(cols => cols.map(v => {
+          const val = (v ?? '').toString().replaceAll('"', '""');
+          return `"${val}"`;
+        }).join(','))
+        .join('\n');
+
+      const blob = new Blob(["\uFEFF" + csv], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `签到_${s.className}_${s.classDate}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    function bindEvents() {
+      el.saveSessionBtn.addEventListener('click', updateSessionFromForm);
+
+      el.newSessionBtn.addEventListener('click', () => {
+        const n = createSession();
+        state.sessions.push(n);
+        state.activeSessionId = n.id;
+        saveToStorage();
+        renderAll();
+      });
+
+      el.deleteSessionBtn.addEventListener('click', () => {
+        if (state.sessions.length === 1) {
+          alert('至少保留一个场次，不能全部删除。');
+          return;
+        }
+        const s = getActiveSession();
+        if (!s) return;
+        const ok = confirm(`确定删除场次：${s.classDate} | ${s.className}？`);
+        if (!ok) return;
+        state.sessions = state.sessions.filter(item => item.id !== s.id);
+        state.activeSessionId = state.sessions[0].id;
+        saveToStorage();
+        renderAll();
+      });
+
+      el.sessionSelect.addEventListener('change', () => {
+        state.activeSessionId = el.sessionSelect.value;
+        saveToStorage();
+        renderAll();
+      });
+
+      el.tableBody.addEventListener('click', (e) => {
+        const btn = e.target.closest('button[data-action="toggle"]');
+        if (!btn) return;
+        const idx = Number(btn.dataset.index);
+        const s = getActiveSession();
+        if (!s || !s.students[idx]) return;
+        const stu = s.students[idx];
+        if (stu.checkedIn) {
+          stu.checkedIn = false;
+          stu.checkedInAt = '';
+        } else {
+          stu.checkedIn = true;
+          stu.checkedInAt = new Date().toISOString();
+        }
+        saveToStorage();
+        renderTable();
+      });
+
+      el.checkAllBtn.addEventListener('click', () => {
+        const s = getActiveSession();
+        if (!s) return;
+        const now = new Date().toISOString();
+        s.students.forEach(stu => {
+          if (!stu.checkedInAt) stu.checkedInAt = now;
+          stu.checkedIn = true;
+        });
+        saveToStorage();
+        renderTable();
+      });
+
+      el.resetCheckBtn.addEventListener('click', () => {
+        const s = getActiveSession();
+        if (!s) return;
+        s.students.forEach(stu => {
+          stu.checkedIn = false;
+          stu.checkedInAt = '';
+        });
+        saveToStorage();
+        renderTable();
+      });
+
+      el.exportBtn.addEventListener('click', exportCSV);
+    }
+
+    function init() {
+      loadFromStorage();
+      bindEvents();
+      renderAll();
+    }
+
+    init();
+  </script>
+</body>
+</html>

@@ -1,0 +1,44 @@
+[
+  {
+    "name": "夜色楼梯",
+    "image": "https://images.unsplash.com/photo-1469474968028-56623f02e42e?auto=format&fit=crop&w=900&q=80",
+    "tone": "night",
+    "keywords": ["进阶", "过程", "耐心"],
+    "cue": "你现在处于哪一级台阶？"
+  },
+  {
+    "name": "桥上薄雾",
+    "image": "https://images.unsplash.com/photo-1472396961693-142e6e269027?auto=format&fit=crop&w=900&q=80",
+    "tone": "ocean",
+    "keywords": ["连接", "过渡", "未知"],
+    "cue": "你正在连接哪两个世界？"
+  },
+  {
+    "name": "海边栈桥",
+    "image": "https://images.unsplash.com/photo-1519046904884-53103b34b206?auto=format&fit=crop&w=900&q=80",
+    "tone": "ocean",
+    "keywords": ["方向", "远景", "选择"],
+    "cue": "你愿意往哪个方向多走一步？"
+  },
+  {
+    "name": "森林小路",
+    "image": "https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=900&q=80",
+    "tone": "moss",
+    "keywords": ["探索", "试步", "转机"],
+    "cue": "你愿意先尝试哪条小路径？"
+  },
+  {
+    "name": "日出平原",
+    "image": "https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=900&q=80",
+    "tone": "sand",
+    "keywords": ["希望", "起点", "可能性"],
+    "cue": "新的开始对你意味着什么？"
+  },
+  {
+    "name": "舞台幕布",
+    "image": "https://images.unsplash.com/photo-1503095396549-807759245b35?auto=format&fit=crop&w=900&q=80",
+    "tone": "fire",
+    "keywords": ["表达", "角色", "看见"],
+    "cue": "你准备向外表达真实的哪一面？"
+  }
+]

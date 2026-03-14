@@ -1,0 +1,882 @@
+[
+  {
+    "name": "图卡001",
+    "image": "./cards/oh-image/1.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡002",
+    "image": "./cards/oh-image/2.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡003",
+    "image": "./cards/oh-image/3.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡004",
+    "image": "./cards/oh-image/4.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡005",
+    "image": "./cards/oh-image/5.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡006",
+    "image": "./cards/oh-image/6.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡007",
+    "image": "./cards/oh-image/7.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡008",
+    "image": "./cards/oh-image/8.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡009",
+    "image": "./cards/oh-image/9.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡010",
+    "image": "./cards/oh-image/10.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡011",
+    "image": "./cards/oh-image/11.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡012",
+    "image": "./cards/oh-image/12.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡013",
+    "image": "./cards/oh-image/13.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡014",
+    "image": "./cards/oh-image/14.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡015",
+    "image": "./cards/oh-image/15.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡016",
+    "image": "./cards/oh-image/16.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡017",
+    "image": "./cards/oh-image/17.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡018",
+    "image": "./cards/oh-image/18.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡019",
+    "image": "./cards/oh-image/19.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡020",
+    "image": "./cards/oh-image/20.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡021",
+    "image": "./cards/oh-image/21.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡022",
+    "image": "./cards/oh-image/22.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡023",
+    "image": "./cards/oh-image/23.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡024",
+    "image": "./cards/oh-image/24.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡025",
+    "image": "./cards/oh-image/25.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡026",
+    "image": "./cards/oh-image/26.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡027",
+    "image": "./cards/oh-image/27.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡028",
+    "image": "./cards/oh-image/28.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡029",
+    "image": "./cards/oh-image/29.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡030",
+    "image": "./cards/oh-image/30.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡031",
+    "image": "./cards/oh-image/31.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡032",
+    "image": "./cards/oh-image/32.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡033",
+    "image": "./cards/oh-image/33.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡034",
+    "image": "./cards/oh-image/34.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡035",
+    "image": "./cards/oh-image/35.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡036",
+    "image": "./cards/oh-image/36.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡037",
+    "image": "./cards/oh-image/37.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡038",
+    "image": "./cards/oh-image/38.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡039",
+    "image": "./cards/oh-image/39.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡040",
+    "image": "./cards/oh-image/40.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡041",
+    "image": "./cards/oh-image/41.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡042",
+    "image": "./cards/oh-image/42.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡043",
+    "image": "./cards/oh-image/43.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡044",
+    "image": "./cards/oh-image/44.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡045",
+    "image": "./cards/oh-image/45.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡046",
+    "image": "./cards/oh-image/46.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡047",
+    "image": "./cards/oh-image/47.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡048",
+    "image": "./cards/oh-image/48.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡049",
+    "image": "./cards/oh-image/49.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡050",
+    "image": "./cards/oh-image/50.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡051",
+    "image": "./cards/oh-image/51.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡052",
+    "image": "./cards/oh-image/52.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡053",
+    "image": "./cards/oh-image/53.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡054",
+    "image": "./cards/oh-image/54.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡055",
+    "image": "./cards/oh-image/55.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡056",
+    "image": "./cards/oh-image/56.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡057",
+    "image": "./cards/oh-image/57.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡058",
+    "image": "./cards/oh-image/58.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡059",
+    "image": "./cards/oh-image/59.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡060",
+    "image": "./cards/oh-image/60.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡061",
+    "image": "./cards/oh-image/61.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡062",
+    "image": "./cards/oh-image/62.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡063",
+    "image": "./cards/oh-image/63.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡064",
+    "image": "./cards/oh-image/64.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡065",
+    "image": "./cards/oh-image/65.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡066",
+    "image": "./cards/oh-image/66.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡067",
+    "image": "./cards/oh-image/67.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡068",
+    "image": "./cards/oh-image/68.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡069",
+    "image": "./cards/oh-image/69.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡070",
+    "image": "./cards/oh-image/70.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡071",
+    "image": "./cards/oh-image/71.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡072",
+    "image": "./cards/oh-image/72.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡073",
+    "image": "./cards/oh-image/73.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡074",
+    "image": "./cards/oh-image/74.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡075",
+    "image": "./cards/oh-image/75.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡076",
+    "image": "./cards/oh-image/76.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡077",
+    "image": "./cards/oh-image/77.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡078",
+    "image": "./cards/oh-image/78.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡079",
+    "image": "./cards/oh-image/79.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡080",
+    "image": "./cards/oh-image/80.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡081",
+    "image": "./cards/oh-image/81.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡082",
+    "image": "./cards/oh-image/82.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡083",
+    "image": "./cards/oh-image/83.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡084",
+    "image": "./cards/oh-image/84.jpg",
+    "tone": "fire",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡085",
+    "image": "./cards/oh-image/85.jpg",
+    "tone": "sand",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡086",
+    "image": "./cards/oh-image/86.jpg",
+    "tone": "ocean",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡087",
+    "image": "./cards/oh-image/87.jpg",
+    "tone": "moss",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  },
+  {
+    "name": "图卡088",
+    "image": "./cards/oh-image/88.jpg",
+    "tone": "night",
+    "keywords": [
+      "图像联想",
+      "情境观察"
+    ],
+    "cue": "先描述画面，再说它像什么，最后连接到你的现实问题。"
+  }
+]

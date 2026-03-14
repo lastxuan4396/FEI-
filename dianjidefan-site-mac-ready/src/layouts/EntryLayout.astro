@@ -1,0 +1,75 @@
+---
+import BaseLayout from "./BaseLayout.astro";
+import { siteConfig } from "../config/site";
+
+interface NextEntry {
+  title: string;
+  href: string;
+  summary?: string;
+  label?: string;
+}
+
+interface Props {
+  title: string;
+  description: string;
+  kicker?: string;
+  heading?: string;
+  meta: string;
+  intro?: string;
+  ctaLabel?: string;
+  ctaHref?: string;
+  secondaryCtaLabel?: string;
+  secondaryCtaHref?: string;
+  nextEntry?: NextEntry;
+}
+
+const {
+  title,
+  description,
+  kicker,
+  heading,
+  meta,
+  intro,
+  ctaLabel,
+  ctaHref,
+  secondaryCtaLabel,
+  secondaryCtaHref,
+  nextEntry
+} = Astro.props;
+---
+<BaseLayout title={`${title} | ${siteConfig.name}`} description={description}>
+  <main class="entry-shell">
+    <div class="wrap">
+      <div class="topbar">
+        <a class="back-link" href="/">← 返回首页</a>
+        <span class="chip">{kicker ?? siteConfig.shortName}</span>
+      </div>
+
+      <article class="article-shell">
+        <header class="entry-hero">
+          <p class="meta">{meta}</p>
+          <h1>{heading ?? title}</h1>
+          {intro && <p class="block-intro">{intro}</p>}
+        </header>
+
+        <div class="content prose-shell">
+          <slot />
+          {(ctaLabel || secondaryCtaLabel) && (
+            <div class="links-row">
+              {ctaLabel && ctaHref && <a class="btn btn-primary" href={ctaHref}>{ctaLabel}</a>}
+              {secondaryCtaLabel && secondaryCtaHref && <a class="btn btn-ghost" href={secondaryCtaHref}>{secondaryCtaLabel}</a>}
+            </div>
+          )}
+        </div>
+      </article>
+
+      {nextEntry && (
+        <section class="next-card">
+          <p class="card-meta">{nextEntry.label ?? "下一篇推荐"}</p>
+          <h3><a href={nextEntry.href}>{nextEntry.title}</a></h3>
+          {nextEntry.summary && <p>{nextEntry.summary}</p>}
+        </section>
+      )}
+    </div>
+  </main>
+</BaseLayout>

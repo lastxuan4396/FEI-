@@ -1,0 +1,41 @@
+---
+export const prerender = true;
+import { getCollection, render } from "astro:content";
+import EntryLayout from "../../layouts/EntryLayout.astro";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("posts", ({ data }) => !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.data.slug },
+    props: { post }
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+const posts = (await getCollection("posts", ({ data }) => !data.draft)).sort(
+  (a, b) => +new Date(b.data.publishedAt) - +new Date(a.data.publishedAt)
+);
+const nextEntry = post.data.nextSlug ? posts.find((entry) => entry.data.slug === post.data.nextSlug) : undefined;
+---
+export const prerender = true;
+<EntryLayout
+  title={post.data.seoTitle ?? `${post.data.title} | ${post.data.tag}文章`}
+  description={post.data.seoDescription ?? post.data.summary}
+  kicker={post.data.tag}
+  heading={post.data.title}
+  meta={`${post.data.publishedAt} · ${post.data.readMinutes} 分钟阅读`}
+  intro={post.data.summary}
+  ctaLabel={post.data.ctaLabel ?? "返回首页"}
+  ctaHref={post.data.ctaHref ?? "/#ideas"}
+  secondaryCtaLabel={post.data.secondaryCtaLabel ?? "联系合作"}
+  secondaryCtaHref={post.data.secondaryCtaHref ?? "/#contact"}
+  nextEntry={nextEntry ? {
+    title: nextEntry.data.title,
+    href: `/posts/${nextEntry.data.slug}/`,
+    summary: nextEntry.data.summary,
+    label: nextEntry.data.tag
+  } : undefined}
+>
+  <Content />
+</EntryLayout>

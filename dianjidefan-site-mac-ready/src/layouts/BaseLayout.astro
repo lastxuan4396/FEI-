@@ -1,0 +1,81 @@
+---
+import { analyticsConfig, siteConfig } from "../config/site";
+import "../styles/global.css";
+
+interface Props {
+  title?: string;
+  description?: string;
+  image?: string;
+  canonical?: string;
+}
+
+const {
+  title = siteConfig.titleSuffix,
+  description = siteConfig.description,
+  image = siteConfig.ogImage,
+  canonical = Astro.url.href
+} = Astro.props;
+
+const imageUrl = new URL(image, Astro.site ?? siteConfig.siteUrl).href;
+const canonicalUrl = canonical.startsWith("http") ? canonical : new URL(canonical, Astro.site ?? siteConfig.siteUrl).href;
+---
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#f6f2e9" />
+    <meta name="description" content={description} />
+    <meta name="keywords" content={siteConfig.keywords.join(",")} />
+    <meta name="author" content={siteConfig.name} />
+    <link rel="canonical" href={canonicalUrl} />
+    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={imageUrl} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={imageUrl} />
+    <title>{title}</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@500;700;900&display=swap"
+      rel="stylesheet"
+    />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'WebSite',
+      name: siteConfig.name,
+      url: siteConfig.siteUrl,
+      description: siteConfig.description,
+      inLanguage: 'zh-CN',
+      author: {
+        '@type': 'Person',
+        name: siteConfig.name
+      }
+    })} />
+    {analyticsConfig.plausibleDomain && (
+      <script is:inline defer data-domain={analyticsConfig.plausibleDomain} src="https://plausible.io/js/script.js"></script>
+    )}
+    {analyticsConfig.gaMeasurementId && (
+      <>
+        <script is:inline async src={`https://www.googletagmanager.com/gtag/js?id=${analyticsConfig.gaMeasurementId}`}></script>
+        <script is:inline define:vars={{ gaMeasurementId: analyticsConfig.gaMeasurementId }}>
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){window.dataLayer.push(arguments);}
+          window.gtag = gtag;
+          gtag('js', new Date());
+          gtag('config', gaMeasurementId);
+        </script>
+      </>
+    )}
+  </head>
+  <body data-owner-email={siteConfig.email} data-owner-wechat={siteConfig.wechat}>
+    <slot />
+  </body>
+</html>

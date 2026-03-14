@@ -1,0 +1,31 @@
+---
+export const prerender = true;
+import { getCollection, render } from "astro:content";
+import EntryLayout from "../../layouts/EntryLayout.astro";
+
+export async function getStaticPaths() {
+  const games = await getCollection("games", ({ data }) => !data.draft);
+  return games.map((game) => ({
+    params: { slug: game.data.slug },
+    props: { game }
+  }));
+}
+
+const { game } = Astro.props;
+const { Content } = await render(game);
+---
+export const prerender = true;
+<EntryLayout
+  title={game.data.seoTitle ?? `${game.data.title} | 游戏作品`}
+  description={game.data.seoDescription ?? game.data.summary}
+  kicker="游戏作品"
+  heading={game.data.title}
+  meta={`${game.data.publishedAt} · ${game.data.platform} · ${game.data.status}`}
+  intro={game.data.summary}
+  ctaLabel="返回首页"
+  ctaHref="/#games"
+  secondaryCtaLabel="联系合作"
+  secondaryCtaHref="/#contact"
+>
+  <Content />
+</EntryLayout>

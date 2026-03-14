@@ -1,0 +1,17 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { siteConfig } from "../config/site";
+---
+<BaseLayout title={`页面走丢了 | ${siteConfig.name}`} description="你访问的页面不存在，回首页继续看内容和作品。">
+  <main class="entry-shell" style="min-height: 100vh; display: grid; place-items: center; padding-block: 6rem;">
+    <section class="entry-card" style="max-width: 720px; text-align: center;">
+      <p class="hero-kicker">404</p>
+      <h1>这页暂时没找到</h1>
+      <p class="block-intro">可能是链接改了，也可能内容还没发布。先回首页继续逛，或者直接找我聊需求。</p>
+      <div class="hero-actions" style="justify-content: center;">
+        <a class="btn btn-primary" href="/">回到首页</a>
+        <a class="btn btn-ghost" href="/#contact">联系我</a>
+      </div>
+    </section>
+  </main>
+</BaseLayout>

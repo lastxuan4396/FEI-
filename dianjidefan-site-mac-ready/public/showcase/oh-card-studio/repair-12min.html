@@ -1,0 +1,926 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>12分钟和好</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Noto+Sans+SC:wght@400;500;700;800&display=swap');
+
+      :root {
+        --bg-1: #fff7e6;
+        --bg-2: #e9f5f1;
+        --ink: #24303a;
+        --muted: #60707d;
+        --line: rgba(36, 48, 58, 0.16);
+        --panel: rgba(255, 255, 255, 0.86);
+        --soft: rgba(255, 255, 255, 0.63);
+        --accent: #d2694f;
+        --accent-2: #136f63;
+        --danger: #b42318;
+        --ok: #176648;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: 'Noto Sans SC', sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 12% 16%, rgba(255, 182, 113, 0.45), transparent 32%),
+          radial-gradient(circle at 86% 84%, rgba(106, 182, 160, 0.35), transparent 34%),
+          linear-gradient(145deg, var(--bg-1), var(--bg-2));
+        padding: clamp(14px, 2.8vw, 28px);
+      }
+
+      .app {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+        border-radius: 24px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 28px 70px rgba(19, 36, 47, 0.15);
+        overflow: hidden;
+      }
+
+      .topbar {
+        padding: clamp(18px, 3vw, 28px);
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+      }
+
+      h1 {
+        margin: 0;
+        font-family: 'ZCOOL XiaoWei', serif;
+        letter-spacing: 1px;
+        font-size: clamp(32px, 4.8vw, 52px);
+        line-height: 0.95;
+      }
+
+      .subtitle {
+        margin: 8px 0 0;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .meta {
+        display: grid;
+        gap: 6px;
+        justify-items: end;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        padding: 5px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+
+      .shell {
+        padding: clamp(14px, 2vw, 22px);
+        display: grid;
+        gap: 14px;
+      }
+
+      .screen {
+        display: none;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: var(--soft);
+        padding: 14px;
+      }
+
+      .panel h2,
+      .panel h3 {
+        margin: 0 0 10px;
+      }
+
+      .panel h2 {
+        font-size: 22px;
+      }
+
+      .panel h3 {
+        font-size: 17px;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      button {
+        border: 1px solid transparent;
+        border-radius: 11px;
+        padding: 9px 13px;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 180ms ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      button:disabled {
+        opacity: 0.42;
+        transform: none;
+        cursor: not-allowed;
+      }
+
+      .btn-main {
+        background: linear-gradient(135deg, var(--accent), #e9895e);
+        color: #fff;
+      }
+
+      .btn-sub {
+        background: linear-gradient(135deg, var(--accent-2), #28a09a);
+        color: #fff;
+      }
+
+      .btn-plain {
+        border-color: var(--line);
+        background: #fff;
+        color: var(--ink);
+      }
+
+      .btn-danger {
+        border-color: rgba(180, 35, 24, 0.26);
+        background: #fff2f1;
+        color: var(--danger);
+      }
+
+      .form-row {
+        display: grid;
+        gap: 8px;
+      }
+
+      .form-row + .form-row {
+        margin-top: 10px;
+      }
+
+      label {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      input,
+      textarea {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--ink);
+        background: #fff;
+      }
+
+      textarea {
+        min-height: 98px;
+        resize: vertical;
+        line-height: 1.5;
+      }
+
+      .timeline {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 8px;
+      }
+
+      .timeline li {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 8px 10px;
+        background: #fff;
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .timeline li.current {
+        border-color: rgba(19, 111, 99, 0.45);
+        box-shadow: 0 0 0 2px rgba(19, 111, 99, 0.12);
+      }
+
+      .timeline li.done {
+        background: #eefaf4;
+        border-color: rgba(23, 102, 72, 0.3);
+      }
+
+      .status-box {
+        display: grid;
+        gap: 8px;
+      }
+
+      .timer-wrap {
+        display: grid;
+        gap: 10px;
+      }
+
+      .timer-line {
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+        flex-wrap: wrap;
+      }
+
+      .timer {
+        font-family: 'ZCOOL XiaoWei', serif;
+        font-size: clamp(38px, 6vw, 58px);
+        line-height: 1;
+      }
+
+      .timer.step {
+        font-size: clamp(28px, 4.2vw, 36px);
+      }
+
+      .progress-track {
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: #e8ece9;
+      }
+
+      .progress-track > span {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, #f59e0b, #10b981);
+        transition: width 300ms linear;
+      }
+
+      .chip-zone {
+        display: grid;
+        gap: 8px;
+      }
+
+      .chip-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+
+      .chip {
+        border: 1px solid rgba(36, 48, 58, 0.2);
+        background: #fff9ef;
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .chip.active {
+        background: #ffe2bf;
+        border-color: #e9a059;
+        color: #8f4f15;
+      }
+
+      .double-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .result-card {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        padding: 10px;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .history {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 8px;
+        max-height: 290px;
+        overflow: auto;
+      }
+
+      .history li {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        padding: 9px 10px;
+        display: grid;
+        gap: 4px;
+      }
+
+      .history small {
+        color: var(--muted);
+      }
+
+      .kudos {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 3px 10px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .kudos.done {
+        background: #e9f8f0;
+        color: var(--ok);
+      }
+
+      .kudos.running {
+        background: #fff4dd;
+        color: #a16207;
+      }
+
+      @media (max-width: 940px) {
+        .grid,
+        .double-col {
+          grid-template-columns: 1fr;
+        }
+
+        .meta {
+          justify-items: start;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div>
+          <h1>12分钟和好</h1>
+          <p class="subtitle">冲突急救流程：说事实、做复述、提请求、落行动。</p>
+        </div>
+        <div class="meta">
+          <span class="pill">总时长 <strong>12:00</strong></span>
+          <span class="pill">历史存档 <strong id="historyCount">0</strong> 条</span>
+        </div>
+      </header>
+
+      <main class="shell">
+        <section id="screenStart" class="screen active">
+          <div class="grid">
+            <article class="panel">
+              <h2>开始一轮修复</h2>
+              <p class="muted">
+                这是一段限时流程，不追究输赢，只追求连接。默认每一步会自动推进，也可以手动切下一步。
+              </p>
+              <div class="form-row">
+                <label for="nameA">A 的称呼</label>
+                <input id="nameA" maxlength="12" placeholder="例如：我" value="我" />
+              </div>
+              <div class="form-row">
+                <label for="nameB">B 的称呼</label>
+                <input id="nameB" maxlength="12" placeholder="例如：你" value="你" />
+              </div>
+              <div class="form-row">
+                <label>流程规则</label>
+                <div class="result-card">
+                  1. 只聊这次冲突，不翻旧账。<br />
+                  2. 对方发言时不打断。<br />
+                  3. 不用“你总是/你从不”。
+                </div>
+              </div>
+              <div class="actions" style="margin-top: 12px">
+                <button id="startBtn" class="btn-main">开始 12 分钟</button>
+                <button id="goHistoryBtn" class="btn-plain">看看历史存档</button>
+              </div>
+            </article>
+
+            <article class="panel">
+              <h3>最近存档</h3>
+              <p class="muted">每次完成后会自动保存到本地浏览器（LocalStorage）。</p>
+              <ul id="startHistoryList" class="history"></ul>
+            </article>
+          </div>
+        </section>
+
+        <section id="screenSession" class="screen">
+          <div class="grid">
+            <article class="panel status-box">
+              <div class="timer-wrap">
+                <div>
+                  <small class="muted">总倒计时</small>
+                  <div id="totalTimer" class="timer">12:00</div>
+                </div>
+                <div>
+                  <small class="muted">当前步骤剩余</small>
+                  <div id="stepTimer" class="timer step">01:00</div>
+                </div>
+                <div class="progress-track"><span id="totalProgress"></span></div>
+              </div>
+              <div>
+                <h3 id="stepTitle">Step 1 · 规则确认</h3>
+                <p id="stepDesc" class="muted"></p>
+              </div>
+              <div class="actions">
+                <button id="pauseBtn" class="btn-sub">暂停</button>
+                <button id="nextBtn" class="btn-plain">下一步</button>
+                <button id="finishBtn" class="btn-danger">提前结束</button>
+              </div>
+              <ul id="stepTimeline" class="timeline"></ul>
+            </article>
+
+            <article class="panel">
+              <h3>当前步骤输入</h3>
+              <div id="stepForm"></div>
+            </article>
+          </div>
+        </section>
+
+        <section id="screenResult" class="screen">
+          <div class="grid">
+            <article class="panel">
+              <h2>本轮结果</h2>
+              <p class="muted">你们完成了一次沟通修复，下面是本轮存档。</p>
+              <div class="double-col">
+                <div class="result-card">
+                  <strong>事实（A）</strong>
+                  <div id="resultFactA">-</div>
+                </div>
+                <div class="result-card">
+                  <strong>事实（B）</strong>
+                  <div id="resultFactB">-</div>
+                </div>
+              </div>
+              <div class="double-col" style="margin-top: 10px">
+                <div class="result-card">
+                  <strong>复述（A）</strong>
+                  <div id="resultReflectA">-</div>
+                </div>
+                <div class="result-card">
+                  <strong>复述（B）</strong>
+                  <div id="resultReflectB">-</div>
+                </div>
+              </div>
+              <div class="double-col" style="margin-top: 10px">
+                <div class="result-card">
+                  <strong>请求（A）</strong>
+                  <div id="resultReqA">-</div>
+                </div>
+                <div class="result-card">
+                  <strong>请求（B）</strong>
+                  <div id="resultReqB">-</div>
+                </div>
+              </div>
+              <div class="form-row" style="margin-top: 10px">
+                <label>和好一句话</label>
+                <div id="resultPeaceLine" class="result-card"></div>
+              </div>
+              <div class="form-row">
+                <label>今晚行动</label>
+                <div id="resultTonight" class="result-card"></div>
+              </div>
+              <div class="actions" style="margin-top: 12px">
+                <button id="restartBtn" class="btn-main">再来一轮</button>
+                <button id="backStartBtn" class="btn-plain">回到首页</button>
+              </div>
+            </article>
+
+            <article class="panel">
+              <h3>历史存档</h3>
+              <ul id="resultHistoryList" class="history"></ul>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const STORAGE_KEY = 'repair12-history-v1';
+      const TOTAL_SECONDS = 12 * 60;
+      const FEELINGS = ['委屈', '生气', '焦虑', '失落', '害怕', '内疚', '沮丧', '孤单', '疲惫', '被忽视'];
+      const NEEDS = ['被理解', '被尊重', '安全感', '陪伴', '信任', '空间', '确定性', '支持', '被看见', '公平'];
+
+      const STEPS = [
+        { title: '规则确认', desc: '一起读规则：不打断、不翻旧账、只说这次事件。', duration: 60 },
+        { title: 'A 说事实', desc: 'A 用两分钟讲“发生了什么”。只描述事实，不评判。', duration: 120 },
+        { title: 'B 做复述', desc: 'B 用一句话复述 A 的重点。', duration: 60 },
+        { title: 'B 说事实', desc: 'B 用两分钟讲“发生了什么”。只描述事实，不评判。', duration: 120 },
+        { title: 'A 做复述', desc: 'A 用一句话复述 B 的重点。', duration: 60 },
+        { title: '感受与需要', desc: '双方都选择感受词和需要词。', duration: 120 },
+        { title: '提出请求', desc: '双方各给出一个“今天可执行”的请求。', duration: 120 },
+        { title: '和好收尾', desc: '生成一句和好承诺，确认今晚行动。', duration: 60 }
+      ];
+
+      const screens = {
+        start: document.getElementById('screenStart'),
+        session: document.getElementById('screenSession'),
+        result: document.getElementById('screenResult')
+      };
+
+      const els = {
+        historyCount: document.getElementById('historyCount'),
+        nameA: document.getElementById('nameA'),
+        nameB: document.getElementById('nameB'),
+        startBtn: document.getElementById('startBtn'),
+        goHistoryBtn: document.getElementById('goHistoryBtn'),
+        startHistoryList: document.getElementById('startHistoryList'),
+        totalTimer: document.getElementById('totalTimer'),
+        stepTimer: document.getElementById('stepTimer'),
+        totalProgress: document.getElementById('totalProgress'),
+        stepTitle: document.getElementById('stepTitle'),
+        stepDesc: document.getElementById('stepDesc'),
+        pauseBtn: document.getElementById('pauseBtn'),
+        nextBtn: document.getElementById('nextBtn'),
+        finishBtn: document.getElementById('finishBtn'),
+        stepTimeline: document.getElementById('stepTimeline'),
+        stepForm: document.getElementById('stepForm'),
+        resultFactA: document.getElementById('resultFactA'),
+        resultFactB: document.getElementById('resultFactB'),
+        resultReflectA: document.getElementById('resultReflectA'),
+        resultReflectB: document.getElementById('resultReflectB'),
+        resultReqA: document.getElementById('resultReqA'),
+        resultReqB: document.getElementById('resultReqB'),
+        resultPeaceLine: document.getElementById('resultPeaceLine'),
+        resultTonight: document.getElementById('resultTonight'),
+        restartBtn: document.getElementById('restartBtn'),
+        backStartBtn: document.getElementById('backStartBtn'),
+        resultHistoryList: document.getElementById('resultHistoryList')
+      };
+
+      let timer = null;
+      let history = loadHistory();
+      let session = null;
+
+      function createSession() {
+        const a = (els.nameA.value || '我').trim() || '我';
+        const b = (els.nameB.value || '你').trim() || '你';
+        return {
+          id: `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+          startedAt: new Date().toISOString(),
+          endedAt: '',
+          status: 'running',
+          names: { a, b },
+          stepIndex: 0,
+          totalRemaining: TOTAL_SECONDS,
+          stepRemaining: STEPS[0].duration,
+          factA: '',
+          factB: '',
+          reflectA: '',
+          reflectB: '',
+          feelingsA: [],
+          feelingsB: [],
+          needsA: [],
+          needsB: [],
+          requestA: '',
+          requestB: '',
+          peaceLine: '',
+          tonightAction: '',
+          paused: false
+        };
+      }
+
+      function showScreen(name) {
+        Object.entries(screens).forEach(([key, node]) => {
+          node.classList.toggle('active', key === name);
+        });
+      }
+
+      function formatSec(sec) {
+        const m = String(Math.floor(sec / 60)).padStart(2, '0');
+        const s = String(Math.max(sec % 60, 0)).padStart(2, '0');
+        return `${m}:${s}`;
+      }
+
+      function startFlow() {
+        session = createSession();
+        showScreen('session');
+        startTimer();
+        renderSession();
+      }
+
+      function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+          if (!session || session.paused || session.status !== 'running') return;
+          session.totalRemaining -= 1;
+          session.stepRemaining -= 1;
+
+          if (session.totalRemaining <= 0) {
+            session.totalRemaining = 0;
+            session.stepRemaining = 0;
+            finishSession('done');
+            return;
+          }
+
+          if (session.stepRemaining <= 0) {
+            nextStep();
+            return;
+          }
+
+          renderSession();
+        }, 1000);
+      }
+
+      function nextStep() {
+        if (!session) return;
+        if (session.stepIndex >= STEPS.length - 1) {
+          finishSession('done');
+          return;
+        }
+        session.stepIndex += 1;
+        session.stepRemaining = STEPS[session.stepIndex].duration;
+        renderSession();
+      }
+
+      function finishSession(status) {
+        if (!session) return;
+        session.status = status;
+        session.paused = true;
+        session.endedAt = new Date().toISOString();
+        clearInterval(timer);
+        if (!session.peaceLine) {
+          session.peaceLine = buildPeaceLine();
+        }
+        if (!session.tonightAction) {
+          session.tonightAction = suggestTonightAction();
+        }
+        saveToHistory(session);
+        renderResult();
+        showScreen('result');
+      }
+
+      function togglePause() {
+        if (!session) return;
+        session.paused = !session.paused;
+        renderSession();
+      }
+
+      function buildPeaceLine() {
+        if (!session) return '';
+        const { a, b } = session.names;
+        const reqA = session.requestA || `${a}希望被好好听完`;
+        const reqB = session.requestB || `${b}希望被理解`;
+        return `我们都在意这段关系。${a}的请求是“${reqA}”，${b}的请求是“${reqB}”，今晚先做一个小行动，明天再复盘。`;
+      }
+
+      function suggestTonightAction() {
+        if (!session) return '';
+        const actionA = session.requestA || '把请求说完整';
+        const actionB = session.requestB || '用一句话确认对方';
+        return `${session.names.a}先做：${actionA}；${session.names.b}回应：${actionB}。`;
+      }
+
+      function updateField(field, value) {
+        if (!session) return;
+        session[field] = value;
+      }
+
+      function toggleWord(field, word) {
+        if (!session) return;
+        const list = session[field];
+        if (list.includes(word)) {
+          session[field] = list.filter((w) => w !== word);
+        } else {
+          session[field] = [...list, word];
+        }
+        renderStepForm();
+      }
+
+      function renderSession() {
+        if (!session) return;
+        const step = STEPS[session.stepIndex];
+        els.totalTimer.textContent = formatSec(session.totalRemaining);
+        els.stepTimer.textContent = formatSec(session.stepRemaining);
+        els.stepTitle.textContent = `Step ${session.stepIndex + 1} · ${step.title}`;
+        els.stepDesc.textContent = step.desc;
+        els.pauseBtn.textContent = session.paused ? '继续' : '暂停';
+        const doneRatio = ((TOTAL_SECONDS - session.totalRemaining) / TOTAL_SECONDS) * 100;
+        els.totalProgress.style.width = `${Math.min(100, Math.max(0, doneRatio))}%`;
+        renderTimeline();
+        renderStepForm();
+      }
+
+      function renderTimeline() {
+        if (!session) return;
+        els.stepTimeline.innerHTML = STEPS.map((step, idx) => {
+          const cls =
+            idx < session.stepIndex ? 'done' : idx === session.stepIndex ? 'current' : '';
+          return `<li class="${cls}"><span>${idx + 1}. ${step.title}</span><span>${formatSec(step.duration)}</span></li>`;
+        }).join('');
+      }
+
+      function renderChips(label, field, words) {
+        const chips = words
+          .map((word) => {
+            const isActive = session[field].includes(word);
+            return `<button type="button" class="chip ${isActive ? 'active' : ''}" data-field="${field}" data-word="${word}">${word}</button>`;
+          })
+          .join('');
+        return `<div class="chip-zone"><small class="muted">${label}</small><div class="chip-group">${chips}</div></div>`;
+      }
+
+      function renderStepForm() {
+        if (!session) return;
+        const { a, b } = session.names;
+        const index = session.stepIndex;
+        const byTextarea = (field, label, value, placeholder) => `
+          <div class="form-row">
+            <label>${label}</label>
+            <textarea data-bind="${field}" placeholder="${placeholder}">${escapeHtml(value || '')}</textarea>
+          </div>
+        `;
+
+        let html = '';
+        if (index === 0) {
+          html = `
+            <div class="result-card">
+              请一起读出规则，然后按“下一步”进入发言。<br />
+              1）不打断对方。<br />
+              2）只聊本次事件。<br />
+              3）不用绝对化词语。
+            </div>
+          `;
+        } else if (index === 1) {
+          html = byTextarea('factA', `${a}：这次发生了什么？`, session.factA, '例：昨晚 9 点我们约好通话，你在 10 点后才回复...');
+        } else if (index === 2) {
+          html = byTextarea('reflectB', `${b}：我听到的是...`, session.reflectB, '例：你在意的是我晚回复，而且没有提前告知。');
+        } else if (index === 3) {
+          html = byTextarea('factB', `${b}：这次发生了什么？`, session.factB, '例：我当时在加班，手机静音，结束后才看到消息...');
+        } else if (index === 4) {
+          html = byTextarea('reflectA', `${a}：我听到的是...`, session.reflectA, '例：你不是故意忽略我，而是当时没法及时回应。');
+        } else if (index === 5) {
+          html = `
+            <div class="double-col">
+              <div class="result-card">
+                <strong>${a}</strong>
+                ${renderChips('感受', 'feelingsA', FEELINGS)}
+                ${renderChips('需要', 'needsA', NEEDS)}
+              </div>
+              <div class="result-card">
+                <strong>${b}</strong>
+                ${renderChips('感受', 'feelingsB', FEELINGS)}
+                ${renderChips('需要', 'needsB', NEEDS)}
+              </div>
+            </div>
+          `;
+        } else if (index === 6) {
+          html = `
+            ${byTextarea('requestA', `${a} 的请求`, session.requestA, '例：如果会晚 15 分钟以上，请提前发一句消息。')}
+            ${byTextarea('requestB', `${b} 的请求`, session.requestB, '例：如果我没及时回，可以先发“你方便时回我”。')}
+          `;
+        } else {
+          html = `
+            ${byTextarea('peaceLine', '和好一句话', session.peaceLine || buildPeaceLine(), '自动生成后可手动修改')}
+            ${byTextarea('tonightAction', '今晚行动', session.tonightAction || suggestTonightAction(), '今晚就能完成的一件事')}
+            <div class="actions">
+              <button type="button" id="genLineBtn" class="btn-plain">重新生成一句话</button>
+            </div>
+          `;
+        }
+
+        els.stepForm.innerHTML = html;
+
+        els.stepForm.querySelectorAll('[data-bind]').forEach((node) => {
+          node.addEventListener('input', (e) => {
+            updateField(node.dataset.bind, e.target.value);
+          });
+        });
+
+        els.stepForm.querySelectorAll('.chip').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            toggleWord(btn.dataset.field, btn.dataset.word);
+          });
+        });
+
+        const genLineBtn = document.getElementById('genLineBtn');
+        if (genLineBtn) {
+          genLineBtn.addEventListener('click', () => {
+            session.peaceLine = buildPeaceLine();
+            session.tonightAction = suggestTonightAction();
+            renderStepForm();
+          });
+        }
+      }
+
+      function renderResult() {
+        if (!session) return;
+        els.resultFactA.textContent = session.factA || '-';
+        els.resultFactB.textContent = session.factB || '-';
+        els.resultReflectA.textContent = session.reflectA || '-';
+        els.resultReflectB.textContent = session.reflectB || '-';
+        els.resultReqA.textContent = session.requestA || '-';
+        els.resultReqB.textContent = session.requestB || '-';
+        els.resultPeaceLine.textContent = session.peaceLine || '-';
+        els.resultTonight.textContent = session.tonightAction || '-';
+        renderHistoryLists();
+      }
+
+      function loadHistory() {
+        try {
+          const raw = localStorage.getItem(STORAGE_KEY);
+          if (!raw) return [];
+          const parsed = JSON.parse(raw);
+          return Array.isArray(parsed) ? parsed : [];
+        } catch (err) {
+          return [];
+        }
+      }
+
+      function saveToHistory(item) {
+        history = [item, ...history].slice(0, 50);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        renderHistoryLists();
+      }
+
+      function formatTime(iso) {
+        const dt = new Date(iso);
+        return dt.toLocaleString('zh-CN', {
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      function renderHistoryLists() {
+        els.historyCount.textContent = String(history.length);
+        const rows =
+          history.length === 0
+            ? '<li><small>还没有存档，完成第一轮后会出现在这里。</small></li>'
+            : history
+                .map((item) => {
+                  const badgeClass = item.status === 'done' ? 'done' : 'running';
+                  const badgeText = item.status === 'done' ? '已完成' : '已提前结束';
+                  const line = escapeHtml(item.peaceLine || '本轮未填写和好一句话');
+                  return `
+                    <li>
+                      <div>
+                        <span class="kudos ${badgeClass}">${badgeText}</span>
+                        <small style="margin-left:6px">${formatTime(item.startedAt)}</small>
+                      </div>
+                      <div>${line}</div>
+                    </li>
+                  `;
+                })
+                .join('');
+        els.startHistoryList.innerHTML = rows;
+        els.resultHistoryList.innerHTML = rows;
+      }
+
+      function escapeHtml(value) {
+        return String(value)
+          .replaceAll('&', '&amp;')
+          .replaceAll('<', '&lt;')
+          .replaceAll('>', '&gt;')
+          .replaceAll('"', '&quot;')
+          .replaceAll("'", '&#39;');
+      }
+
+      els.startBtn.addEventListener('click', startFlow);
+      els.goHistoryBtn.addEventListener('click', () => {
+        showScreen('result');
+        session = null;
+        renderHistoryLists();
+      });
+      els.pauseBtn.addEventListener('click', togglePause);
+      els.nextBtn.addEventListener('click', nextStep);
+      els.finishBtn.addEventListener('click', () => finishSession('aborted'));
+      els.restartBtn.addEventListener('click', startFlow);
+      els.backStartBtn.addEventListener('click', () => {
+        clearInterval(timer);
+        showScreen('start');
+      });
+
+      renderHistoryLists();
+    </script>
+  </body>
+</html>

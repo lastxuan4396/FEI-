@@ -1,0 +1,3437 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>12分钟和好</title>
+    <style>
+      @import url('https://fonts.googleapis.com/css2?family=ZCOOL+XiaoWei&family=Noto+Sans+SC:wght@400;500;700;800&display=swap');
+
+      :root {
+        --bg-1: #fff7e6;
+        --bg-2: #e9f5f1;
+        --ink: #24303a;
+        --muted: #60707d;
+        --line: rgba(36, 48, 58, 0.16);
+        --panel: rgba(255, 255, 255, 0.86);
+        --soft: rgba(255, 255, 255, 0.63);
+        --accent: #d2694f;
+        --accent-2: #136f63;
+        --danger: #b42318;
+        --ok: #176648;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        min-height: 100vh;
+        font-family: 'Noto Sans SC', sans-serif;
+        color: var(--ink);
+        background:
+          radial-gradient(circle at 12% 16%, rgba(255, 182, 113, 0.45), transparent 32%),
+          radial-gradient(circle at 86% 84%, rgba(106, 182, 160, 0.35), transparent 34%),
+          linear-gradient(145deg, var(--bg-1), var(--bg-2));
+        padding: clamp(14px, 2.8vw, 28px);
+      }
+
+      .app {
+        width: min(1180px, 100%);
+        margin: 0 auto;
+        border-radius: 24px;
+        border: 1px solid var(--line);
+        background: var(--panel);
+        backdrop-filter: blur(10px);
+        box-shadow: 0 28px 70px rgba(19, 36, 47, 0.15);
+        overflow: hidden;
+      }
+
+      .topbar {
+        padding: clamp(18px, 3vw, 28px);
+        border-bottom: 1px solid var(--line);
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 12px;
+        align-items: center;
+      }
+
+      h1 {
+        margin: 0;
+        font-family: 'ZCOOL XiaoWei', serif;
+        letter-spacing: 1px;
+        font-size: clamp(32px, 4.8vw, 52px);
+        line-height: 0.95;
+      }
+
+      .subtitle {
+        margin: 8px 0 0;
+        font-size: 14px;
+        color: var(--muted);
+      }
+
+      .meta {
+        display: grid;
+        gap: 6px;
+        justify-items: end;
+      }
+
+      .pill {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        border-radius: 999px;
+        padding: 5px 12px;
+        font-size: 12px;
+        font-weight: 700;
+        border: 1px solid var(--line);
+        background: #fff;
+      }
+
+      .shell {
+        padding: clamp(14px, 2vw, 22px);
+        display: grid;
+        gap: 14px;
+      }
+
+      .screen {
+        display: none;
+      }
+
+      .screen.active {
+        display: block;
+      }
+
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+      }
+
+      .panel {
+        border: 1px solid var(--line);
+        border-radius: 18px;
+        background: var(--soft);
+        padding: 14px;
+      }
+
+      .panel h2,
+      .panel h3 {
+        margin: 0 0 10px;
+      }
+
+      .panel h2 {
+        font-size: 22px;
+      }
+
+      .panel h3 {
+        font-size: 17px;
+      }
+
+      .muted {
+        color: var(--muted);
+        font-size: 13px;
+      }
+
+      .actions {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+
+      button {
+        border: 1px solid transparent;
+        border-radius: 11px;
+        padding: 9px 13px;
+        min-height: 42px;
+        font-size: 14px;
+        font-weight: 700;
+        font-family: inherit;
+        cursor: pointer;
+        transition: all 180ms ease;
+      }
+
+      button:hover {
+        transform: translateY(-1px);
+      }
+
+      button:disabled {
+        opacity: 0.42;
+        transform: none;
+        cursor: not-allowed;
+      }
+
+      .btn-main {
+        background: linear-gradient(135deg, var(--accent), #e9895e);
+        color: #fff;
+      }
+
+      .btn-sub {
+        background: linear-gradient(135deg, var(--accent-2), #28a09a);
+        color: #fff;
+      }
+
+      .btn-plain {
+        border-color: var(--line);
+        background: #fff;
+        color: var(--ink);
+      }
+
+      .btn-danger {
+        border-color: rgba(180, 35, 24, 0.26);
+        background: #fff2f1;
+        color: var(--danger);
+      }
+
+      .form-row {
+        display: grid;
+        gap: 8px;
+      }
+
+      .form-row + .form-row {
+        margin-top: 10px;
+      }
+
+      label {
+        font-size: 13px;
+        color: var(--muted);
+      }
+
+      input,
+      textarea,
+      select {
+        width: 100%;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px 12px;
+        font-size: 14px;
+        font-family: inherit;
+        color: var(--ink);
+        background: #fff;
+      }
+
+      textarea {
+        min-height: 98px;
+        resize: vertical;
+        line-height: 1.5;
+      }
+
+      select {
+        min-height: 42px;
+      }
+
+      .timeline {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+        display: grid;
+        gap: 8px;
+      }
+
+      .timeline li {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 8px 10px;
+        background: #fff;
+        font-size: 13px;
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+      }
+
+      .timeline li.current {
+        border-color: rgba(19, 111, 99, 0.45);
+        box-shadow: 0 0 0 2px rgba(19, 111, 99, 0.12);
+      }
+
+      .timeline li.done {
+        background: #eefaf4;
+        border-color: rgba(23, 102, 72, 0.3);
+      }
+
+      .status-box {
+        display: grid;
+        gap: 8px;
+      }
+
+      .step-guide {
+        border: 1px solid rgba(19, 111, 99, 0.28);
+        border-radius: 12px;
+        background: #f5fbf9;
+        padding: 10px;
+        margin-bottom: 10px;
+        display: grid;
+        gap: 8px;
+      }
+
+      .step-guide-head {
+        display: flex;
+        gap: 6px;
+        flex-wrap: wrap;
+        align-items: center;
+      }
+
+      .guide-badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 999px;
+        padding: 3px 10px;
+        font-size: 12px;
+        font-weight: 700;
+        border: 1px solid rgba(19, 111, 99, 0.24);
+        background: #fff;
+        color: #1c4a44;
+      }
+
+      .guide-role.role-a {
+        background: #e8f6ff;
+        border-color: rgba(19, 93, 152, 0.3);
+        color: #0f5488;
+      }
+
+      .guide-role.role-b {
+        background: #fff5e8;
+        border-color: rgba(184, 101, 18, 0.28);
+        color: #8b4a0e;
+      }
+
+      .guide-role.role-both {
+        background: #eef9f3;
+        border-color: rgba(23, 102, 72, 0.25);
+        color: #176648;
+      }
+
+      .step-guide-main {
+        margin: 0;
+        font-size: 14px;
+        font-weight: 700;
+        color: var(--ink);
+      }
+
+      .step-guide-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 3px;
+        color: var(--ink);
+        font-size: 13px;
+      }
+
+      .input-helper {
+        margin-top: -4px;
+        font-size: 12px;
+        color: var(--muted);
+      }
+
+      .step-inline-tip {
+        margin-bottom: 8px;
+      }
+
+      .timer-wrap {
+        display: grid;
+        gap: 10px;
+      }
+
+      .timer-line {
+        display: flex;
+        gap: 8px;
+        align-items: baseline;
+        flex-wrap: wrap;
+      }
+
+      .timer {
+        font-family: 'ZCOOL XiaoWei', serif;
+        font-size: clamp(38px, 6vw, 58px);
+        line-height: 1;
+      }
+
+      .timer.step {
+        font-size: clamp(28px, 4.2vw, 36px);
+      }
+
+      .progress-track {
+        height: 10px;
+        border-radius: 999px;
+        overflow: hidden;
+        background: #e8ece9;
+      }
+
+      .progress-track > span {
+        display: block;
+        height: 100%;
+        width: 0;
+        background: linear-gradient(90deg, #f59e0b, #10b981);
+        transition: width 300ms linear;
+      }
+
+      .chip-zone {
+        display: grid;
+        gap: 8px;
+      }
+
+      .chip-group {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 7px;
+      }
+
+      .chip {
+        border: 1px solid rgba(36, 48, 58, 0.2);
+        background: #fff9ef;
+        border-radius: 999px;
+        padding: 4px 10px;
+        font-size: 12px;
+        cursor: pointer;
+      }
+
+      .chip.active {
+        background: #ffe2bf;
+        border-color: #e9a059;
+        color: #8f4f15;
+      }
+
+      .double-col {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+
+      .result-card {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        padding: 10px;
+        font-size: 13px;
+        line-height: 1.6;
+      }
+
+      .history {
+        list-style: none;
+        margin: 0;
+        padding: 0;
+        display: grid;
+        gap: 8px;
+        max-height: 290px;
+        overflow: auto;
+      }
+
+      .history li {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        background: #fff;
+        padding: 9px 10px;
+        display: grid;
+        gap: 4px;
+      }
+
+      .history small {
+        color: var(--muted);
+      }
+
+      .kudos {
+        display: inline-flex;
+        border-radius: 999px;
+        padding: 3px 10px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+
+      .kudos.done {
+        background: #e9f8f0;
+        color: var(--ok);
+      }
+
+      .kudos.running {
+        background: #fff4dd;
+        color: #a16207;
+      }
+
+      .hidden {
+        display: none !important;
+      }
+
+      .switch-line {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--ink);
+      }
+
+      .switch-line input {
+        width: auto;
+        margin: 0;
+        accent-color: var(--accent-2);
+      }
+
+      .privacy-actions {
+        margin-top: 8px;
+      }
+
+      .privacy-options {
+        margin-top: 8px;
+        display: grid;
+        gap: 6px;
+      }
+
+      .privacy-passphrase {
+        margin-top: 8px;
+      }
+
+      .collab-box {
+        border: 1px dashed rgba(19, 111, 99, 0.35);
+        border-radius: 12px;
+        background: #f4fbf8;
+        padding: 10px;
+      }
+
+      .collab-row {
+        display: grid;
+        gap: 8px;
+      }
+
+      .intensity-row {
+        display: grid;
+        grid-template-columns: auto 1fr auto;
+        gap: 8px;
+        align-items: center;
+      }
+
+      .intensity-row output {
+        font-weight: 700;
+        min-width: 64px;
+        text-align: right;
+      }
+
+      .resume-box {
+        border: 1px dashed rgba(19, 111, 99, 0.38);
+        border-radius: 12px;
+        background: #f1fbf8;
+        padding: 10px;
+      }
+
+      .step-error {
+        display: none;
+        margin: 2px 0 0;
+        color: var(--danger);
+        font-size: 13px;
+        font-weight: 700;
+      }
+
+      .quality-box {
+        margin-top: 10px;
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px;
+        background: #fff;
+      }
+
+      .quality-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 6px;
+        margin-top: 6px;
+      }
+
+      .quality-btn {
+        border: 1px solid rgba(36, 48, 58, 0.2);
+        background: #fff9ef;
+        border-radius: 999px;
+        min-height: 32px;
+        padding: 3px 10px;
+        font-size: 12px;
+      }
+
+      .quality-btn.active {
+        background: #e9f8f0;
+        border-color: rgba(23, 102, 72, 0.4);
+        color: #176648;
+      }
+
+      .analytics-box {
+        margin-top: 10px;
+      }
+
+      .analytics-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .analytics-item {
+        border: 1px solid var(--line);
+        border-radius: 10px;
+        padding: 8px;
+        background: #fff;
+      }
+
+      .analytics-item strong {
+        display: block;
+        font-size: 16px;
+      }
+
+      .analytics-item small {
+        color: var(--muted);
+      }
+
+      .rewrite-list {
+        display: grid;
+        gap: 8px;
+      }
+
+      .rewrite-item {
+        border: 1px solid var(--line);
+        border-radius: 12px;
+        padding: 10px;
+        background: #fff;
+        display: grid;
+        gap: 8px;
+      }
+
+      .rewrite-item .actions {
+        justify-content: flex-end;
+      }
+
+      .rewrite-item pre {
+        margin: 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        font-family: 'Noto Sans SC', sans-serif;
+        font-size: 13px;
+        line-height: 1.5;
+      }
+
+      .muted.alert {
+        color: var(--danger);
+      }
+
+      .muted.success {
+        color: var(--ok);
+      }
+
+      .safety-panel {
+        border: 1px solid rgba(180, 35, 24, 0.35);
+        border-radius: 12px;
+        background: #fff2f1;
+        padding: 10px;
+      }
+
+      .share-actions {
+        margin-top: 6px;
+      }
+
+      .monitor-box {
+        margin-top: 8px;
+        border: 1px dashed var(--line);
+        border-radius: 12px;
+        padding: 10px;
+        background: #fff;
+      }
+
+      .monitor-list {
+        margin: 0;
+        padding-left: 18px;
+        display: grid;
+        gap: 4px;
+      }
+
+      @media print {
+        body {
+          background: #fff;
+          padding: 0;
+        }
+
+        .topbar,
+        #screenStart,
+        #screenSession,
+        #resultHistoryList,
+        #startHistoryList,
+        .actions {
+          display: none !important;
+        }
+
+        #screenResult {
+          display: block !important;
+        }
+
+        .app {
+          box-shadow: none;
+          border: 0;
+          width: 100%;
+        }
+      }
+
+      @media (max-width: 940px) {
+        .grid,
+        .double-col {
+          grid-template-columns: 1fr;
+        }
+
+        .meta {
+          justify-items: start;
+        }
+      }
+
+      @media (max-width: 640px) {
+        .actions > button {
+          flex: 1 1 calc(50% - 6px);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="app">
+      <header class="topbar">
+        <div>
+          <h1>12分钟和好</h1>
+          <p class="subtitle">冲突急救流程：说事实、做复述、提请求、落行动。</p>
+        </div>
+        <div class="meta">
+          <span class="pill">总时长 <strong>12:00</strong></span>
+          <span class="pill">历史存档 <strong id="historyCount">0</strong> 条</span>
+          <span class="pill">协作状态 <strong id="collabStatus">单机</strong></span>
+        </div>
+      </header>
+
+      <main class="shell">
+        <section id="screenStart" class="screen active">
+          <div class="grid">
+            <article class="panel">
+              <h2>开始一轮修复</h2>
+              <p class="muted">
+                这是一段限时流程，不追究输赢，只追求连接。默认每一步会自动推进，也可以手动切下一步。
+              </p>
+              <div class="form-row">
+                <label for="nameA">A 的称呼</label>
+                <input id="nameA" maxlength="12" placeholder="例如：我" value="我" />
+              </div>
+              <div class="form-row">
+                <label for="nameB">B 的称呼</label>
+                <input id="nameB" maxlength="12" placeholder="例如：你" value="你" />
+              </div>
+              <div class="form-row">
+                <label>双人协作（同浏览器多标签）</label>
+                <div class="collab-box collab-row">
+                  <input id="collabRoom" maxlength="24" placeholder="房间号（可留空后自动生成）" />
+                  <div class="actions">
+                    <button id="joinRoomBtn" class="btn-plain" type="button">加入房间</button>
+                    <button id="createRoomBtn" class="btn-plain" type="button">生成房间</button>
+                    <button id="copyRoomLinkBtn" class="btn-plain" type="button">复制邀请链接</button>
+                  </div>
+                  <small id="collabHint" class="muted">默认单机模式。开启后可在同浏览器多标签同步会话。</small>
+                </div>
+              </div>
+              <div class="form-row">
+                <label for="conflictType">冲突类型模板</label>
+                <select id="conflictType" aria-label="冲突类型模板选择">
+                  <option value="general">通用沟通</option>
+                  <option value="reply_delay">回复慢/失联</option>
+                  <option value="plan_change">临时变更/放鸽子</option>
+                  <option value="chores">家务分工</option>
+                  <option value="money">金钱消费</option>
+                  <option value="boundary">边界/吃醋</option>
+                </select>
+                <p id="conflictHint" class="muted" style="margin: 0">你可以先选一个场景，流程提示会更贴近。</p>
+              </div>
+              <div class="form-row">
+                <label for="conflictIntensity">冲突强度分流（1-5）</label>
+                <div class="result-card intensity-row">
+                  <span>平稳</span>
+                  <input id="conflictIntensity" type="range" min="1" max="5" step="1" value="3" />
+                  <output id="conflictIntensityValue">3 / 5</output>
+                </div>
+                <small id="intensityHint" class="muted">当强度≥4时，开始后自动进入60秒降温步骤。</small>
+              </div>
+              <div class="form-row">
+                <label>流程规则</label>
+                <div class="result-card">
+                  1. 只聊这次冲突，不翻旧账。<br />
+                  2. 对方发言时不打断。<br />
+                  3. 不用“你总是/你从不”。
+                </div>
+              </div>
+              <div class="form-row">
+                <label>隐私与数据</label>
+                <div class="result-card">
+                  <label class="switch-line">
+                    <input id="privacyModeToggle" type="checkbox" />
+                    开启隐私模式（不保存本轮到本地）
+                  </label>
+                  <div class="privacy-options">
+                    <label class="switch-line">
+                      <input id="autoClearDraftToggle" type="checkbox" />
+                      会话结束自动清理草稿
+                    </label>
+                    <label class="switch-line">
+                      <input id="autoClearHistoryToggle" type="checkbox" />
+                      会话结束自动清空历史
+                    </label>
+                  </div>
+                  <p id="privacyHint" class="muted" style="margin: 6px 0 0">
+                    当前会把已完成会话保存到本地浏览器。
+                  </p>
+                  <div class="form-row privacy-passphrase">
+                    <label for="archivePassphrase">存档口令（用于加密导出 / 解密导入）</label>
+                    <input id="archivePassphrase" type="password" placeholder="留空则明文导出" autocomplete="off" />
+                    <small id="importHint" class="muted"></small>
+                  </div>
+                  <div class="form-row privacy-passphrase">
+                    <label for="alertWebhook">错误告警 Webhook（可选）</label>
+                    <input id="alertWebhook" type="url" placeholder="https://example.com/webhook" />
+                    <small id="monitorHint" class="muted">留空则只在本地记录错误。填写后会在脚本报错时尝试推送告警。</small>
+                  </div>
+                  <div class="actions privacy-actions">
+                    <button id="importBtn" class="btn-plain" type="button">导入存档</button>
+                    <button id="exportBtn" class="btn-plain" type="button">导出存档</button>
+                    <button id="exportClearBtn" class="btn-plain" type="button">导出后清空</button>
+                    <button id="clearHistoryBtn" class="btn-danger" type="button">清空历史</button>
+                    <input id="importFileInput" type="file" accept=".json,application/json" class="hidden" />
+                  </div>
+                </div>
+              </div>
+              <div id="resumeWrap" class="form-row hidden">
+                <label>上次未完成会话</label>
+                <div class="resume-box">
+                  <p id="resumeMeta" class="muted" style="margin: 0 0 8px">检测到可恢复会话。</p>
+                  <div id="resumePreview" class="result-card" style="margin-bottom: 8px"></div>
+                  <div class="actions">
+                    <button id="resumeBtn" class="btn-sub" type="button">继续上次会话</button>
+                    <button id="discardResumeBtn" class="btn-plain" type="button">放弃草稿</button>
+                  </div>
+                </div>
+              </div>
+              <div class="actions" style="margin-top: 12px">
+                <button id="startBtn" class="btn-main">开始 12 分钟</button>
+                <button id="goHistoryBtn" class="btn-plain">看看历史存档</button>
+              </div>
+            </article>
+
+            <article class="panel">
+              <h3>最近存档</h3>
+              <p class="muted">每次完成后会自动保存到本地浏览器（LocalStorage）。</p>
+              <div id="analyticsBox" class="result-card analytics-box" aria-live="polite"></div>
+              <ul id="startHistoryList" class="history"></ul>
+            </article>
+          </div>
+        </section>
+
+        <section id="screenSession" class="screen">
+          <div class="grid">
+            <article class="panel status-box">
+              <div class="timer-wrap">
+                <div>
+                  <small class="muted">总倒计时</small>
+                  <div id="totalTimer" class="timer" aria-live="polite">12:00</div>
+                </div>
+                <div>
+                  <small class="muted">当前步骤剩余</small>
+                  <div id="stepTimer" class="timer step" aria-live="polite">01:00</div>
+                </div>
+                <div class="progress-track"><span id="totalProgress"></span></div>
+              </div>
+              <div>
+                <h3 id="stepTitle">Step 1 · 规则确认</h3>
+                <p id="stepDesc" class="muted"></p>
+              </div>
+              <div class="actions">
+                <button id="pauseBtn" class="btn-sub">暂停</button>
+                <button id="nextBtn" class="btn-plain">下一步</button>
+                <button id="finishBtn" class="btn-danger">提前结束</button>
+              </div>
+              <p id="stepError" class="step-error" role="alert" aria-live="assertive"></p>
+              <div id="safetyPanel" class="safety-panel hidden">
+                <strong>安全兜底已触发</strong>
+                <p id="safetyReason" class="muted" style="margin: 6px 0">检测到高风险表达，建议先暂停并恢复边界。</p>
+                <div class="actions">
+                  <button id="safetyCooldownBtn" class="btn-danger" type="button">进入2分钟降温</button>
+                  <button id="safetyResumeBtn" class="btn-plain" type="button">我已平稳，继续流程</button>
+                  <button id="safetyExitBtn" class="btn-plain" type="button">结束并保存边界卡</button>
+                </div>
+              </div>
+              <ul id="stepTimeline" class="timeline"></ul>
+            </article>
+
+            <article class="panel">
+              <h3>当前步骤输入</h3>
+              <div id="stepGuide" class="step-guide">
+                <div class="step-guide-head">
+                  <span id="guideRoleBadge" class="guide-badge guide-role role-both">轮到双方</span>
+                  <span id="guideActionBadge" class="guide-badge">规则确认</span>
+                </div>
+                <p id="guideMain" class="step-guide-main">先一起读规则，然后点击下一步进入发言。</p>
+                <ul id="guideChecklist" class="step-guide-list"></ul>
+                <small id="guideQuickHint" class="muted"></small>
+              </div>
+              <div id="stepForm"></div>
+              <div id="qualityWrap" class="quality-box hidden">
+                <small class="muted">本步骤自评（可用于生成改进建议）</small>
+                <div id="qualityRow" class="quality-row" role="group" aria-label="步骤质量评分"></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section id="screenResult" class="screen">
+          <div class="grid">
+            <article class="panel">
+              <h2>本轮结果</h2>
+              <p class="muted">你们完成了一次沟通修复，下面是本轮存档。</p>
+              <div class="double-col">
+                <div class="result-card">
+                  <strong>事实（A）</strong>
+                  <div id="resultFactA">-</div>
+                </div>
+                <div class="result-card">
+                  <strong>事实（B）</strong>
+                  <div id="resultFactB">-</div>
+                </div>
+              </div>
+              <div class="double-col" style="margin-top: 10px">
+                <div class="result-card">
+                  <strong>复述（A）</strong>
+                  <div id="resultReflectA">-</div>
+                </div>
+                <div class="result-card">
+                  <strong>复述（B）</strong>
+                  <div id="resultReflectB">-</div>
+                </div>
+              </div>
+              <div class="double-col" style="margin-top: 10px">
+                <div class="result-card">
+                  <strong>请求（A）</strong>
+                  <div id="resultReqA">-</div>
+                </div>
+                <div class="result-card">
+                  <strong>请求（B）</strong>
+                  <div id="resultReqB">-</div>
+                </div>
+              </div>
+              <div class="form-row" style="margin-top: 10px">
+                <label>和好一句话</label>
+                <div id="resultPeaceLine" class="result-card"></div>
+              </div>
+              <div class="form-row">
+                <label>今晚行动</label>
+                <div id="resultTonight" class="result-card"></div>
+              </div>
+              <div class="form-row">
+                <label>质量洞察</label>
+                <div id="resultQualityInsight" class="result-card"></div>
+              </div>
+              <div class="form-row">
+                <label>分享卡片</label>
+                <textarea id="shareCardText" readonly aria-label="分享卡片文本"></textarea>
+                <div class="actions">
+                  <button id="copyShareBtn" class="btn-plain" type="button">复制分享卡片</button>
+                  <small id="copyShareHint" class="muted"></small>
+                </div>
+                <div class="actions share-actions">
+                  <button id="downloadImageBtn" class="btn-plain" type="button">下载图卡 PNG</button>
+                  <button id="downloadPdfBtn" class="btn-plain" type="button">导出 PDF</button>
+                </div>
+              </div>
+              <div class="form-row">
+                <label>行动承诺提醒</label>
+                <input id="reminderTime" type="datetime-local" />
+                <div class="actions">
+                  <button id="downloadIcsBtn" class="btn-plain" type="button">下载提醒日历(.ics)</button>
+                  <button id="notifyBtn" class="btn-plain" type="button">30分钟后浏览器提醒</button>
+                  <small id="reminderHint" class="muted"></small>
+                </div>
+              </div>
+              <div class="form-row">
+                <label>低分步骤改写建议</label>
+                <div id="resultRewriteList" class="rewrite-list"></div>
+                <small id="rewriteCopyHint" class="muted"></small>
+              </div>
+              <div class="form-row">
+                <label>监控日志</label>
+                <div id="monitorBox" class="monitor-box"></div>
+              </div>
+              <div class="actions" style="margin-top: 12px">
+                <button id="restartBtn" class="btn-main">再来一轮</button>
+                <button id="backStartBtn" class="btn-plain">回到首页</button>
+              </div>
+            </article>
+
+            <article class="panel">
+              <h3>历史存档</h3>
+              <ul id="resultHistoryList" class="history"></ul>
+            </article>
+          </div>
+        </section>
+      </main>
+    </div>
+
+    <script>
+      const STORAGE_KEY = 'repair12-history-v1';
+      const ACTIVE_SESSION_KEY = 'repair12-active-session-v1';
+      const SETTINGS_KEY = 'repair12-settings-v1';
+      const ERROR_LOG_KEY = 'repair12-error-log-v1';
+      const COLLAB_STORAGE_PREFIX = 'repair12-collab-v1-';
+      const TOTAL_SECONDS = 12 * 60;
+      const FINISH_CONFIRM_WINDOW_MS = 3000;
+      const SCORE_OPTIONS = [1, 2, 3, 4, 5];
+      const ARCHIVE_VERSION = 2;
+      const PBKDF2_ITERATIONS = 120000;
+      const COLLAB_HEARTBEAT_MS = 5000;
+      const HIGH_INTENSITY_THRESHOLD = 4;
+      const COOLDOWN_SECONDS = 60;
+      const SAFETY_COOLDOWN_SECONDS = 120;
+
+      const RISK_PHRASE_RULES = [
+        { pattern: /你总是|你从不|每次都|永远都/g, label: '绝对化表达' },
+        { pattern: /闭嘴|滚|废物|垃圾|有病|神经病|去死/g, label: '攻击性词汇' },
+        { pattern: /分手|离婚|算了吧|到此为止/g, label: '关系终结威胁' },
+        { pattern: /我不活了|活不下去|结束生命/g, label: '极端风险表达' }
+      ];
+
+      const FEELINGS = ['委屈', '生气', '焦虑', '失落', '害怕', '内疚', '沮丧', '孤单', '疲惫', '被忽视'];
+      const NEEDS = ['被理解', '被尊重', '安全感', '陪伴', '信任', '空间', '确定性', '支持', '被看见', '公平'];
+
+      const STEPS = [
+        { title: '规则确认', desc: '一起读规则：不打断、不翻旧账、只说这次事件。', duration: 60, key: 'rules' },
+        { title: 'A 说事实', desc: 'A 用两分钟讲“发生了什么”。只描述事实，不评判。', duration: 120, key: 'factA' },
+        { title: 'B 做复述', desc: 'B 用一句话复述 A 的重点。', duration: 60, key: 'reflectB' },
+        { title: 'B 说事实', desc: 'B 用两分钟讲“发生了什么”。只描述事实，不评判。', duration: 120, key: 'factB' },
+        { title: 'A 做复述', desc: 'A 用一句话复述 B 的重点。', duration: 60, key: 'reflectA' },
+        { title: '感受与需要', desc: '双方都选择感受词和需要词。', duration: 120, key: 'feelingsNeeds' },
+        { title: '提出请求', desc: '双方各给出一个“今天可执行”的请求。', duration: 120, key: 'requests' },
+        { title: '和好收尾', desc: '生成一句和好承诺，确认今晚行动。', duration: 60, key: 'closing' }
+      ];
+
+      const CONFLICT_TEMPLATES = {
+        general: {
+          label: '通用沟通',
+          hint: '适合大部分冲突场景，先完成流程再做细化。',
+          stepNotes: {},
+          placeholders: {}
+        },
+        reply_delay: {
+          label: '回复慢/失联',
+          hint: '重点说清时间线、回复预期和告知方式。',
+          stepNotes: {
+            1: '尽量给出具体时间点，比如“几点发、几点回”。',
+            6: '请求尽量可量化，例如“30分钟内回一句在忙”。'
+          },
+          placeholders: {
+            factA: '例：昨晚 21:10 我发消息，23:40 才收到回复，我会很慌。',
+            factB: '例：我 21:00-23:30 在开会，手机静音，没有及时看到。',
+            requestA: '例：如果两小时内不能回，请先发“我在忙，稍后回”。',
+            requestB: '例：你可以先发“看到后回我”，我会优先处理。'
+          }
+        },
+        plan_change: {
+          label: '临时变更/放鸽子',
+          hint: '聚焦“变更前是否告知”和“补偿方案”。',
+          stepNotes: {
+            1: '描述原计划和实际变更，不评价人格。',
+            6: '请求写成“下次发生时怎么做”。'
+          },
+          placeholders: {
+            factA: '例：我们约好 19:00 吃饭，你 18:50 说来不了，我感到被忽视。',
+            factB: '例：我下班被临时安排任务，没能按原计划赴约。',
+            requestA: '例：如果要变更，请至少提前 1 小时告知。',
+            requestB: '例：我会给出替代时间，并主动补一个可执行方案。'
+          }
+        },
+        chores: {
+          label: '家务分工',
+          hint: '聚焦任务与负担，不争论“谁更累”。',
+          stepNotes: {
+            1: '尽量说具体家务事项和频率。',
+            5: '选择“公平、支持、被看见”等需要会更有帮助。'
+          },
+          placeholders: {
+            factA: '例：这周三次晚饭后都是我收拾，我有点累和不平衡。',
+            factB: '例：我这周加班晚回，忽略了家务安排。',
+            requestA: '例：我们固定周一和周四轮流收拾厨房。',
+            requestB: '例：我会在忙的时候提前说明并补做一次。'
+          }
+        },
+        money: {
+          label: '金钱消费',
+          hint: '优先谈价值排序和预算边界，不做人身判断。',
+          stepNotes: {
+            1: '写明消费金额、场景和预期差异。',
+            6: '请求里建议包含“金额阈值”和“确认方式”。'
+          },
+          placeholders: {
+            factA: '例：这次临时买了 1200 元的东西，但我们之前没讨论过。',
+            factB: '例：我当时判断这是必要支出，没有意识到你会不安。',
+            requestA: '例：超过 500 元的非必需消费先沟通再决定。',
+            requestB: '例：我会在支付前发消息确认，避免误会。'
+          }
+        },
+        boundary: {
+          label: '边界/吃醋',
+          hint: '聚焦可观察行为和边界协商，避免贴标签。',
+          stepNotes: {
+            1: '描述具体行为而不是“你就是不在乎我”。',
+            6: '请求里写“可接受/不可接受”的边界。'
+          },
+          placeholders: {
+            factA: '例：昨晚你和前任单独聊很久，我会不安和吃醋。',
+            factB: '例：我当时只是普通聊天，没意识到触碰了你的边界。',
+            requestA: '例：涉及前任的私聊请提前和我说明。',
+            requestB: '例：我会主动同步边界敏感场景，减少误会。'
+          }
+        }
+      };
+
+      const screens = {
+        start: document.getElementById('screenStart'),
+        session: document.getElementById('screenSession'),
+        result: document.getElementById('screenResult')
+      };
+
+      const els = {
+        historyCount: document.getElementById('historyCount'),
+        collabStatus: document.getElementById('collabStatus'),
+        nameA: document.getElementById('nameA'),
+        nameB: document.getElementById('nameB'),
+        collabRoom: document.getElementById('collabRoom'),
+        joinRoomBtn: document.getElementById('joinRoomBtn'),
+        createRoomBtn: document.getElementById('createRoomBtn'),
+        copyRoomLinkBtn: document.getElementById('copyRoomLinkBtn'),
+        collabHint: document.getElementById('collabHint'),
+        conflictType: document.getElementById('conflictType'),
+        conflictHint: document.getElementById('conflictHint'),
+        conflictIntensity: document.getElementById('conflictIntensity'),
+        conflictIntensityValue: document.getElementById('conflictIntensityValue'),
+        intensityHint: document.getElementById('intensityHint'),
+        startBtn: document.getElementById('startBtn'),
+        goHistoryBtn: document.getElementById('goHistoryBtn'),
+        startHistoryList: document.getElementById('startHistoryList'),
+        analyticsBox: document.getElementById('analyticsBox'),
+        totalTimer: document.getElementById('totalTimer'),
+        stepTimer: document.getElementById('stepTimer'),
+        totalProgress: document.getElementById('totalProgress'),
+        stepTitle: document.getElementById('stepTitle'),
+        stepDesc: document.getElementById('stepDesc'),
+        pauseBtn: document.getElementById('pauseBtn'),
+        nextBtn: document.getElementById('nextBtn'),
+        finishBtn: document.getElementById('finishBtn'),
+        stepError: document.getElementById('stepError'),
+        stepGuide: document.getElementById('stepGuide'),
+        guideRoleBadge: document.getElementById('guideRoleBadge'),
+        guideActionBadge: document.getElementById('guideActionBadge'),
+        guideMain: document.getElementById('guideMain'),
+        guideChecklist: document.getElementById('guideChecklist'),
+        guideQuickHint: document.getElementById('guideQuickHint'),
+        safetyPanel: document.getElementById('safetyPanel'),
+        safetyReason: document.getElementById('safetyReason'),
+        safetyCooldownBtn: document.getElementById('safetyCooldownBtn'),
+        safetyResumeBtn: document.getElementById('safetyResumeBtn'),
+        safetyExitBtn: document.getElementById('safetyExitBtn'),
+        stepTimeline: document.getElementById('stepTimeline'),
+        stepForm: document.getElementById('stepForm'),
+        qualityWrap: document.getElementById('qualityWrap'),
+        qualityRow: document.getElementById('qualityRow'),
+        resultFactA: document.getElementById('resultFactA'),
+        resultFactB: document.getElementById('resultFactB'),
+        resultReflectA: document.getElementById('resultReflectA'),
+        resultReflectB: document.getElementById('resultReflectB'),
+        resultReqA: document.getElementById('resultReqA'),
+        resultReqB: document.getElementById('resultReqB'),
+        resultPeaceLine: document.getElementById('resultPeaceLine'),
+        resultTonight: document.getElementById('resultTonight'),
+        resultQualityInsight: document.getElementById('resultQualityInsight'),
+        resultRewriteList: document.getElementById('resultRewriteList'),
+        rewriteCopyHint: document.getElementById('rewriteCopyHint'),
+        shareCardText: document.getElementById('shareCardText'),
+        copyShareBtn: document.getElementById('copyShareBtn'),
+        copyShareHint: document.getElementById('copyShareHint'),
+        downloadImageBtn: document.getElementById('downloadImageBtn'),
+        downloadPdfBtn: document.getElementById('downloadPdfBtn'),
+        reminderTime: document.getElementById('reminderTime'),
+        downloadIcsBtn: document.getElementById('downloadIcsBtn'),
+        notifyBtn: document.getElementById('notifyBtn'),
+        reminderHint: document.getElementById('reminderHint'),
+        restartBtn: document.getElementById('restartBtn'),
+        backStartBtn: document.getElementById('backStartBtn'),
+        resultHistoryList: document.getElementById('resultHistoryList'),
+        monitorBox: document.getElementById('monitorBox'),
+        privacyModeToggle: document.getElementById('privacyModeToggle'),
+        autoClearDraftToggle: document.getElementById('autoClearDraftToggle'),
+        autoClearHistoryToggle: document.getElementById('autoClearHistoryToggle'),
+        privacyHint: document.getElementById('privacyHint'),
+        archivePassphrase: document.getElementById('archivePassphrase'),
+        alertWebhook: document.getElementById('alertWebhook'),
+        importHint: document.getElementById('importHint'),
+        monitorHint: document.getElementById('monitorHint'),
+        importBtn: document.getElementById('importBtn'),
+        importFileInput: document.getElementById('importFileInput'),
+        exportBtn: document.getElementById('exportBtn'),
+        exportClearBtn: document.getElementById('exportClearBtn'),
+        clearHistoryBtn: document.getElementById('clearHistoryBtn'),
+        resumeWrap: document.getElementById('resumeWrap'),
+        resumeBtn: document.getElementById('resumeBtn'),
+        discardResumeBtn: document.getElementById('discardResumeBtn'),
+        resumeMeta: document.getElementById('resumeMeta'),
+        resumePreview: document.getElementById('resumePreview')
+      };
+
+      let timer = null;
+      let session = null;
+      let renderedStepIndex = -1;
+      let finishConfirmUntil = 0;
+      let rewriteSuggestionsCache = [];
+      const settings = loadSettings();
+      let history = loadHistory();
+      let pendingResume = loadActiveSession();
+      let errorLog = loadErrorLog();
+      let collaboration = {
+        room: '',
+        channel: null,
+        peerHeartbeatAt: 0
+      };
+      let applyingRemoteState = false;
+      const tabId = `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`;
+      const textEncoder = new TextEncoder();
+      const textDecoder = new TextDecoder();
+
+      function nowMs() {
+        return Date.now();
+      }
+
+      function showScreen(name) {
+        Object.entries(screens).forEach(([key, node]) => {
+          node.classList.toggle('active', key === name);
+        });
+      }
+
+      function formatSec(sec) {
+        const value = Math.max(0, Math.floor(sec));
+        const m = String(Math.floor(value / 60)).padStart(2, '0');
+        const s = String(value % 60).padStart(2, '0');
+        return `${m}:${s}`;
+      }
+
+      function secondsUntil(ts) {
+        return Math.max(0, Math.ceil((Number(ts) - nowMs()) / 1000));
+      }
+
+      function clampInt(value, min, max) {
+        const n = Number(value);
+        if (!Number.isFinite(n)) return min;
+        return Math.max(min, Math.min(max, Math.floor(n)));
+      }
+
+      function getStepDuration(stepIndex) {
+        const idx = clampInt(stepIndex, 0, STEPS.length - 1);
+        return STEPS[idx].duration;
+      }
+
+      function getTemplate(type) {
+        return CONFLICT_TEMPLATES[type] || CONFLICT_TEMPLATES.general;
+      }
+
+      function getTemplateLabel(type) {
+        return getTemplate(type).label;
+      }
+
+      function updateConflictHint() {
+        const template = getTemplate(els.conflictType.value);
+        els.conflictHint.textContent = template.hint;
+      }
+
+      function getFieldPlaceholder(field, fallback) {
+        if (!session) return fallback;
+        const template = getTemplate(session.conflictType);
+        return template.placeholders[field] || fallback;
+      }
+
+      function getStepDesc(stepIndex, conflictType) {
+        const base = STEPS[stepIndex].desc;
+        const note = getTemplate(conflictType).stepNotes[stepIndex];
+        return note ? `${base} ${note}` : base;
+      }
+
+      function uint8ToBase64(bytes) {
+        let binary = '';
+        const chunk = 0x8000;
+        for (let i = 0; i < bytes.length; i += chunk) {
+          const slice = bytes.subarray(i, i + chunk);
+          binary += String.fromCharCode(...slice);
+        }
+        return btoa(binary);
+      }
+
+      function base64ToUint8(base64) {
+        const binary = atob(base64);
+        const bytes = new Uint8Array(binary.length);
+        for (let i = 0; i < binary.length; i += 1) {
+          bytes[i] = binary.charCodeAt(i);
+        }
+        return bytes;
+      }
+
+      async function deriveArchiveKey(passphrase, salt) {
+        const material = await crypto.subtle.importKey('raw', textEncoder.encode(passphrase), 'PBKDF2', false, ['deriveKey']);
+        return crypto.subtle.deriveKey(
+          {
+            name: 'PBKDF2',
+            salt,
+            iterations: PBKDF2_ITERATIONS,
+            hash: 'SHA-256'
+          },
+          material,
+          { name: 'AES-GCM', length: 256 },
+          false,
+          ['encrypt', 'decrypt']
+        );
+      }
+
+      async function encryptArchivePayload(payload, passphrase) {
+        if (!crypto?.subtle) throw new Error('当前浏览器不支持加密导出。');
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const key = await deriveArchiveKey(passphrase, salt);
+        const plainBytes = textEncoder.encode(JSON.stringify(payload));
+        const encryptedBuffer = await crypto.subtle.encrypt({ name: 'AES-GCM', iv }, key, plainBytes);
+        return {
+          version: ARCHIVE_VERSION,
+          encrypted: true,
+          kdf: 'PBKDF2-SHA256',
+          iter: PBKDF2_ITERATIONS,
+          salt: uint8ToBase64(salt),
+          iv: uint8ToBase64(iv),
+          data: uint8ToBase64(new Uint8Array(encryptedBuffer))
+        };
+      }
+
+      async function decryptArchivePayload(payload, passphrase) {
+        if (!crypto?.subtle) throw new Error('当前浏览器不支持加密解密。');
+        const salt = base64ToUint8(payload.salt || '');
+        const iv = base64ToUint8(payload.iv || '');
+        const data = base64ToUint8(payload.data || '');
+        const key = await deriveArchiveKey(passphrase, salt);
+        const plainBuffer = await crypto.subtle.decrypt({ name: 'AES-GCM', iv }, key, data);
+        return JSON.parse(textDecoder.decode(plainBuffer));
+      }
+
+      function getArchivePassphrase() {
+        return (els.archivePassphrase.value || '').trim();
+      }
+
+      function showImportHint(message, isError = false) {
+        els.importHint.textContent = message || '';
+        els.importHint.classList.toggle('alert', Boolean(isError));
+      }
+
+      function normalizeRoom(value) {
+        return String(value || '')
+          .trim()
+          .toUpperCase()
+          .replace(/[^A-Z0-9-]/g, '')
+          .slice(0, 24);
+      }
+
+      function generateRoomCode() {
+        return `R${Math.random().toString(36).slice(2, 7).toUpperCase()}`;
+      }
+
+      function getRoomLink(room) {
+        const url = new URL(window.location.href);
+        url.searchParams.set('room', room);
+        return url.toString();
+      }
+
+      function updateRoomInUrl(room) {
+        const url = new URL(window.location.href);
+        if (room) {
+          url.searchParams.set('room', room);
+        } else {
+          url.searchParams.delete('room');
+        }
+        window.history.replaceState({}, '', url.toString());
+      }
+
+      function getIntensityLabel(value) {
+        if (value >= 5) return '5 / 5 高压';
+        if (value >= 4) return '4 / 5 偏高';
+        if (value >= 3) return '3 / 5 中等';
+        if (value >= 2) return '2 / 5 可控';
+        return '1 / 5 平稳';
+      }
+
+      function updateIntensityDisplay() {
+        const level = clampInt(els.conflictIntensity.value, 1, 5);
+        els.conflictIntensity.value = String(level);
+        els.conflictIntensityValue.textContent = getIntensityLabel(level);
+        els.intensityHint.textContent =
+          level >= HIGH_INTENSITY_THRESHOLD
+            ? '当前会在开始后先进入60秒降温步骤。'
+            : '当前强度较可控，可直接进入流程。';
+      }
+
+      function loadErrorLog() {
+        const parsed = loadJson(ERROR_LOG_KEY, []);
+        return Array.isArray(parsed) ? parsed : [];
+      }
+
+      function saveErrorLog() {
+        localStorage.setItem(ERROR_LOG_KEY, JSON.stringify(errorLog.slice(0, 20)));
+      }
+
+      function recordClientError(message, detail = '') {
+        const entry = {
+          at: new Date().toISOString(),
+          message: String(message || 'Unknown error'),
+          detail: String(detail || '').slice(0, 400)
+        };
+        errorLog = [entry, ...errorLog].slice(0, 20);
+        saveErrorLog();
+        if (settings.alertWebhook) {
+          const payload = JSON.stringify({
+            source: 'repair12-client',
+            ...entry
+          });
+          try {
+            if (navigator.sendBeacon) {
+              navigator.sendBeacon(settings.alertWebhook, new Blob([payload], { type: 'application/json' }));
+            } else {
+              fetch(settings.alertWebhook, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: payload,
+                keepalive: true
+              }).catch(() => {});
+            }
+          } catch (err) {}
+        }
+      }
+
+      function renderMonitorBox() {
+        if (!els.monitorBox) return;
+        if (!errorLog.length) {
+          els.monitorBox.innerHTML = '<small class="muted success">运行稳定，最近没有捕获到前端错误。</small>';
+          return;
+        }
+        const rows = errorLog
+          .slice(0, 5)
+          .map((item) => `<li><small>${escapeHtml(formatTime(item.at))}｜${escapeHtml(item.message)}</small></li>`)
+          .join('');
+        els.monitorBox.innerHTML = `<small class="muted alert">最近捕获到 ${errorLog.length} 条前端错误：</small><ul class="monitor-list">${rows}</ul>`;
+      }
+
+      function pickRiskPhrases(text) {
+        const source = String(text || '').trim();
+        if (!source) return [];
+        const hits = [];
+        RISK_PHRASE_RULES.forEach((rule) => {
+          const matched = source.match(rule.pattern);
+          if (matched && matched.length) {
+            hits.push({
+              label: rule.label,
+              examples: [...new Set(matched)].slice(0, 3)
+            });
+          }
+        });
+        return hits;
+      }
+
+      function collectRiskInputs(targetSession) {
+        return [
+          ['factA', `${targetSession.names.a}事实`, targetSession.factA],
+          ['factB', `${targetSession.names.b}事实`, targetSession.factB],
+          ['reflectA', `${targetSession.names.a}复述`, targetSession.reflectA],
+          ['reflectB', `${targetSession.names.b}复述`, targetSession.reflectB],
+          ['requestA', `${targetSession.names.a}请求`, targetSession.requestA],
+          ['requestB', `${targetSession.names.b}请求`, targetSession.requestB],
+          ['peaceLine', '和好一句话', targetSession.peaceLine],
+          ['tonightAction', '今晚行动', targetSession.tonightAction]
+        ];
+      }
+
+      function buildRiskRewriteSuggestions(targetSession) {
+        const suggestions = [];
+        collectRiskInputs(targetSession).forEach(([field, label, value]) => {
+          const hits = pickRiskPhrases(value);
+          if (!hits.length) return;
+          const phraseText = hits.map((h) => `${h.label}：${h.examples.join('、')}`).join('；');
+          suggestions.push({
+            title: `风险句替代 · ${label}`,
+            text: `识别到：${phraseText}\n原句：${compactLine(value, '未填写')}\n替代：当[具体事件]发生时，我感到[感受]，我需要[需要]，我请求你[具体行为]。`
+          });
+        });
+        return suggestions.slice(0, 3);
+      }
+
+      function findSafetyRisk(targetSession) {
+        const all = collectRiskInputs(targetSession);
+        for (let i = 0; i < all.length; i += 1) {
+          const [, label, value] = all[i];
+          const hits = pickRiskPhrases(value);
+          if (hits.length) {
+            return {
+              label,
+              detail: hits.map((x) => `${x.label}(${x.examples.join('、')})`).join('；')
+            };
+          }
+        }
+        return null;
+      }
+
+      function showSafetyPanel(message) {
+        if (!session) return;
+        if (!session.paused) {
+          session.totalRemaining = secondsUntil(session.totalEndsAt);
+          session.stepRemaining = secondsUntil(session.stepEndsAt);
+        }
+        session.inSafetyMode = true;
+        session.paused = true;
+        session.safetyReason = message;
+        els.safetyReason.textContent = message;
+        els.safetyPanel.classList.remove('hidden');
+        renderClockOnly();
+        persistActiveSession();
+      }
+
+      function hideSafetyPanel() {
+        if (!session) return;
+        session.inSafetyMode = false;
+        session.safetyReason = '';
+        els.safetyPanel.classList.add('hidden');
+      }
+
+      function startSafetyCooldown() {
+        if (!session) return;
+        session.safetyCooldownEndsAt = nowMs() + SAFETY_COOLDOWN_SECONDS * 1000;
+        showSafetyPanel(`已进入${SAFETY_COOLDOWN_SECONDS}秒降温，请先做深呼吸和边界确认。`);
+      }
+
+      function resolveSafetyMode() {
+        if (!session) return;
+        hideSafetyPanel();
+        session.safetyCooldownEndsAt = 0;
+      }
+
+      function handleSafetyTick() {
+        if (!session || !session.inSafetyMode || !session.safetyCooldownEndsAt) return;
+        const remain = secondsUntil(session.safetyCooldownEndsAt);
+        if (remain <= 0) {
+          els.safetyReason.textContent = '降温已完成。建议先用一句“我会先说事实，不做人身评价”再继续。';
+          session.safetyCooldownEndsAt = 0;
+          persistActiveSession();
+        } else {
+          els.safetyReason.textContent = `已触发安全兜底。请先降温 ${formatSec(remain)}，然后继续流程。`;
+        }
+      }
+
+      function syncStartDraft() {
+        if (!collaboration.room || applyingRemoteState) return;
+        sendCollabMessage('sync-start', {
+          names: {
+            a: (els.nameA.value || '').trim(),
+            b: (els.nameB.value || '').trim()
+          },
+          conflictType: els.conflictType.value,
+          conflictIntensity: clampInt(els.conflictIntensity.value, 1, 5)
+        });
+      }
+
+      function syncSessionState(reason = 'sync-state') {
+        if (!collaboration.room || !session || applyingRemoteState) return;
+        session.syncVersion = Number(session.syncVersion || 0) + 1;
+        sendCollabMessage(reason, { session });
+      }
+
+      function applyRemoteStartDraft(payload) {
+        if (session) return;
+        applyingRemoteState = true;
+        try {
+          if (payload?.names?.a) els.nameA.value = payload.names.a;
+          if (payload?.names?.b) els.nameB.value = payload.names.b;
+          if (payload?.conflictType && CONFLICT_TEMPLATES[payload.conflictType]) {
+            els.conflictType.value = payload.conflictType;
+          }
+          if (payload?.conflictIntensity) {
+            els.conflictIntensity.value = String(clampInt(payload.conflictIntensity, 1, 5));
+          }
+          updateConflictHint();
+          updateIntensityDisplay();
+        } finally {
+          applyingRemoteState = false;
+        }
+      }
+
+      function applyRemoteSession(payload) {
+        if (!payload || !payload.id) return;
+        applyingRemoteState = true;
+        try {
+          if (!session || session.id !== payload.id || Number(payload.syncVersion || 0) >= Number(session.syncVersion || 0)) {
+            session = createSession(payload);
+            renderedStepIndex = -1;
+            showScreen(payload.status === 'running' ? 'session' : 'result');
+            if (payload.status === 'running') {
+              renderSession(true);
+            } else {
+              renderResult();
+            }
+          }
+        } finally {
+          applyingRemoteState = false;
+        }
+      }
+
+      function updateCollabStatus() {
+        const room = collaboration.room;
+        if (!room) {
+          els.collabStatus.textContent = '单机';
+          els.collabHint.textContent = '默认单机模式。开启后可在同浏览器多标签同步会话。';
+          return;
+        }
+        const online = nowMs() - collaboration.peerHeartbeatAt <= COLLAB_HEARTBEAT_MS * 2;
+        els.collabStatus.textContent = online ? `${room}·双端在线` : `${room}·等待对端`;
+        els.collabHint.textContent = `房间 ${room} 已连接。${online ? '检测到对端心跳，正在实时同步。' : '已加入，等待另一端加入。'}`;
+      }
+
+      function closeCollabChannel() {
+        if (collaboration.channel) {
+          collaboration.channel.close();
+          collaboration.channel = null;
+        }
+      }
+
+      function onCollabPayload(message) {
+        if (!message || message.sender === tabId || message.room !== collaboration.room) return;
+        collaboration.peerHeartbeatAt = nowMs();
+        updateCollabStatus();
+        if (message.type === 'sync-start') {
+          applyRemoteStartDraft(message.payload);
+        } else if (message.type === 'sync-state' || message.type === 'session-start' || message.type === 'session-finish') {
+          applyRemoteSession(message.payload?.session);
+        } else if (message.type === 'heartbeat') {
+          // heartbeat only
+        }
+      }
+
+      function sendCollabMessage(type, payload = {}) {
+        if (!collaboration.room) return;
+        const message = {
+          type,
+          room: collaboration.room,
+          payload,
+          sender: tabId,
+          at: nowMs()
+        };
+        if (collaboration.channel) {
+          collaboration.channel.postMessage(message);
+        }
+        try {
+          localStorage.setItem(`${COLLAB_STORAGE_PREFIX}${collaboration.room}`, JSON.stringify(message));
+        } catch (err) {}
+      }
+
+      function joinCollabRoom(inputRoom) {
+        const room = normalizeRoom(inputRoom);
+        if (!room) {
+          els.collabHint.textContent = '房间号不能为空。';
+          return false;
+        }
+        closeCollabChannel();
+        collaboration.room = room;
+        collaboration.peerHeartbeatAt = 0;
+        els.collabRoom.value = room;
+        collaboration.channel = new BroadcastChannel(`repair12-collab-${room}`);
+        collaboration.channel.onmessage = (event) => onCollabPayload(event.data);
+        updateRoomInUrl(room);
+        updateCollabStatus();
+        sendCollabMessage('heartbeat');
+        syncStartDraft();
+        if (session) syncSessionState('sync-state');
+        return true;
+      }
+
+      function autoJoinRoomFromUrl() {
+        const room = normalizeRoom(new URL(window.location.href).searchParams.get('room'));
+        if (room) {
+          joinCollabRoom(room);
+        }
+      }
+
+      function handleStorageSync(event) {
+        if (!collaboration.room) return;
+        if (event.key === ERROR_LOG_KEY && event.newValue) {
+          try {
+            errorLog = JSON.parse(event.newValue);
+            renderMonitorBox();
+          } catch (err) {}
+        }
+        const key = `${COLLAB_STORAGE_PREFIX}${collaboration.room}`;
+        if (event.key !== key || !event.newValue) return;
+        try {
+          const payload = JSON.parse(event.newValue);
+          onCollabPayload(payload);
+        } catch (err) {}
+      }
+
+      function setDefaultReminderTime() {
+        const date = new Date(nowMs() + 30 * 60 * 1000);
+        const local = new Date(date.getTime() - date.getTimezoneOffset() * 60000).toISOString().slice(0, 16);
+        els.reminderTime.value = local;
+      }
+
+      function createSession(override = {}) {
+        const a = (override.names?.a || els.nameA.value || '我').trim() || '我';
+        const b = (override.names?.b || els.nameB.value || '你').trim() || '你';
+        const conflictType = override.conflictType || els.conflictType.value || 'general';
+        const conflictIntensity = clampInt(override.conflictIntensity ?? els.conflictIntensity.value, 1, 5);
+        const inCooldown = Boolean(override.inCooldown ?? conflictIntensity >= HIGH_INTENSITY_THRESHOLD);
+        const startAt = nowMs();
+        const initialStepIndex = clampInt(override.stepIndex ?? 0, 0, STEPS.length - 1);
+        const initialStepMax = inCooldown ? COOLDOWN_SECONDS : getStepDuration(initialStepIndex);
+        const initialStepSeconds = clampInt(override.stepRemaining ?? initialStepMax, 1, initialStepMax);
+        const initialTotalSeconds = clampInt(override.totalRemaining ?? TOTAL_SECONDS, 1, TOTAL_SECONDS);
+        const isPaused = Boolean(override.paused);
+        const totalEndsAt =
+          override.totalEndsAt && !isPaused
+            ? Number(override.totalEndsAt)
+            : startAt + initialTotalSeconds * 1000;
+        const stepEndsAt =
+          override.stepEndsAt && !isPaused
+            ? Number(override.stepEndsAt)
+            : startAt + initialStepSeconds * 1000;
+
+        return {
+          id: override.id || `${startAt}-${Math.random().toString(16).slice(2, 8)}`,
+          startedAt: override.startedAt || new Date(startAt).toISOString(),
+          endedAt: override.endedAt || '',
+          status: override.status || 'running',
+          names: { a, b },
+          conflictType,
+          conflictIntensity,
+          stepIndex: initialStepIndex,
+          totalRemaining: initialTotalSeconds,
+          stepRemaining: initialStepSeconds,
+          totalEndsAt,
+          stepEndsAt,
+          factA: override.factA || '',
+          factB: override.factB || '',
+          reflectA: override.reflectA || '',
+          reflectB: override.reflectB || '',
+          feelingsA: Array.isArray(override.feelingsA) ? override.feelingsA : [],
+          feelingsB: Array.isArray(override.feelingsB) ? override.feelingsB : [],
+          needsA: Array.isArray(override.needsA) ? override.needsA : [],
+          needsB: Array.isArray(override.needsB) ? override.needsB : [],
+          requestA: override.requestA || '',
+          requestB: override.requestB || '',
+          peaceLine: override.peaceLine || '',
+          tonightAction: override.tonightAction || '',
+          stepScores: override.stepScores && typeof override.stepScores === 'object' ? override.stepScores : {},
+          paused: isPaused,
+          privacyMode: Boolean(override.privacyMode ?? settings.privacyMode),
+          inCooldown,
+          inSafetyMode: Boolean(override.inSafetyMode),
+          safetyReason: override.safetyReason || '',
+          safetyCooldownEndsAt: Number(override.safetyCooldownEndsAt || 0),
+          syncVersion: Number(override.syncVersion || 0)
+        };
+      }
+
+      function normalizeActiveSession(raw) {
+        if (!raw || typeof raw !== 'object') return null;
+        const normalized = createSession(raw);
+        if (normalized.status !== 'running' || normalized.privacyMode) return null;
+
+        if (!normalized.paused) {
+          normalized.totalRemaining = secondsUntil(normalized.totalEndsAt);
+          normalized.stepRemaining = secondsUntil(normalized.stepEndsAt);
+          if (normalized.totalRemaining <= 0) return null;
+          if (normalized.stepRemaining <= 0) {
+            if (normalized.inCooldown) {
+              normalized.inCooldown = false;
+              normalized.stepRemaining = getStepDuration(normalized.stepIndex);
+              normalized.stepEndsAt = nowMs() + normalized.stepRemaining * 1000;
+            } else {
+              normalized.paused = true;
+              normalized.stepRemaining = 1;
+              normalized.stepEndsAt = nowMs() + 1000;
+            }
+          }
+        }
+        return normalized;
+      }
+
+      function clearStepError() {
+        els.stepError.style.display = 'none';
+        els.stepError.textContent = '';
+      }
+
+      function showStepError(message) {
+        els.stepError.textContent = message;
+        els.stepError.style.display = 'block';
+      }
+
+      function resetFinishConfirm() {
+        finishConfirmUntil = 0;
+        els.finishBtn.textContent = '提前结束';
+      }
+
+      function updatePrivacyHint() {
+        const enabled = Boolean(settings.privacyMode);
+        els.privacyModeToggle.checked = enabled;
+        els.autoClearDraftToggle.checked = Boolean(settings.autoClearDraftOnFinish);
+        els.autoClearHistoryToggle.checked = Boolean(settings.autoClearHistoryOnFinish);
+        els.alertWebhook.value = settings.alertWebhook || '';
+        els.privacyHint.textContent = enabled
+          ? '隐私模式开启：不会保存本轮记录，也不会恢复未完成会话。'
+          : `当前会把已完成会话保存到本地浏览器。结束后自动清理草稿：${settings.autoClearDraftOnFinish ? '开' : '关'}；自动清空历史：${settings.autoClearHistoryOnFinish ? '开' : '关'}。`;
+        els.monitorHint.textContent = settings.alertWebhook
+          ? '已配置 webhook，将在捕获脚本错误时尝试推送告警。'
+          : '留空则只在本地记录错误。填写后会在脚本报错时尝试推送告警。';
+      }
+
+      function renderResumeCard() {
+        if (settings.privacyMode || !pendingResume) {
+          els.resumeWrap.classList.add('hidden');
+          return;
+        }
+
+        const templateLabel = getTemplateLabel(pendingResume.conflictType);
+        const stepLabel = STEPS[pendingResume.stepIndex].title;
+        const status = pendingResume.paused ? '已暂停' : '进行中';
+        els.resumeMeta.textContent = `上次在 ${formatTime(pendingResume.startedAt)} 开始，当前步骤：${stepLabel}（${status}）。`;
+        els.resumePreview.innerHTML = `
+          <strong>${escapeHtml(pendingResume.names.a)} / ${escapeHtml(pendingResume.names.b)}</strong><br />
+          模板：${escapeHtml(templateLabel)} ｜ 强度：${escapeHtml(String(pendingResume.conflictIntensity || 3))}/5<br />
+          总剩余：${formatSec(pendingResume.totalRemaining)}｜步骤剩余：${formatSec(pendingResume.stepRemaining)}
+        `;
+        els.resumeWrap.classList.remove('hidden');
+      }
+
+      function renderClockOnly() {
+        if (!session) return;
+        if (finishConfirmUntil && nowMs() > finishConfirmUntil) {
+          resetFinishConfirm();
+        }
+        els.totalTimer.textContent = formatSec(session.totalRemaining);
+        els.stepTimer.textContent = formatSec(session.stepRemaining);
+        const doneRatio = ((TOTAL_SECONDS - session.totalRemaining) / TOTAL_SECONDS) * 100;
+        els.totalProgress.style.width = `${Math.min(100, Math.max(0, doneRatio))}%`;
+        els.pauseBtn.textContent = session.inSafetyMode ? '安全暂停' : session.paused ? '继续' : '暂停';
+      }
+
+      function renderTimeline() {
+        if (!session) return;
+        els.stepTimeline.innerHTML = STEPS.map((step, idx) => {
+          const cls = idx < session.stepIndex ? 'done' : idx === session.stepIndex ? 'current' : '';
+          const title = session.inCooldown && idx === session.stepIndex ? `降温步骤（${step.title}前）` : step.title;
+          return `<li class="${cls}"><span>${idx + 1}. ${title}</span><span>${formatSec(step.duration)}</span></li>`;
+        }).join('');
+      }
+
+      function getStepGuide(targetSession) {
+        if (!targetSession) return null;
+        const { a, b } = targetSession.names;
+        if (targetSession.inCooldown) {
+          return {
+            roleText: '轮到双方',
+            roleClass: 'role-both',
+            actionText: '先降温',
+            mainText: '先把语速降下来，再继续输入内容。',
+            checks: ['深呼吸 6 次', '各说一句“我想解决问题，不想赢你”', '确认边界：不辱骂、不威胁、不离场'],
+            quickHint: '可等待 60 秒自动结束，也可点击“下一步”提前进入正式流程。'
+          };
+        }
+
+        const guides = {
+          0: {
+            roleText: '轮到双方',
+            roleClass: 'role-both',
+            actionText: '规则确认',
+            mainText: '先一起读规则，再进入发言。',
+            checks: ['只聊本次事件', '不打断对方', '不用“你总是/你从不”这类词'],
+            quickHint: '读完后直接点“下一步”。'
+          },
+          1: {
+            roleText: `轮到 ${a}`,
+            roleClass: 'role-a',
+            actionText: 'A 说事实',
+            mainText: `${a}先说可观察到的事实，不解释对方动机。`,
+            checks: ['至少 8 个字', '包含时间/行为/结果', '不用评判词（比如“你故意”）'],
+            quickHint: '写完后先打分，再点“下一步”。'
+          },
+          2: {
+            roleText: `轮到 ${b}`,
+            roleClass: 'role-b',
+            actionText: 'B 做复述',
+            mainText: `${b}先复述 ${a} 的重点，不辩解。`,
+            checks: ['至少 6 个字', '一句话即可', '可用句式：我听到你在意的是...'],
+            quickHint: '目标是让对方感觉“你真的听懂了”。'
+          },
+          3: {
+            roleText: `轮到 ${b}`,
+            roleClass: 'role-b',
+            actionText: 'B 说事实',
+            mainText: `${b}说明自己当时发生了什么，聚焦事实。`,
+            checks: ['至少 8 个字', '写清场景和影响', '不评价对方人格'],
+            quickHint: '写可验证信息，不写“你想太多”。'
+          },
+          4: {
+            roleText: `轮到 ${a}`,
+            roleClass: 'role-a',
+            actionText: 'A 做复述',
+            mainText: `${a}复述 ${b} 的重点，先确认再回应。`,
+            checks: ['至少 6 个字', '一句话概括重点', '可用句式：我听到你的意思是...'],
+            quickHint: '先“听懂”，再进入后续步骤。'
+          },
+          5: {
+            roleText: '轮到双方',
+            roleClass: 'role-both',
+            actionText: '选感受与需要',
+            mainText: '双方都要各选 1 个感受和 1 个需要。',
+            checks: ['A 至少选 2 个词（感受+需要）', 'B 至少选 2 个词（感受+需要）', '先表达自己，不替对方下定义'],
+            quickHint: '这一步不是争对错，而是澄清真实需求。'
+          },
+          6: {
+            roleText: '轮到双方',
+            roleClass: 'role-both',
+            actionText: '提出请求',
+            mainText: '先写 A 的请求，再写 B 的请求，动作要可执行。',
+            checks: ['两边都至少 6 个字', '包含具体动作/频率/触发场景', '避免“你以后别这样”这种空话'],
+            quickHint: '请求越具体，今晚越容易落地。'
+          },
+          7: {
+            roleText: '轮到双方',
+            roleClass: 'role-both',
+            actionText: '和好收尾',
+            mainText: '生成并确认一句和好承诺 + 今晚行动。',
+            checks: ['和好一句话至少 8 字', '今晚行动至少 6 字', '行动必须今天就能完成'],
+            quickHint: '收尾要“短、具体、可完成”。'
+          }
+        };
+        return guides[targetSession.stepIndex] || guides[0];
+      }
+
+      function renderStepGuide() {
+        if (!session || !els.stepGuide) return;
+        const guide = getStepGuide(session);
+        if (!guide) return;
+        els.guideRoleBadge.className = `guide-badge guide-role ${guide.roleClass}`;
+        els.guideRoleBadge.textContent = guide.roleText;
+        els.guideActionBadge.textContent = guide.actionText;
+        els.guideMain.textContent = guide.mainText;
+        els.guideChecklist.innerHTML = guide.checks.map((item) => `<li>${escapeHtml(item)}</li>`).join('');
+        els.guideQuickHint.textContent = guide.quickHint || '';
+      }
+
+      function renderQualityControls() {
+        if (!session || session.stepIndex === 0 || session.inCooldown) {
+          els.qualityWrap.classList.add('hidden');
+          els.qualityRow.innerHTML = '';
+          return;
+        }
+
+        const key = String(session.stepIndex);
+        const selected = Number(session.stepScores[key] || 0);
+        const labels = {
+          1: '1 很差',
+          2: '2 偏弱',
+          3: '3 一般',
+          4: '4 不错',
+          5: '5 很好'
+        };
+        els.qualityWrap.classList.remove('hidden');
+        els.qualityRow.innerHTML = SCORE_OPTIONS.map((score) => {
+          const active = selected === score ? 'active' : '';
+          return `<button type="button" class="quality-btn ${active}" data-score="${score}" aria-label="步骤评分 ${score}">${labels[score]}</button>`;
+        }).join('');
+
+        els.qualityRow.querySelectorAll('[data-score]').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            const score = Number(btn.dataset.score);
+            session.stepScores[String(session.stepIndex)] = score;
+            renderQualityControls();
+            persistActiveSession();
+            syncSessionState('sync-state');
+          });
+        });
+      }
+
+      function renderSession(forceForm = false) {
+        if (!session) return;
+        if (session.inCooldown) {
+          els.stepTitle.textContent = `降温步骤 · ${COOLDOWN_SECONDS}秒`;
+          els.stepDesc.textContent = '冲突强度较高，先降温再继续。请先呼吸、放慢语速、确认边界。';
+        } else {
+          els.stepTitle.textContent = `Step ${session.stepIndex + 1} · ${STEPS[session.stepIndex].title}`;
+          els.stepDesc.textContent = getStepDesc(session.stepIndex, session.conflictType);
+        }
+        renderClockOnly();
+        renderTimeline();
+        renderStepGuide();
+        if (session.inSafetyMode) {
+          els.safetyPanel.classList.remove('hidden');
+          els.safetyReason.textContent = session.safetyReason || '已触发安全兜底。请先降温后再继续。';
+        } else {
+          els.safetyPanel.classList.add('hidden');
+        }
+        els.nextBtn.disabled = Boolean(session.inSafetyMode && session.safetyCooldownEndsAt);
+        els.pauseBtn.disabled = Boolean(session.inSafetyMode);
+
+        if (forceForm || renderedStepIndex !== session.stepIndex) {
+          if (!session.inCooldown && session.stepIndex === STEPS.length - 1) {
+            if (!session.peaceLine) session.peaceLine = buildPeaceLine();
+            if (!session.tonightAction) session.tonightAction = suggestTonightAction();
+          }
+          renderStepForm();
+          renderedStepIndex = session.stepIndex;
+        }
+        renderQualityControls();
+      }
+
+      function persistActiveSession() {
+        try {
+          if (!session || session.status !== 'running' || session.privacyMode) {
+            localStorage.removeItem(ACTIVE_SESSION_KEY);
+            return;
+          }
+          localStorage.setItem(ACTIVE_SESSION_KEY, JSON.stringify(session));
+        } catch (err) {}
+      }
+
+      function startTimer() {
+        clearInterval(timer);
+        timer = setInterval(() => {
+          if (!session || session.status !== 'running') return;
+          handleSafetyTick();
+          if (session.paused || session.inSafetyMode) return;
+
+          session.totalRemaining = secondsUntil(session.totalEndsAt);
+          session.stepRemaining = secondsUntil(session.stepEndsAt);
+
+          if (session.totalRemaining <= 0) {
+            session.totalRemaining = 0;
+            session.stepRemaining = 0;
+            finishSession('done');
+            return;
+          }
+
+          if (session.stepRemaining <= 0) {
+            if (session.inCooldown) {
+              session.inCooldown = false;
+              session.stepRemaining = getStepDuration(session.stepIndex);
+              session.stepEndsAt = nowMs() + session.stepRemaining * 1000;
+              showStepError('降温完成，进入正式流程。');
+              renderSession(true);
+              persistActiveSession();
+              syncSessionState('sync-state');
+              return;
+            }
+            const moved = nextStep({ fromTimer: true });
+            if (!moved) {
+              session.paused = true;
+              renderSession();
+              persistActiveSession();
+            }
+            return;
+          }
+
+          renderClockOnly();
+          persistActiveSession();
+        }, 500);
+      }
+
+      function validateMinLength(value, minLength) {
+        return String(value || '').trim().length >= minLength;
+      }
+
+      function requireScoreForCurrentStep() {
+        if (!session || session.stepIndex === 0 || session.inCooldown) return '';
+        const score = Number(session.stepScores[String(session.stepIndex)] || 0);
+        return score > 0 ? '' : '请先为本步骤打分（1-5 分）。';
+      }
+
+      function getCurrentStepRiskReason(targetSession) {
+        const idx = targetSession.stepIndex;
+        const samples = [];
+        if (idx === 1) samples.push([`${targetSession.names.a}事实`, targetSession.factA]);
+        if (idx === 2) samples.push([`${targetSession.names.b}复述`, targetSession.reflectB]);
+        if (idx === 3) samples.push([`${targetSession.names.b}事实`, targetSession.factB]);
+        if (idx === 4) samples.push([`${targetSession.names.a}复述`, targetSession.reflectA]);
+        if (idx === 6) {
+          samples.push([`${targetSession.names.a}请求`, targetSession.requestA]);
+          samples.push([`${targetSession.names.b}请求`, targetSession.requestB]);
+        }
+        if (idx === 7) {
+          samples.push(['和好一句话', targetSession.peaceLine]);
+          samples.push(['今晚行动', targetSession.tonightAction]);
+        }
+        for (let i = 0; i < samples.length; i += 1) {
+          const [label, text] = samples[i];
+          const hits = pickRiskPhrases(text);
+          if (hits.length) {
+            const detail = hits.map((x) => `${x.label}(${x.examples.join('、')})`).join('；');
+            return `${label}中检测到高风险表达：${detail}。建议先进入安全兜底。`;
+          }
+        }
+        return '';
+      }
+
+      function validateCurrentStep() {
+        if (!session) return '';
+        if (session.inSafetyMode) return '当前处于安全兜底，请先完成降温或手动恢复。';
+        if (session.inCooldown) return '';
+        let error = '';
+
+        switch (session.stepIndex) {
+          case 1:
+            error = validateMinLength(session.factA, 8) ? '' : `${session.names.a}的“事实”至少写 8 个字。`;
+            break;
+          case 2:
+            error = validateMinLength(session.reflectB, 6) ? '' : `${session.names.b}的“复述”至少写 6 个字。`;
+            break;
+          case 3:
+            error = validateMinLength(session.factB, 8) ? '' : `${session.names.b}的“事实”至少写 8 个字。`;
+            break;
+          case 4:
+            error = validateMinLength(session.reflectA, 6) ? '' : `${session.names.a}的“复述”至少写 6 个字。`;
+            break;
+          case 5:
+            if (!session.feelingsA.length || !session.needsA.length) {
+              error = `${session.names.a}至少选 1 个感受和 1 个需要。`;
+            } else if (!session.feelingsB.length || !session.needsB.length) {
+              error = `${session.names.b}至少选 1 个感受和 1 个需要。`;
+            }
+            break;
+          case 6:
+            if (!validateMinLength(session.requestA, 6)) {
+              error = `${session.names.a}的请求至少写 6 个字。`;
+            } else if (!validateMinLength(session.requestB, 6)) {
+              error = `${session.names.b}的请求至少写 6 个字。`;
+            }
+            break;
+          case 7:
+            if (!validateMinLength(session.peaceLine, 8)) {
+              error = '“和好一句话”至少写 8 个字。';
+            } else if (!validateMinLength(session.tonightAction, 6)) {
+              error = '“今晚行动”至少写 6 个字。';
+            }
+            break;
+          default:
+            break;
+        }
+
+        if (error) return error;
+        return requireScoreForCurrentStep();
+      }
+
+      function nextStep(options = {}) {
+        if (!session) return false;
+
+        const error = validateCurrentStep();
+        if (error) {
+          showStepError(error);
+          return false;
+        }
+
+        if (session.inCooldown) {
+          session.inCooldown = false;
+          session.stepRemaining = getStepDuration(session.stepIndex);
+          session.stepEndsAt = nowMs() + session.stepRemaining * 1000;
+          clearStepError();
+          renderSession(true);
+          persistActiveSession();
+          syncSessionState('sync-state');
+          return true;
+        }
+
+        const safetyReason = getCurrentStepRiskReason(session);
+        if (safetyReason) {
+          showSafetyPanel(safetyReason);
+          showStepError('检测到高风险表达，建议先进入安全兜底流程。');
+          syncSessionState('sync-state');
+          return false;
+        }
+
+        clearStepError();
+        resetFinishConfirm();
+
+        if (session.stepIndex >= STEPS.length - 1) {
+          finishSession('done');
+          return true;
+        }
+
+        session.stepIndex += 1;
+        session.stepRemaining = STEPS[session.stepIndex].duration;
+        session.stepEndsAt = nowMs() + session.stepRemaining * 1000;
+        renderedStepIndex = -1;
+
+        if (options.fromTimer && session.paused) {
+          session.paused = false;
+        }
+        renderSession(true);
+        persistActiveSession();
+        syncSessionState('sync-state');
+        return true;
+      }
+
+      function finishSession(status) {
+        if (!session) return;
+        session.totalRemaining = Math.max(0, session.totalRemaining);
+        session.stepRemaining = Math.max(0, session.stepRemaining);
+        session.status = status;
+        session.paused = true;
+        session.endedAt = new Date().toISOString();
+        clearInterval(timer);
+        clearStepError();
+        resetFinishConfirm();
+        hideSafetyPanel();
+
+        if (!session.peaceLine) session.peaceLine = buildPeaceLine();
+        if (!session.tonightAction) session.tonightAction = suggestTonightAction();
+
+        localStorage.removeItem(ACTIVE_SESSION_KEY);
+        pendingResume = null;
+
+        if (settings.autoClearHistoryOnFinish) {
+          history = [];
+          localStorage.removeItem(STORAGE_KEY);
+          renderHistoryLists();
+        } else if (!session.privacyMode) {
+          saveToHistory(session);
+        } else {
+          renderHistoryLists();
+        }
+
+        if (settings.autoClearDraftOnFinish) {
+          localStorage.removeItem(ACTIVE_SESSION_KEY);
+        }
+        syncSessionState('session-finish');
+        renderResult();
+        showScreen('result');
+      }
+
+      function togglePause() {
+        if (!session || session.status !== 'running') return;
+        if (session.inSafetyMode) return;
+        resetFinishConfirm();
+
+        if (session.paused) {
+          session.paused = false;
+          session.totalEndsAt = nowMs() + session.totalRemaining * 1000;
+          session.stepEndsAt = nowMs() + session.stepRemaining * 1000;
+        } else {
+          session.totalRemaining = secondsUntil(session.totalEndsAt);
+          session.stepRemaining = secondsUntil(session.stepEndsAt);
+          session.paused = true;
+        }
+
+        renderClockOnly();
+        persistActiveSession();
+        syncSessionState('sync-state');
+      }
+
+      function joinLabels(values, fallback) {
+        return values.length ? values.slice(0, 2).join('、') : fallback;
+      }
+
+      function buildPeaceLine() {
+        if (!session) return '';
+        const { a, b } = session.names;
+        const feelA = joinLabels(session.feelingsA, '不安');
+        const feelB = joinLabels(session.feelingsB, '委屈');
+        const needA = joinLabels(session.needsA, '被理解');
+        const needB = joinLabels(session.needsB, '被尊重');
+        const reqA = session.requestA.trim() || `${a}希望被好好听完`;
+        const reqB = session.requestB.trim() || `${b}希望先确认再回应`;
+        const templateLabel = getTemplateLabel(session.conflictType);
+        return `${templateLabel}场景下，${a}现在感到${feelA}，更需要${needA}；${b}感到${feelB}，更需要${needB}。我们先从两个小请求开始：${a}希望“${reqA}”，${b}希望“${reqB}”。`;
+      }
+
+      function suggestTonightAction() {
+        if (!session) return '';
+        const actionA = session.requestA.trim() || '把请求说完整';
+        const actionB = session.requestB.trim() || '先复述再回应';
+        return `${session.names.a}今晚先做：${actionA}；${session.names.b}今晚回应：${actionB}。完成后互相确认一句“我收到了”。`;
+      }
+
+      function getAverageScore(stepScores) {
+        const scores = Object.values(stepScores || {})
+          .map((x) => Number(x))
+          .filter((x) => Number.isFinite(x) && x > 0);
+        if (!scores.length) return 0;
+        const sum = scores.reduce((acc, curr) => acc + curr, 0);
+        return Number((sum / scores.length).toFixed(1));
+      }
+
+      function buildQualityInsight(targetSession) {
+        const avg = getAverageScore(targetSession.stepScores);
+        if (!avg) return '本轮未记录评分，下一轮可在每步完成后打分，系统会给出更具体建议。';
+
+        const entries = Object.entries(targetSession.stepScores || {})
+          .map(([step, score]) => ({ step: Number(step), score: Number(score) }))
+          .filter((x) => x.step > 0 && x.score > 0);
+        const low = entries.filter((x) => x.score <= 2);
+
+        if (!low.length) {
+          return `本轮平均 ${avg} 分，节奏整体稳定。建议下轮继续保持“先复述再请求”的顺序。`;
+        }
+
+        const topLow = low
+          .sort((a, b) => a.score - b.score)
+          .slice(0, 2)
+          .map((x) => STEPS[x.step]?.title || `Step ${x.step}`)
+          .join('、');
+        return `本轮平均 ${avg} 分。薄弱环节：${topLow}。下轮建议在这两步里先说事实，再用一句“我听到的是...”确认。`;
+      }
+
+      function compactLine(value, fallback) {
+        const text = String(value || '').trim();
+        if (!text) return fallback;
+        return text.length > 44 ? `${text.slice(0, 44)}...` : text;
+      }
+
+      function buildRewriteSuggestions(targetSession) {
+        const lowSteps = Object.entries(targetSession.stepScores || {})
+          .map(([step, score]) => ({ step: Number(step), score: Number(score) }))
+          .filter((x) => x.step > 0 && x.score > 0 && x.score <= 2)
+          .sort((a, b) => a.score - b.score)
+          .slice(0, 3);
+
+        if (!lowSteps.length) return [];
+        const { a, b } = targetSession.names;
+        const suggestions = [];
+
+        lowSteps.forEach(({ step, score }) => {
+          let title = `${STEPS[step]?.title || `Step ${step}`}（${score} 分）`;
+          let text = '';
+
+          if (step === 1) {
+            text = `建议改写（${a}事实）\n原句：${compactLine(targetSession.factA, '未填写')}\n改写：当时在[具体时间]发生了[具体行为]，我感到[感受]，我希望我们先确认事实再讨论感受。`;
+          } else if (step === 2) {
+            text = `建议改写（${b}复述）\n原句：${compactLine(targetSession.reflectB, '未填写')}\n改写：我听到你在意的是[核心点]，你希望[具体期待]，我理解得对吗？`;
+          } else if (step === 3) {
+            text = `建议改写（${b}事实）\n原句：${compactLine(targetSession.factB, '未填写')}\n改写：在[时间]我做了[行为]，结果是[影响]，不是想忽视你。我接下来会[补救动作]。`;
+          } else if (step === 4) {
+            text = `建议改写（${a}复述）\n原句：${compactLine(targetSession.reflectA, '未填写')}\n改写：我听到你的意思是[对方难处]，你的重点需求是[需求]，我先确认再回应。`;
+          } else if (step === 5) {
+            text = `建议改写（感受与需要）\n${a}：我现在感到[感受]，我真正需要的是[需要]。\n${b}：我现在感到[感受]，我真正需要的是[需要]。`;
+          } else if (step === 6) {
+            text = `建议改写（双向请求）\n${a}：当[场景]发生时，我希望你[具体动作]，如果暂时做不到请[替代动作]。\n${b}：当[场景]发生时，我希望你[具体动作]，我会先[承诺动作]。`;
+          } else if (step === 7) {
+            text = `建议改写（收尾）\n和好一句话：我们先把这次对齐好，不再扩大冲突。\n今晚行动：今晚[时间]前完成[动作]，明天用 5 分钟复盘。`;
+          }
+
+          if (text) suggestions.push({ title, text });
+        });
+
+        const riskSuggestions = buildRiskRewriteSuggestions(targetSession);
+        return [...suggestions, ...riskSuggestions].slice(0, 6);
+      }
+
+      function renderRewriteSuggestions(targetSession) {
+        rewriteSuggestionsCache = buildRewriteSuggestions(targetSession);
+        els.rewriteCopyHint.textContent = '';
+        if (!rewriteSuggestionsCache.length) {
+          els.resultRewriteList.innerHTML = '<div class="result-card">本轮低分步骤较少，继续保持。若想强化，可优先打磨“复述”与“请求”两步。</div>';
+          return;
+        }
+
+        els.resultRewriteList.innerHTML = rewriteSuggestionsCache
+          .map(
+            (item, index) => `
+              <div class="rewrite-item">
+                <strong>${escapeHtml(item.title)}</strong>
+                <pre>${escapeHtml(item.text)}</pre>
+                <div class="actions">
+                  <button class="btn-plain" type="button" data-rewrite-index="${index}">复制建议</button>
+                </div>
+              </div>
+            `
+          )
+          .join('');
+      }
+
+      function buildShareCard(targetSession) {
+        const avg = getAverageScore(targetSession.stepScores);
+        const scoreText = avg ? `${avg}/5` : '未评分';
+        const templateLabel = getTemplateLabel(targetSession.conflictType);
+        return [
+          '【12分钟和好记录】',
+          `场景：${templateLabel}`,
+          `冲突强度：${targetSession.conflictIntensity || 3}/5`,
+          `双方：${targetSession.names.a} / ${targetSession.names.b}`,
+          `和好一句话：${targetSession.peaceLine || '-'}`,
+          `今晚行动：${targetSession.tonightAction || '-'}`,
+          `质量评分：${scoreText}`
+        ].join('\n');
+      }
+
+      function updateField(field, value) {
+        if (!session) return;
+        session[field] = value;
+        persistActiveSession();
+        syncSessionState('sync-state');
+      }
+
+      function toggleWord(field, word) {
+        if (!session) return;
+        const list = session[field];
+        if (list.includes(word)) {
+          session[field] = list.filter((w) => w !== word);
+        } else {
+          session[field] = [...list, word];
+        }
+        renderStepForm();
+        persistActiveSession();
+        syncSessionState('sync-state');
+      }
+
+      function renderChips(label, field, words) {
+        const chips = words
+          .map((word) => {
+            const isActive = session[field].includes(word);
+            return `<button type="button" class="chip ${isActive ? 'active' : ''}" data-field="${field}" data-word="${word}">${word}</button>`;
+          })
+          .join('');
+        return `<div class="chip-zone"><small class="muted">${label}</small><div class="chip-group">${chips}</div></div>`;
+      }
+
+      function focusFirstStepControl() {
+        const first = els.stepForm.querySelector('textarea, input, select');
+        if (first && typeof first.focus === 'function') {
+          setTimeout(() => first.focus(), 0);
+        }
+      }
+
+      function renderStepForm() {
+        if (!session) return;
+        const { a, b } = session.names;
+        const index = session.stepIndex;
+        const byTextarea = (field, label, value, placeholder, helper = '') => `
+          <div class="form-row">
+            <label>${label}</label>
+            ${helper ? `<small class="input-helper">${helper}</small>` : ''}
+            <textarea data-bind="${field}" placeholder="${placeholder}">${escapeHtml(value || '')}</textarea>
+          </div>
+        `;
+
+        let html = '';
+        if (session.inCooldown) {
+          html = `
+            <div class="result-card">
+              当前检测到冲突强度较高（${session.conflictIntensity}/5）。<br />
+              请先进行 60 秒降温：<br />
+              1）闭口深呼吸 6 次；<br />
+              2）各说一句“我想解决问题，不想赢你”；<br />
+              3）确认边界：不辱骂、不威胁、不离场。<br />
+              可等待自动结束，也可点击“下一步”提前进入流程。
+            </div>
+          `;
+        } else if (index === 0) {
+          html = `
+            <div class="result-card">
+              请一起读出规则，然后按“下一步”进入发言。<br />
+              1）不打断对方。<br />
+              2）只聊本次事件。<br />
+              3）不用绝对化词语。
+            </div>
+          `;
+        } else if (index === 1) {
+          html = byTextarea(
+            'factA',
+            `${a}现在发言：只写事实（不评判）`,
+            session.factA,
+            getFieldPlaceholder('factA', '例：昨晚 9 点我们约好通话，你在 10 点后才回复...'),
+            '建议结构：时间 + 行为 + 影响。不要写“你故意/你总是”。'
+          );
+        } else if (index === 2) {
+          html = byTextarea(
+            'reflectB',
+            `${b}现在复述：我听到的是...`,
+            session.reflectB,
+            getFieldPlaceholder('reflectB', '例：你在意的是我晚回复，而且没有提前告知。'),
+            `先复述 ${a} 的重点，不解释自己。`
+          );
+        } else if (index === 3) {
+          html = byTextarea(
+            'factB',
+            `${b}现在发言：只写事实（不评判）`,
+            session.factB,
+            getFieldPlaceholder('factB', '例：我当时在加班，手机静音，结束后才看到消息...'),
+            '只描述可观察到的信息，避免“你想太多”这类判断。'
+          );
+        } else if (index === 4) {
+          html = byTextarea(
+            'reflectA',
+            `${a}现在复述：我听到的是...`,
+            session.reflectA,
+            getFieldPlaceholder('reflectA', '例：你不是故意忽略我，而是当时没法及时回应。'),
+            `先确认 ${b} 的难处，再表达你的感受。`
+          );
+        } else if (index === 5) {
+          html = `
+            <div class="double-col">
+              <div class="result-card">
+                <strong>${a}</strong>
+                ${renderChips('感受', 'feelingsA', FEELINGS)}
+                ${renderChips('需要', 'needsA', NEEDS)}
+              </div>
+              <div class="result-card">
+                <strong>${b}</strong>
+                ${renderChips('感受', 'feelingsB', FEELINGS)}
+                ${renderChips('需要', 'needsB', NEEDS)}
+              </div>
+            </div>
+          `;
+        } else if (index === 6) {
+          html = `
+            <div class="result-card step-inline-tip">
+              填写顺序：先 ${a} 的请求，再 ${b} 的请求。请求要写成“具体动作 + 触发场景”。
+            </div>
+            ${byTextarea(
+              'requestA',
+              `${a} 的请求（先写）`,
+              session.requestA,
+              getFieldPlaceholder('requestA', '例：如果会晚 15 分钟以上，请提前发一句消息。'),
+              '句式建议：当[场景]发生时，我希望你[具体动作]。'
+            )}
+            ${byTextarea(
+              'requestB',
+              `${b} 的请求（再写）`,
+              session.requestB,
+              getFieldPlaceholder('requestB', '例：如果我没及时回，可以先发“你方便时回我”。'),
+              '动作越具体，执行成功率越高。'
+            )}
+          `;
+        } else {
+          html = `
+            ${byTextarea(
+              'peaceLine',
+              '和好一句话（双方都认可）',
+              session.peaceLine || buildPeaceLine(),
+              '自动生成后可手动修改',
+              '一句话即可，重点是确认“我们要一起解决问题”。'
+            )}
+            ${byTextarea(
+              'tonightAction',
+              '今晚行动（今天就能完成）',
+              session.tonightAction || suggestTonightAction(),
+              '今晚就能完成的一件事',
+              '请写可执行动作，例如“23:00 前互发确认消息”。'
+            )}
+            <div class="actions">
+              <button type="button" id="genLineBtn" class="btn-plain">重新生成一句话</button>
+            </div>
+          `;
+        }
+
+        els.stepForm.innerHTML = html;
+
+        els.stepForm.querySelectorAll('[data-bind]').forEach((node) => {
+          node.addEventListener('input', (event) => {
+            updateField(node.dataset.bind, event.target.value);
+          });
+        });
+
+        els.stepForm.querySelectorAll('.chip').forEach((btn) => {
+          btn.addEventListener('click', () => {
+            toggleWord(btn.dataset.field, btn.dataset.word);
+          });
+        });
+
+        const genLineBtn = document.getElementById('genLineBtn');
+        if (genLineBtn) {
+          genLineBtn.addEventListener('click', () => {
+            session.peaceLine = buildPeaceLine();
+            session.tonightAction = suggestTonightAction();
+            renderStepForm();
+            persistActiveSession();
+            syncSessionState('sync-state');
+          });
+        }
+
+        focusFirstStepControl();
+      }
+
+      function renderResult() {
+        if (!session) return;
+        els.resultFactA.textContent = session.factA || '-';
+        els.resultFactB.textContent = session.factB || '-';
+        els.resultReflectA.textContent = session.reflectA || '-';
+        els.resultReflectB.textContent = session.reflectB || '-';
+        els.resultReqA.textContent = session.requestA || '-';
+        els.resultReqB.textContent = session.requestB || '-';
+        els.resultPeaceLine.textContent = session.peaceLine || '-';
+        els.resultTonight.textContent = session.tonightAction || '-';
+        els.resultQualityInsight.textContent = buildQualityInsight(session);
+        renderRewriteSuggestions(session);
+        els.shareCardText.value = buildShareCard(session);
+        els.copyShareHint.textContent = '';
+        els.reminderHint.textContent = '';
+        setDefaultReminderTime();
+        renderMonitorBox();
+        renderHistoryLists();
+      }
+
+      function loadJson(key, fallback) {
+        try {
+          const raw = localStorage.getItem(key);
+          if (!raw) return fallback;
+          return JSON.parse(raw);
+        } catch (err) {
+          return fallback;
+        }
+      }
+
+      function loadSettings() {
+        const settingsRaw = loadJson(SETTINGS_KEY, {});
+        return {
+          privacyMode: Boolean(settingsRaw.privacyMode),
+          autoClearDraftOnFinish: Boolean(settingsRaw.autoClearDraftOnFinish),
+          autoClearHistoryOnFinish: Boolean(settingsRaw.autoClearHistoryOnFinish),
+          alertWebhook: String(settingsRaw.alertWebhook || '').trim()
+        };
+      }
+
+      function saveSettings() {
+        localStorage.setItem(SETTINGS_KEY, JSON.stringify(settings));
+      }
+
+      function loadHistory() {
+        const parsed = loadJson(STORAGE_KEY, []);
+        return Array.isArray(parsed) ? parsed : [];
+      }
+
+      function loadActiveSession() {
+        const parsed = loadJson(ACTIVE_SESSION_KEY, null);
+        return normalizeActiveSession(parsed);
+      }
+
+      function toHistoryRecord(item) {
+        const startedAt = item.startedAt || new Date().toISOString();
+        const endedAt = item.endedAt || startedAt;
+        const names = {
+          a: (item.names?.a || '我').trim() || '我',
+          b: (item.names?.b || '你').trim() || '你'
+        };
+        return {
+          id: item.id || `${Date.now()}-${Math.random().toString(16).slice(2, 8)}`,
+          startedAt,
+          endedAt,
+          status: item.status === 'done' ? 'done' : 'aborted',
+          names,
+          conflictType: item.conflictType || 'general',
+          conflictIntensity: clampInt(item.conflictIntensity ?? 3, 1, 5),
+          factA: item.factA || '',
+          factB: item.factB || '',
+          reflectA: item.reflectA || '',
+          reflectB: item.reflectB || '',
+          feelingsA: Array.isArray(item.feelingsA) ? item.feelingsA : [],
+          feelingsB: Array.isArray(item.feelingsB) ? item.feelingsB : [],
+          needsA: Array.isArray(item.needsA) ? item.needsA : [],
+          needsB: Array.isArray(item.needsB) ? item.needsB : [],
+          requestA: item.requestA || '',
+          requestB: item.requestB || '',
+          peaceLine: item.peaceLine || '',
+          tonightAction: item.tonightAction || '',
+          stepScores: item.stepScores || {}
+        };
+      }
+
+      function saveToHistory(item) {
+        history = [toHistoryRecord(item), ...history].slice(0, 50);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        renderHistoryLists();
+      }
+
+      function formatTime(iso) {
+        if (!iso) return '--';
+        const dt = new Date(iso);
+        if (Number.isNaN(dt.getTime())) return '--';
+        return dt.toLocaleString('zh-CN', {
+          month: '2-digit',
+          day: '2-digit',
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+      }
+
+      function aggregateTopByFields(records, fields, count = 3) {
+        const map = {};
+        records.forEach((record) => {
+          fields.forEach((field) => {
+            const values = Array.isArray(record[field]) ? record[field] : [];
+            values.forEach((v) => {
+              if (!v) return;
+              map[v] = (map[v] || 0) + 1;
+            });
+          });
+        });
+        return Object.entries(map)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, count)
+          .map(([label, n]) => `${label}(${n})`)
+          .join('、');
+      }
+
+      function getRecordTimestamp(record) {
+        const iso = record.endedAt || record.startedAt;
+        const ts = new Date(iso).getTime();
+        return Number.isFinite(ts) ? ts : 0;
+      }
+
+      function pickTopConflict(records) {
+        const conflictMap = {};
+        records.forEach((r) => {
+          const key = r.conflictType || 'general';
+          conflictMap[key] = (conflictMap[key] || 0) + 1;
+        });
+        const topConflict = Object.entries(conflictMap).sort((a, b) => b[1] - a[1])[0];
+        return topConflict ? getTemplateLabel(topConflict[0]) : '-';
+      }
+
+      function summarizeWindow(records) {
+        const total = records.length;
+        const done = records.filter((x) => x.status === 'done').length;
+        const completionRate = total ? Math.round((done / total) * 100) : 0;
+        const avgScores = records
+          .map((r) => getAverageScore(r.stepScores))
+          .filter((x) => Number.isFinite(x) && x > 0);
+        const avgScore = avgScores.length
+          ? Number((avgScores.reduce((a, b) => a + b, 0) / avgScores.length).toFixed(1))
+          : 0;
+        return {
+          total,
+          completionRate,
+          avgScore,
+          topConflictLabel: pickTopConflict(records)
+        };
+      }
+
+      function getPriorityStep(records) {
+        const bucket = {};
+        records.forEach((record) => {
+          Object.entries(record.stepScores || {}).forEach(([step, score]) => {
+            const idx = Number(step);
+            const val = Number(score);
+            if (!idx || !Number.isFinite(val) || val <= 0) return;
+            if (!bucket[idx]) bucket[idx] = [];
+            bucket[idx].push(val);
+          });
+        });
+        const entries = Object.entries(bucket).map(([step, values]) => {
+          const avg = values.reduce((sum, x) => sum + x, 0) / values.length;
+          return { step: Number(step), avg: Number(avg.toFixed(1)), count: values.length };
+        });
+        if (!entries.length) return null;
+        entries.sort((a, b) => a.avg - b.avg || b.count - a.count);
+        const top = entries[0];
+        return {
+          title: STEPS[top.step]?.title || `Step ${top.step}`,
+          avg: top.avg,
+          count: top.count
+        };
+      }
+
+      function getTopConflictWithCount(records) {
+        const map = {};
+        records.forEach((r) => {
+          const key = r.conflictType || 'general';
+          map[key] = (map[key] || 0) + 1;
+        });
+        const top = Object.entries(map).sort((a, b) => b[1] - a[1])[0];
+        if (!top) return null;
+        return {
+          label: getTemplateLabel(top[0]),
+          count: top[1]
+        };
+      }
+
+      function formatTrend(current, previous, digits = 0, suffix = '') {
+        if (previous === null) {
+          return `${current.toFixed(digits)}${suffix}（无上期数据）`;
+        }
+        const delta = Number((current - previous).toFixed(digits));
+        if (delta === 0) {
+          return `${current.toFixed(digits)}${suffix}（较上个7天持平）`;
+        }
+        const sign = delta > 0 ? '+' : '';
+        return `${current.toFixed(digits)}${suffix}（${sign}${delta.toFixed(digits)}${suffix}）`;
+      }
+
+      function computeAnalytics(records) {
+        const total = records.length;
+        const done = records.filter((x) => x.status === 'done').length;
+        const aborted = records.filter((x) => x.status !== 'done').length;
+        const completionRate = total ? Math.round((done / total) * 100) : 0;
+
+        const avgScores = records
+          .map((r) => getAverageScore(r.stepScores))
+          .filter((x) => Number.isFinite(x) && x > 0);
+        const avgScore = avgScores.length
+          ? Number((avgScores.reduce((a, b) => a + b, 0) / avgScores.length).toFixed(1))
+          : 0;
+
+        const now = nowMs();
+        const dayMs = 24 * 60 * 60 * 1000;
+        const currentStart = now - dayMs * 7;
+        const previousStart = now - dayMs * 14;
+        const current30Start = now - dayMs * 30;
+        const previous30Start = now - dayMs * 60;
+        const currentWindow = records.filter((r) => getRecordTimestamp(r) >= currentStart);
+        const previousWindow = records.filter((r) => {
+          const ts = getRecordTimestamp(r);
+          return ts >= previousStart && ts < currentStart;
+        });
+        const current30Window = records.filter((r) => getRecordTimestamp(r) >= current30Start);
+        const previous30Window = records.filter((r) => {
+          const ts = getRecordTimestamp(r);
+          return ts >= previous30Start && ts < current30Start;
+        });
+        const summary7 = summarizeWindow(currentWindow);
+        const summaryPrev = summarizeWindow(previousWindow);
+        const summary30 = summarizeWindow(current30Window);
+        const summaryPrev30 = summarizeWindow(previous30Window);
+        const priorityStep = getPriorityStep(records);
+        const recurrence = getTopConflictWithCount(current30Window);
+        const highIntensityRate =
+          records.length > 0 ? Math.round((records.filter((x) => clampInt(x.conflictIntensity ?? 3, 1, 5) >= 4).length / records.length) * 100) : 0;
+
+        return {
+          total,
+          done,
+          aborted,
+          completionRate,
+          avgScore,
+          topConflictLabel: pickTopConflict(records),
+          topFeelings: aggregateTopByFields(records, ['feelingsA', 'feelingsB']) || '-',
+          topNeeds: aggregateTopByFields(records, ['needsA', 'needsB']) || '-',
+          trend7Completion: formatTrend(summary7.completionRate, summaryPrev.total ? summaryPrev.completionRate : null, 0, '%'),
+          trend7Score: formatTrend(summary7.avgScore, summaryPrev.total ? summaryPrev.avgScore : null, 1, '分'),
+          trend7Conflict: summary7.topConflictLabel,
+          trend30Completion: formatTrend(summary30.completionRate, summaryPrev30.total ? summaryPrev30.completionRate : null, 0, '%'),
+          trend30Score: formatTrend(summary30.avgScore, summaryPrev30.total ? summaryPrev30.avgScore : null, 1, '分'),
+          recurrenceConflict: recurrence ? `${recurrence.label}（${recurrence.count}次）` : '-',
+          priorityStep: priorityStep ? `${priorityStep.title}（均分 ${priorityStep.avg}，样本 ${priorityStep.count}）` : '-',
+          highIntensityRate
+        };
+      }
+
+      function renderAnalytics() {
+        const a = computeAnalytics(history);
+        if (!history.length) {
+          els.analyticsBox.innerHTML = '<small>暂无数据，完成 1-2 轮后会显示完成率、评分均值和高频需要。</small>';
+          return;
+        }
+        els.analyticsBox.innerHTML = `
+          <strong>本地数据看板</strong>
+          <div class="analytics-grid">
+            <div class="analytics-item"><strong>${a.total}</strong><small>总会话数</small></div>
+            <div class="analytics-item"><strong>${a.completionRate}%</strong><small>完成率</small></div>
+            <div class="analytics-item"><strong>${a.avgScore || '-'}</strong><small>平均质量分</small></div>
+            <div class="analytics-item"><strong>${escapeHtml(a.topConflictLabel)}</strong><small>常见场景</small></div>
+          </div>
+          <small>
+            近7天完成率：${escapeHtml(a.trend7Completion)}<br />
+            近7天平均分：${escapeHtml(a.trend7Score)}<br />
+            近7天高频场景：${escapeHtml(a.trend7Conflict)}<br />
+            近30天完成率：${escapeHtml(a.trend30Completion)}<br />
+            近30天平均分：${escapeHtml(a.trend30Score)}<br />
+            近30天复发场景：${escapeHtml(a.recurrenceConflict)}<br />
+            优先优化步骤：${escapeHtml(a.priorityStep)}<br />
+            高强度冲突占比：${escapeHtml(String(a.highIntensityRate))}%<br />
+            高频感受：${escapeHtml(a.topFeelings)}<br />
+            高频需要：${escapeHtml(a.topNeeds)}
+          </small>
+        `;
+      }
+
+      function renderHistoryLists() {
+        els.historyCount.textContent = String(history.length);
+        const rows =
+          history.length === 0
+            ? '<li><small>还没有存档，完成第一轮后会出现在这里。</small></li>'
+            : history
+                .map((item) => {
+                  const badgeClass = item.status === 'done' ? 'done' : 'running';
+                  const badgeText = item.status === 'done' ? '已完成' : '已提前结束';
+                  const line = escapeHtml(item.peaceLine || '本轮未填写和好一句话');
+                  const score = getAverageScore(item.stepScores);
+                  const conflict = escapeHtml(getTemplateLabel(item.conflictType || 'general'));
+                  const intensity = clampInt(item.conflictIntensity ?? 3, 1, 5);
+                  return `
+                    <li>
+                      <div>
+                        <span class="kudos ${badgeClass}">${badgeText}</span>
+                        <small style="margin-left:6px">${formatTime(item.startedAt)} ｜ ${conflict} ｜ 强度${intensity}/5${score ? ` ｜ ${score}分` : ''}</small>
+                      </div>
+                      <div>${line}</div>
+                    </li>
+                  `;
+                })
+                .join('');
+        els.startHistoryList.innerHTML = rows;
+        els.resultHistoryList.innerHTML = rows;
+        renderAnalytics();
+      }
+
+      function escapeHtml(value) {
+        const text = String(value);
+        const map = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' };
+        return text.replace(/[&<>"']/g, (char) => map[char]);
+      }
+
+      function clearHistory(skipConfirm = false) {
+        if (!skipConfirm && !window.confirm('确认清空所有本地历史存档吗？')) return;
+        history = [];
+        localStorage.removeItem(STORAGE_KEY);
+        renderHistoryLists();
+      }
+
+      function mergeHistoryRecords(newItems) {
+        const map = new Map();
+        [...newItems, ...history].forEach((item) => {
+          const record = toHistoryRecord(item);
+          if (!map.has(record.id)) {
+            map.set(record.id, record);
+          }
+        });
+        history = [...map.values()]
+          .sort((a, b) => getRecordTimestamp(b) - getRecordTimestamp(a))
+          .slice(0, 50);
+      }
+
+      function normalizeImportedPayload(raw) {
+        if (Array.isArray(raw)) return raw;
+        if (raw && Array.isArray(raw.items)) return raw.items;
+        throw new Error('文件格式不正确，需包含 items 数组。');
+      }
+
+      async function exportHistory(clearAfterExport = false) {
+        if (!history.length) {
+          window.alert('暂无存档可导出。');
+          return false;
+        }
+        showImportHint('');
+        const archiveData = {
+          exportedAt: new Date().toISOString(),
+          count: history.length,
+          items: history
+        };
+        const passphrase = getArchivePassphrase();
+        const payload = passphrase
+          ? await encryptArchivePayload(archiveData, passphrase)
+          : { ...archiveData, encrypted: false, version: ARCHIVE_VERSION };
+        const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+        const anchor = document.createElement('a');
+        const stamp = new Date().toISOString().replace(/[:.]/g, '-');
+        anchor.href = URL.createObjectURL(blob);
+        anchor.download = `repair12-history-${stamp}.json`;
+        document.body.appendChild(anchor);
+        anchor.click();
+        anchor.remove();
+        URL.revokeObjectURL(anchor.href);
+
+        if (clearAfterExport) {
+          clearHistory(true);
+        }
+        return true;
+      }
+
+      async function importHistoryFromFile(file) {
+        if (!file) return;
+        const text = await file.text();
+        let payload;
+        try {
+          payload = JSON.parse(text);
+        } catch (err) {
+          throw new Error('导入失败：文件不是有效 JSON。');
+        }
+
+        if (payload?.encrypted) {
+          const passphrase = getArchivePassphrase();
+          if (!passphrase) {
+            throw new Error('该文件已加密，请先填写存档口令。');
+          }
+          try {
+            payload = await decryptArchivePayload(payload, passphrase);
+          } catch (err) {
+            throw new Error('口令错误或文件已损坏，无法解密。');
+          }
+        }
+
+        const importedItems = normalizeImportedPayload(payload);
+        mergeHistoryRecords(importedItems);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(history));
+        renderHistoryLists();
+        showImportHint(`导入成功：新增 ${importedItems.length} 条，当前共 ${history.length} 条。`);
+      }
+
+      function startFlow(mode = 'new') {
+        clearStepError();
+        resetFinishConfirm();
+        renderedStepIndex = -1;
+
+        if (mode === 'resume' && pendingResume) {
+          session = createSession(pendingResume);
+          els.conflictType.value = session.conflictType;
+          els.conflictIntensity.value = String(clampInt(session.conflictIntensity, 1, 5));
+          updateConflictHint();
+          updateIntensityDisplay();
+          pendingResume = null;
+          if (!session.paused) {
+            session.totalRemaining = secondsUntil(session.totalEndsAt);
+            session.stepRemaining = secondsUntil(session.stepEndsAt);
+            if (session.totalRemaining <= 0) {
+              session.totalRemaining = 0;
+              session.stepRemaining = 0;
+              finishSession('done');
+              return;
+            }
+            if (session.stepRemaining <= 0) {
+              session.paused = true;
+              session.stepRemaining = 1;
+              session.stepEndsAt = nowMs() + 1000;
+              showStepError('上次离开后此步骤已超时，请补充输入后继续。');
+            }
+          }
+        } else {
+          pendingResume = null;
+          localStorage.removeItem(ACTIVE_SESSION_KEY);
+          session = createSession();
+        }
+
+        showScreen('session');
+        renderSession(true);
+        persistActiveSession();
+        renderResumeCard();
+        startTimer();
+        syncSessionState('session-start');
+      }
+
+      function discardPendingResume() {
+        if (!pendingResume) return;
+        if (!window.confirm('确认放弃这份未完成草稿吗？')) return;
+        pendingResume = null;
+        localStorage.removeItem(ACTIVE_SESSION_KEY);
+        renderResumeCard();
+      }
+
+      function closeSessionToStart() {
+        clearInterval(timer);
+        if (session) {
+          hideSafetyPanel();
+        }
+        session = null;
+        resetFinishConfirm();
+        clearStepError();
+        showScreen('start');
+        renderResumeCard();
+      }
+
+      function handleFinishClick() {
+        if (!session) return;
+        const current = nowMs();
+        if (finishConfirmUntil < current) {
+          finishConfirmUntil = current + FINISH_CONFIRM_WINDOW_MS;
+          els.finishBtn.textContent = '确认结束';
+          showStepError('再次点击“提前结束”以确认（3 秒内）。');
+          return;
+        }
+        clearStepError();
+        resetFinishConfirm();
+        finishSession('aborted');
+      }
+
+      async function copyText(text) {
+        if (!text) return false;
+        try {
+          await navigator.clipboard.writeText(text);
+          return true;
+        } catch (err) {
+          const hidden = document.createElement('textarea');
+          hidden.value = text;
+          hidden.setAttribute('readonly', 'readonly');
+          hidden.style.position = 'absolute';
+          hidden.style.left = '-9999px';
+          document.body.appendChild(hidden);
+          hidden.select();
+          const ok = document.execCommand('copy');
+          hidden.remove();
+          return ok;
+        }
+      }
+
+      async function copyShareCard() {
+        const text = els.shareCardText.value.trim();
+        if (!text) return;
+        const ok = await copyText(text);
+        els.copyShareHint.textContent = ok ? '已复制' : '复制失败，请手动复制';
+      }
+
+      async function handleRewriteCopy(event) {
+        const button = event.target.closest('[data-rewrite-index]');
+        if (!button) return;
+        const idx = Number(button.dataset.rewriteIndex);
+        const payload = rewriteSuggestionsCache[idx]?.text || '';
+        if (!payload) return;
+        const ok = await copyText(payload);
+        els.rewriteCopyHint.textContent = ok ? '改写建议已复制' : '复制失败，请手动选择内容复制';
+      }
+
+      function buildReminderIcs(targetSession, date) {
+        const dt = new Date(date);
+        const end = new Date(dt.getTime() + 30 * 60 * 1000);
+        const fmt = (x) =>
+          `${x.getUTCFullYear()}${String(x.getUTCMonth() + 1).padStart(2, '0')}${String(x.getUTCDate()).padStart(2, '0')}T${String(x.getUTCHours()).padStart(2, '0')}${String(x.getUTCMinutes()).padStart(2, '0')}00Z`;
+        const summary = `${targetSession.names.a}/${targetSession.names.b} 12分钟和好行动提醒`;
+        const desc = `${targetSession.tonightAction || '完成今晚行动并互相确认一句“我收到了”。'}`.replace(/\n/g, ' ');
+        return [
+          'BEGIN:VCALENDAR',
+          'VERSION:2.0',
+          'PRODID:-//repair12//NVC//CN',
+          'BEGIN:VEVENT',
+          `UID:${targetSession.id}@repair12.local`,
+          `DTSTAMP:${fmt(new Date())}`,
+          `DTSTART:${fmt(dt)}`,
+          `DTEND:${fmt(end)}`,
+          `SUMMARY:${summary}`,
+          `DESCRIPTION:${desc}`,
+          'END:VEVENT',
+          'END:VCALENDAR'
+        ].join('\r\n');
+      }
+
+      function downloadReminderIcs() {
+        if (!session) return;
+        const selected = els.reminderTime.value;
+        if (!selected) {
+          els.reminderHint.textContent = '请先选择提醒时间。';
+          return;
+        }
+        const date = new Date(selected);
+        if (Number.isNaN(date.getTime())) {
+          els.reminderHint.textContent = '提醒时间格式无效。';
+          return;
+        }
+        const content = buildReminderIcs(session, date);
+        const blob = new Blob([content], { type: 'text/calendar;charset=utf-8' });
+        const link = document.createElement('a');
+        link.href = URL.createObjectURL(blob);
+        link.download = `repair12-reminder-${session.id}.ics`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        URL.revokeObjectURL(link.href);
+        els.reminderHint.textContent = '提醒日历已下载。';
+      }
+
+      async function scheduleBrowserReminder() {
+        if (!session) return;
+        if (!('Notification' in window)) {
+          els.reminderHint.textContent = '当前浏览器不支持通知。';
+          return;
+        }
+        if (Notification.permission !== 'granted') {
+          const permission = await Notification.requestPermission();
+          if (permission !== 'granted') {
+            els.reminderHint.textContent = '未授予通知权限。';
+            return;
+          }
+        }
+        setTimeout(() => {
+          new Notification('12分钟和好提醒', {
+            body: session?.tonightAction || '该执行你们的今晚行动了。'
+          });
+        }, 30 * 60 * 1000);
+        els.reminderHint.textContent = '已设置30分钟后提醒（浏览器需保持运行）。';
+      }
+
+      function drawWrappedText(ctx, text, x, y, maxWidth, lineHeight) {
+        const raw = String(text || '').split('\n');
+        let cursorY = y;
+        raw.forEach((line) => {
+          let current = '';
+          const chars = line.split('');
+          chars.forEach((ch) => {
+            const next = current + ch;
+            if (ctx.measureText(next).width > maxWidth) {
+              ctx.fillText(current, x, cursorY);
+              cursorY += lineHeight;
+              current = ch;
+            } else {
+              current = next;
+            }
+          });
+          if (current) {
+            ctx.fillText(current, x, cursorY);
+            cursorY += lineHeight;
+          }
+        });
+        return cursorY;
+      }
+
+      function downloadShareImage() {
+        if (!session) return;
+        const canvas = document.createElement('canvas');
+        canvas.width = 1080;
+        canvas.height = 1350;
+        const ctx = canvas.getContext('2d');
+        ctx.fillStyle = '#fff9ef';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+        ctx.fillStyle = '#e9f5f1';
+        ctx.fillRect(40, 40, canvas.width - 80, canvas.height - 80);
+        ctx.fillStyle = '#24303a';
+        ctx.font = 'bold 52px "Noto Sans SC"';
+        ctx.fillText('12分钟和好', 90, 150);
+        ctx.font = '28px "Noto Sans SC"';
+        const lines = [
+          `场景：${getTemplateLabel(session.conflictType)}`,
+          `双方：${session.names.a} / ${session.names.b}`,
+          `质量分：${getAverageScore(session.stepScores) || '-'}`
+        ];
+        let y = 220;
+        lines.forEach((line) => {
+          ctx.fillText(line, 90, y);
+          y += 50;
+        });
+        ctx.font = '26px "Noto Sans SC"';
+        y = drawWrappedText(ctx, `和好一句话：${session.peaceLine || '-'}`, 90, 420, 900, 42);
+        y += 20;
+        drawWrappedText(ctx, `今晚行动：${session.tonightAction || '-'}`, 90, y, 900, 42);
+        const link = document.createElement('a');
+        link.href = canvas.toDataURL('image/png');
+        link.download = `repair12-card-${session.id}.png`;
+        document.body.appendChild(link);
+        link.click();
+        link.remove();
+        els.copyShareHint.textContent = '图卡已下载。';
+      }
+
+      function downloadSharePdf() {
+        if (!session) return;
+        const win = window.open('', '_blank', 'width=860,height=980');
+        if (!win) {
+          els.copyShareHint.textContent = '浏览器拦截了新窗口，请允许弹窗后重试。';
+          return;
+        }
+        win.document.write(`
+          <html lang="zh-CN">
+            <head>
+              <meta charset="UTF-8" />
+              <title>12分钟和好导出</title>
+              <style>
+                body { font-family: "Noto Sans SC", sans-serif; padding: 28px; color: #24303a; }
+                .box { border: 1px solid #d6dde2; border-radius: 12px; padding: 14px; margin: 10px 0; line-height: 1.6; }
+              </style>
+            </head>
+            <body>
+              <h2>12分钟和好结果卡</h2>
+              <div class="box">场景：${escapeHtml(getTemplateLabel(session.conflictType))}<br />双方：${escapeHtml(session.names.a)} / ${escapeHtml(session.names.b)}</div>
+              <div class="box"><strong>和好一句话</strong><br />${escapeHtml(session.peaceLine || '-')}</div>
+              <div class="box"><strong>今晚行动</strong><br />${escapeHtml(session.tonightAction || '-')}</div>
+              <div class="box"><strong>质量洞察</strong><br />${escapeHtml(buildQualityInsight(session))}</div>
+            </body>
+          </html>
+        `);
+        win.document.close();
+        win.focus();
+        win.print();
+      }
+
+      function handleSessionHotkeys(event) {
+        if (!session || !screens.session.classList.contains('active')) return;
+        if (!event.altKey) return;
+        const key = event.key.toLowerCase();
+        if (key === 'n') {
+          event.preventDefault();
+          nextStep();
+        } else if (key === 'p') {
+          event.preventDefault();
+          togglePause();
+        } else if (key === 'f') {
+          event.preventDefault();
+          handleFinishClick();
+        }
+      }
+
+      function handleSafetyResume() {
+        if (!session) return;
+        resolveSafetyMode();
+        session.paused = false;
+        session.totalEndsAt = nowMs() + session.totalRemaining * 1000;
+        session.stepEndsAt = nowMs() + session.stepRemaining * 1000;
+        clearStepError();
+        renderSession(true);
+        persistActiveSession();
+        syncSessionState('sync-state');
+      }
+
+      els.startBtn.addEventListener('click', () => startFlow('new'));
+      els.resumeBtn.addEventListener('click', () => startFlow('resume'));
+      els.discardResumeBtn.addEventListener('click', discardPendingResume);
+      els.nameA.addEventListener('input', syncStartDraft);
+      els.nameB.addEventListener('input', syncStartDraft);
+      els.goHistoryBtn.addEventListener('click', () => {
+        clearInterval(timer);
+        showScreen('result');
+        session = null;
+        resetFinishConfirm();
+        clearStepError();
+        renderHistoryLists();
+      });
+      els.pauseBtn.addEventListener('click', togglePause);
+      els.nextBtn.addEventListener('click', () => nextStep());
+      els.finishBtn.addEventListener('click', handleFinishClick);
+      els.safetyCooldownBtn.addEventListener('click', startSafetyCooldown);
+      els.safetyResumeBtn.addEventListener('click', handleSafetyResume);
+      els.safetyExitBtn.addEventListener('click', () => {
+        if (!session) return;
+        session.peaceLine = session.peaceLine || '当前触发安全兜底，先暂停冲突，改天再谈。';
+        session.tonightAction = session.tonightAction || '今晚不继续冲突话题，仅确认安全和边界。';
+        finishSession('safety_exit');
+      });
+      els.restartBtn.addEventListener('click', () => startFlow('new'));
+      els.backStartBtn.addEventListener('click', closeSessionToStart);
+      els.copyShareBtn.addEventListener('click', copyShareCard);
+      els.downloadImageBtn.addEventListener('click', downloadShareImage);
+      els.downloadPdfBtn.addEventListener('click', downloadSharePdf);
+      els.downloadIcsBtn.addEventListener('click', downloadReminderIcs);
+      els.notifyBtn.addEventListener('click', scheduleBrowserReminder);
+      els.resultRewriteList.addEventListener('click', handleRewriteCopy);
+      els.conflictType.addEventListener('change', () => {
+        updateConflictHint();
+        syncStartDraft();
+      });
+      els.conflictIntensity.addEventListener('input', () => {
+        updateIntensityDisplay();
+        syncStartDraft();
+      });
+      els.privacyModeToggle.addEventListener('change', (event) => {
+        settings.privacyMode = Boolean(event.target.checked);
+        saveSettings();
+        updatePrivacyHint();
+        if (settings.privacyMode) {
+          pendingResume = null;
+          localStorage.removeItem(ACTIVE_SESSION_KEY);
+        }
+        renderResumeCard();
+      });
+      els.autoClearDraftToggle.addEventListener('change', (event) => {
+        settings.autoClearDraftOnFinish = Boolean(event.target.checked);
+        saveSettings();
+        updatePrivacyHint();
+      });
+      els.autoClearHistoryToggle.addEventListener('change', (event) => {
+        settings.autoClearHistoryOnFinish = Boolean(event.target.checked);
+        saveSettings();
+        updatePrivacyHint();
+      });
+      els.alertWebhook.addEventListener('change', (event) => {
+        settings.alertWebhook = String(event.target.value || '').trim();
+        saveSettings();
+        updatePrivacyHint();
+      });
+      els.joinRoomBtn.addEventListener('click', () => {
+        const room = normalizeRoom(els.collabRoom.value);
+        if (!joinCollabRoom(room)) {
+          els.collabHint.textContent = '房间号无效，请重新输入。';
+        }
+      });
+      els.createRoomBtn.addEventListener('click', () => {
+        const room = generateRoomCode();
+        joinCollabRoom(room);
+      });
+      els.copyRoomLinkBtn.addEventListener('click', async () => {
+        const room = normalizeRoom(els.collabRoom.value || collaboration.room);
+        if (!room) {
+          els.collabHint.textContent = '请先加入或创建房间。';
+          return;
+        }
+        const ok = await copyText(getRoomLink(room));
+        els.collabHint.textContent = ok ? `邀请链接已复制（房间 ${room}）。` : '复制失败，请手动复制地址栏链接。';
+      });
+      els.importBtn.addEventListener('click', () => {
+        showImportHint('');
+        els.importFileInput.click();
+      });
+      els.importFileInput.addEventListener('change', async (event) => {
+        const file = event.target.files && event.target.files[0];
+        event.target.value = '';
+        if (!file) return;
+        try {
+          await importHistoryFromFile(file);
+        } catch (err) {
+          showImportHint(err.message || '导入失败，请检查文件。', true);
+        }
+      });
+      els.clearHistoryBtn.addEventListener('click', () => clearHistory(false));
+      els.exportBtn.addEventListener('click', async () => {
+        try {
+          const ok = await exportHistory(false);
+          if (!ok) return;
+          if (getArchivePassphrase()) {
+            showImportHint('已导出加密存档。');
+          } else {
+            showImportHint('已导出明文存档。');
+          }
+        } catch (err) {
+          showImportHint(err.message || '导出失败，请稍后再试。', true);
+        }
+      });
+      els.exportClearBtn.addEventListener('click', async () => {
+        try {
+          const ok = await exportHistory(true);
+          if (!ok) return;
+          if (getArchivePassphrase()) {
+            showImportHint('已导出加密存档并清空历史。');
+          } else {
+            showImportHint('已导出明文存档并清空历史。');
+          }
+        } catch (err) {
+          showImportHint(err.message || '导出失败，请稍后再试。', true);
+        }
+      });
+      document.addEventListener('keydown', handleSessionHotkeys);
+      window.addEventListener('storage', handleStorageSync);
+      window.addEventListener('error', (event) => {
+        recordClientError(event.message, event.error?.stack || '');
+        renderMonitorBox();
+      });
+      window.addEventListener('unhandledrejection', (event) => {
+        const reason = event.reason instanceof Error ? event.reason.stack || event.reason.message : String(event.reason);
+        recordClientError('Unhandled Promise Rejection', reason);
+        renderMonitorBox();
+      });
+
+      document.addEventListener('visibilitychange', () => {
+        if (!session || session.paused || session.status !== 'running') return;
+        session.totalRemaining = secondsUntil(session.totalEndsAt);
+        session.stepRemaining = secondsUntil(session.stepEndsAt);
+        renderClockOnly();
+      });
+
+      window.addEventListener('beforeunload', (event) => {
+        persistActiveSession();
+        if (session && session.status === 'running') {
+          event.preventDefault();
+          event.returnValue = '';
+        }
+      });
+
+      setInterval(() => {
+        if (!collaboration.room) return;
+        sendCollabMessage('heartbeat');
+        updateCollabStatus();
+      }, COLLAB_HEARTBEAT_MS);
+
+      updateConflictHint();
+      updateIntensityDisplay();
+      updatePrivacyHint();
+      renderHistoryLists();
+      renderResumeCard();
+      renderMonitorBox();
+      setDefaultReminderTime();
+      updateCollabStatus();
+      autoJoinRoomFromUrl();
+    </script>
+  </body>
+</html>

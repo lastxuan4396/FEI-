@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#c17b3f" />
+    <title>OH Card Studio</title>
+    <link rel="manifest" href="./manifest.webmanifest?rev=20260312-19" />
+    <link rel="icon" type="image/svg+xml" href="./favicon.svg?rev=20260312-19" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Serif+SC:wght@400;600;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="./styles.css?rev=20260312-19" />
+  </head>
+  <body>
+    <div class="ambient">
+      <div class="shape shape-a"></div>
+      <div class="shape shape-b"></div>
+      <div class="shape shape-c"></div>
+    </div>
+
+    <div class="app-shell">
+      <header class="app-header panel">
+        <p class="eyebrow">OH CARD PRACTICE LAB</p>
+        <h1>OH 卡多玩法引导工作台</h1>
+        <p class="lead">
+          一页内完成：设题 -> 抽卡 -> 描述 -> 联想 -> 探究 -> 行动。支持多种牌阵、动态抽卡动画、引导问题生成和复盘导出。
+        </p>
+      </header>
+      <section class="panel workflow-panel">
+        <h2>流程进度</h2>
+        <div id="workflowSteps" class="workflow-steps"></div>
+      </section>
+
+      <main class="main-grid">
+        <section class="panel control-panel">
+          <div class="session-protocol">
+            <h2>0. 开场协议</h2>
+            <p class="deck-note">
+              OH 卡是投射式探索工具，不做诊断、不贴标签。你可以随时暂停，先确保安全与可承受节奏。
+            </p>
+            <label class="label" for="sessionIntentInput">本轮意图（可选）</label>
+            <input id="sessionIntentInput" type="text" placeholder="例如：我想厘清本周最关键的一个选择" />
+            <div class="protocol-row">
+              <label class="protocol-check">
+                <input id="consentCheckbox" type="checkbox" />
+                我同意：本次以探索为主，不做医学/心理诊断结论
+              </label>
+              <button id="pauseProtocolBtn" class="btn btn-ghost btn-small" type="button">暂停模式</button>
+            </div>
+            <label class="label" for="emotionIntensityInput">当前情绪强度（1-5）</label>
+            <div class="protocol-range">
+              <input id="emotionIntensityInput" type="range" min="1" max="5" step="1" value="3" />
+              <span id="emotionIntensityValue" class="mode-badge">3 · 中等</span>
+            </div>
+            <p id="safetyAlert" class="safety-alert" hidden></p>
+            <div id="groundingPanel" class="grounding-panel" hidden>
+              <p id="groundingText" class="deck-note">当前强度偏高，建议先做 60 秒稳定练习。</p>
+              <div class="actions compact">
+                <button id="groundingBreathBtn" class="btn btn-ghost" type="button">60秒呼吸</button>
+                <button id="groundingSenseBtn" class="btn btn-ghost" type="button">五感落地</button>
+                <button id="groundingSupportBtn" class="btn btn-ghost" type="button">支持语</button>
+              </div>
+            </div>
+          </div>
+
+          <h2>1. 设定主题</h2>
+          <label class="label" for="questionInput">你现在最想探索的问题</label>
+          <textarea
+            id="questionInput"
+            placeholder="例如：我最近对工作转型很纠结，接下来该怎么走？"
+          ></textarea>
+
+          <div class="mode-head">
+            <h2>2. 选择玩法</h2>
+            <span id="modeBadge" class="mode-badge"></span>
+          </div>
+          <div id="modeSwitch" class="mode-switch"></div>
+          <div class="quick-preset">
+            <h3>玩法预设</h3>
+            <div id="presetSwitch" class="preset-switch"></div>
+          </div>
+
+          <div class="deck-config">
+            <h3>3. 选择卡组</h3>
+            <div id="deckTypeSwitch" class="deck-type-switch"></div>
+            <div class="direction-config">
+              <h3>4. 整体旋转</h3>
+              <div id="layoutDirectionSwitch" class="direction-switch"></div>
+              <p class="deck-note">图卡在上、字卡在下作为一个整体，支持上/右/下/左四个方向旋转。</p>
+            </div>
+            <div class="overlay-config">
+              <h3>5. 图三复刻精修</h3>
+              <div class="overlay-grid">
+                <label class="overlay-item" for="overlayLeftInput"
+                  >左边距 <span id="overlayLeftValue" class="overlay-value"></span>
+                </label>
+                <input id="overlayLeftInput" type="range" min="6" max="24" step="0.2" value="11.8" />
+                <label class="overlay-item" for="overlayRightInput"
+                  >右边距 <span id="overlayRightValue" class="overlay-value"></span>
+                </label>
+                <input id="overlayRightInput" type="range" min="6" max="24" step="0.2" value="11.8" />
+                <label class="overlay-item" for="overlayTopInput"
+                  >上边距 <span id="overlayTopValue" class="overlay-value"></span>
+                </label>
+                <input id="overlayTopInput" type="range" min="6" max="24" step="0.2" value="12.6" />
+                <label class="overlay-item" for="overlayBottomInput"
+                  >下边距 <span id="overlayBottomValue" class="overlay-value"></span>
+                </label>
+                <input id="overlayBottomInput" type="range" min="6" max="24" step="0.2" value="10.8" />
+              </div>
+              <div class="actions compact">
+                <button id="resetOverlayBtn" class="btn btn-ghost">恢复图三默认</button>
+              </div>
+            </div>
+            <p class="deck-note">
+              你可以先用内置示例图卡和字卡，也可以导入你自己的卡组 JSON（支持图片 URL 或 base64）。
+            </p>
+            <label class="protocol-check">
+              <input id="avoidRecentCheckbox" type="checkbox" checked />
+              抽卡时尽量避开最近 3 局已出现的卡（减少重复）
+            </label>
+            <p id="deckStatus" class="deck-status"></p>
+            <div class="actions compact">
+              <button id="importImageDeckBtn" class="btn btn-ghost">导入图卡 JSON</button>
+              <button id="importWordDeckBtn" class="btn btn-ghost">导入字卡 JSON</button>
+              <button id="resetDeckBtn" class="btn btn-danger">恢复内置卡组</button>
+            </div>
+            <input id="importImageDeckInput" type="file" accept=".json,application/json" hidden />
+            <input id="importWordDeckInput" type="file" accept=".json,application/json" hidden />
+            <div class="deck-validator">
+              <h3>6. 卡包校验</h3>
+              <p id="deckValidationSummary" class="deck-note">导入后会自动检查重名、缺图、尺寸异常。</p>
+              <ul id="deckValidationList" class="deck-validation-list"></ul>
+            </div>
+            <div class="deck-manager2">
+              <h3>7. 卡包工坊</h3>
+              <p class="deck-note">支持拖拽图片自动生成 JSON、批量重命名和一键比例修复。</p>
+              <div class="deck-build-controls">
+                <label class="label-inline" for="deckBuildTarget">目标卡组</label>
+                <select id="deckBuildTarget">
+                  <option value="image">图卡</option>
+                  <option value="word">字卡</option>
+                </select>
+                <input id="deckBatchPrefix" type="text" placeholder="批量前缀（如 图卡）" />
+              </div>
+              <div id="deckDropzone" class="deck-dropzone">拖拽图片到这里自动生成卡包</div>
+              <div class="actions compact">
+                <button id="selectDeckImagesBtn" class="btn btn-ghost">选择图片并生成</button>
+                <button id="batchRenameBtn" class="btn btn-ghost">批量重命名</button>
+                <button id="fixRatioBtn" class="btn btn-ghost">一键修复比例</button>
+              </div>
+              <input id="deckImagesInput" type="file" accept="image/*" multiple hidden />
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="drawBtn" class="btn btn-primary">开始抽卡</button>
+            <button id="reshuffleBtn" class="btn btn-ghost">重新洗牌</button>
+          </div>
+
+          <div class="timer-wrap">
+            <h3>专注计时</h3>
+            <div class="timer-row">
+              <label class="label-inline" for="timerMinutes">分钟</label>
+              <input id="timerMinutes" type="number" min="1" max="20" value="3" />
+              <button id="timerToggle" class="btn btn-small">开始</button>
+            </div>
+            <p id="timerText" class="timer-text">03:00</p>
+          </div>
+
+          <div class="mode-detail">
+            <h3>当前玩法说明</h3>
+            <p id="modeGoal"></p>
+            <ol id="modeSteps"></ol>
+          </div>
+
+          <div class="shortcut-card">
+            <h3>快捷键</h3>
+            <p class="deck-note">空格 抽卡 · R 旋转 · F 全屏 · C 复制引导 · Esc 退出专注/预览</p>
+          </div>
+
+          <div class="slot-editor">
+            <h3>8. 牌阵编辑器</h3>
+            <p class="deck-note">可修改当前玩法位置名称、上下排序并保存模板。</p>
+            <div id="slotEditorList" class="slot-editor-list"></div>
+            <div class="actions compact">
+              <button id="saveSlotTemplateBtn" class="btn btn-ghost">保存为当前玩法模板</button>
+              <button id="resetSlotTemplateBtn" class="btn btn-danger">恢复默认位置名</button>
+            </div>
+          </div>
+
+          <div class="cloud-sync">
+            <h3>9. 云同步</h3>
+            <p class="deck-note">可选：填写云端 API 地址后一键推送/拉取；也支持同步码跨设备。</p>
+            <input id="cloudEndpointInput" type="text" placeholder="Cloud API URL（可留空）" />
+            <input id="cloudTokenInput" type="text" placeholder="Cloud Token（可留空）" />
+            <div class="actions compact">
+              <button id="cloudPushBtn" class="btn btn-ghost">推送到云端</button>
+              <button id="cloudPullBtn" class="btn btn-ghost">从云端拉取</button>
+              <button id="syncCodeExportBtn" class="btn btn-ghost">生成同步码</button>
+              <button id="syncCodeImportBtn" class="btn btn-ghost">导入同步码</button>
+            </div>
+            <p id="cloudSyncStatus" class="deck-note">未连接云端。</p>
+          </div>
+        </section>
+
+        <section class="panel draw-panel">
+          <div class="draw-head">
+            <h2>4. 抽卡区</h2>
+            <div class="draw-head-right">
+              <p id="spreadSummary"></p>
+              <button id="immersiveBtn" class="btn btn-ghost">沉浸模式</button>
+              <button id="focusModeBtn" class="btn btn-ghost">专注视图</button>
+              <button id="fullscreenBtn" class="btn btn-ghost">全屏</button>
+              <button id="shareReadonlyBtn" class="btn btn-primary">分享只读链接</button>
+            </div>
+          </div>
+
+          <div id="readonlyBanner" class="readonly-banner" hidden>
+            当前是只读分享模式。你可以查看牌面与引导，但不会覆盖本地数据。
+            <button id="exitReadonlyBtn" class="btn btn-ghost btn-small">退出只读</button>
+          </div>
+
+          <div class="deck-zone">
+            <div id="deck" class="deck" role="img" aria-label="OH card deck">
+              <span class="deck-layer layer-1"></span>
+              <span class="deck-layer layer-2"></span>
+              <span class="deck-layer layer-3"></span>
+              <span class="deck-core">OH</span>
+            </div>
+          </div>
+
+          <div id="spreadBoard" class="spread-board empty">
+            <p class="placeholder">选择玩法后点击“开始抽卡”，卡牌会在这里翻转出现。</p>
+          </div>
+        </section>
+
+        <section class="panel guide-panel">
+          <h2>5. 引导提问</h2>
+          <div id="promptTabs" class="prompt-tabs"></div>
+          <div id="promptStyleSwitch" class="prompt-style-switch"></div>
+          <p id="promptHint" class="prompt-hint"></p>
+          <ol id="promptList" class="prompt-list"></ol>
+          <div class="facilitator-panel">
+            <div class="facilitator-head">
+              <h3>主持人模式</h3>
+              <button id="facilitatorToggleBtn" class="btn btn-ghost btn-small" type="button">开启</button>
+            </div>
+            <p id="facilitatorStatus" class="deck-note">未开启。开启后会按「描述 -> 联想 -> 探究 -> 行动」分阶段推进。</p>
+            <ol id="facilitatorChecklist" class="facilitator-checklist"></ol>
+            <button id="facilitatorNextBtn" class="btn btn-ghost" type="button">下一阶段</button>
+          </div>
+          <div class="actions compact">
+            <button id="regenPromptBtn" class="btn btn-ghost">换一组提问</button>
+            <button id="copyReportBtn" class="btn btn-primary">复制本次引导文本</button>
+          </div>
+        </section>
+      </main>
+
+      <section class="panel playbook-panel">
+        <h2>玩法融合指南（详细说明）</h2>
+        <div id="playbookGrid" class="playbook-grid"></div>
+      </section>
+
+      <section class="bottom-grid">
+        <section class="panel note-panel">
+          <h2>6. 记录与行动</h2>
+          <div class="actions compact">
+            <button id="toggleDualModeBtn" class="btn btn-ghost">开启双人模式</button>
+          </div>
+          <div id="dualModePanel" class="dual-mode-panel" hidden>
+            <div class="dual-note">
+              <label class="label" for="dualNoteA">A 方视角记录</label>
+              <textarea id="dualNoteA" placeholder="A 方看到什么、感受什么、准备做什么"></textarea>
+            </div>
+            <div class="dual-note">
+              <label class="label" for="dualNoteB">B 方视角记录</label>
+              <textarea id="dualNoteB" placeholder="B 方看到什么、感受什么、准备做什么"></textarea>
+            </div>
+          </div>
+          <label class="label" for="noteInput">你的洞察、决定、下一步行动</label>
+          <textarea
+            id="noteInput"
+            placeholder="例如：我发现自己害怕失控。下一步：本周约一位前辈聊转型路径。"
+          ></textarea>
+          <div class="actions compact">
+            <button id="saveNoteBtn" class="btn btn-primary">保存到本地记录</button>
+            <button id="clearNoteBtn" class="btn btn-ghost">清空输入</button>
+            <button id="exportPngBtn" class="btn btn-ghost">导出复盘 PNG</button>
+            <button id="exportPdfBtn" class="btn btn-ghost">导出复盘 PDF</button>
+            <button id="exportA4Btn" class="btn btn-ghost">导出可打印 A4</button>
+            <button id="exportPosterBtn" class="btn btn-ghost">导出卡面海报</button>
+            <button id="exportConsultBtn" class="btn btn-ghost">导出咨询报告版</button>
+            <button id="exportHomeworkBtn" class="btn btn-ghost">导出作业版</button>
+          </div>
+          <div class="replay-assistant">
+            <div class="replay-assistant-head">
+              <h3>复盘助手</h3>
+              <button id="regenActionPlanBtn" class="btn btn-ghost">重新生成建议</button>
+            </div>
+            <p id="autoSummaryText" class="auto-summary-text">抽卡后自动生成总结与行动建议。</p>
+            <ul id="actionChecklist" class="action-checklist"></ul>
+            <p id="actionStats" class="action-stats">完成率：0%（0/3）</p>
+          </div>
+          <div class="closure-panel">
+            <h3>结束整合</h3>
+            <p id="closureSummary" class="deck-note">完成抽卡后可生成一句话整合，帮助你收束本次探索。</p>
+            <p id="closureAction" class="deck-note">72 小时行动将从你的牌面与记录自动提炼。</p>
+            <p id="closureSupport" class="deck-note">支持提醒：高压状态下优先休息、联系可信赖的人或专业支持。</p>
+            <div class="actions compact">
+              <button id="generateClosureBtn" class="btn btn-ghost">生成结束整合</button>
+              <button id="copyClosureBtn" class="btn btn-primary">复制结束整合</button>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel history-panel">
+          <div class="history-head">
+            <h2>历史回看</h2>
+            <button id="clearHistoryBtn" class="btn btn-danger">清空历史</button>
+          </div>
+          <div class="history-tools">
+            <input id="historySearchInput" type="text" placeholder="搜索问题 / 牌面 / 笔记" />
+            <select id="historyTagFilter">
+              <option value="all">全部标签</option>
+              <option value="work">工作</option>
+              <option value="relationship">关系</option>
+              <option value="emotion">情绪</option>
+              <option value="decision">决策</option>
+            </select>
+          </div>
+          <div id="historyList" class="history-list"></div>
+        </section>
+
+        <section class="panel analytics-panel">
+          <h2>7. 洞察统计</h2>
+          <p id="analyticsSummary" class="deck-note">抽卡后会自动统计高频词、情绪趋势与行动完成率。</p>
+          <div class="analytics-grid">
+            <article class="analytics-item">
+              <h3>高频关键词</h3>
+              <div id="analyticsTopWords" class="analytics-tags"></div>
+            </article>
+            <article class="analytics-item">
+              <h3>情绪趋势</h3>
+              <div id="analyticsEmotionTrend" class="analytics-tags"></div>
+            </article>
+            <article class="analytics-item">
+              <h3>行动完成率</h3>
+              <p id="analyticsActionRate" class="analytics-number">0%</p>
+            </article>
+            <article class="analytics-item">
+              <h3>会话质量分</h3>
+              <p id="analyticsSessionQuality" class="analytics-number">0</p>
+            </article>
+          </div>
+        </section>
+      </section>
+    </div>
+
+    <div id="imagePreviewModal" class="preview-modal" hidden>
+      <div class="preview-dialog">
+        <button id="previewCloseBtn" class="preview-close" data-action="close" aria-label="关闭预览">×</button>
+        <img id="previewImage" class="preview-image" alt="卡牌放大预览" />
+        <div id="previewPairWrap" class="preview-pair-wrap" hidden>
+          <div id="previewPairViewport" class="preview-pair-viewport">
+            <div id="previewPairComposite" class="preview-pair-composite rot-0">
+              <div class="preview-word-base">
+                <img id="previewPairWord" alt="字卡放大预览" />
+              </div>
+              <div class="preview-image-overlay">
+                <img id="previewPairImage" alt="图卡放大预览" />
+              </div>
+            </div>
+          </div>
+        </div>
+        <div id="previewPairTools" class="preview-pair-tools" hidden>
+          <button id="previewFitToggleBtn" class="preview-tool-btn preview-fit-btn" type="button" aria-label="切换全图与适配">全图</button>
+          <button id="previewRotateLeftBtn" class="preview-tool-btn" type="button" aria-label="逆时针旋转">↶</button>
+          <button id="previewRotateRightBtn" class="preview-tool-btn" type="button" aria-label="顺时针旋转">↷</button>
+          <label class="preview-sync-label" for="previewSyncRotation">
+            <input id="previewSyncRotation" type="checkbox" checked />
+            同步主卡方向
+          </label>
+          <p class="preview-gesture-tip">双指缩放 · 双击还原 · 左右滑动旋转 · 长按临时放大</p>
+        </div>
+        <p id="previewTitle" class="preview-title"></p>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+    <script src="./script.js?rev=20260312-19"></script>
+  </body>
+</html>

@@ -1,0 +1,31 @@
+---
+export const prerender = true;
+import { getCollection, render } from "astro:content";
+import EntryLayout from "../../layouts/EntryLayout.astro";
+
+export async function getStaticPaths() {
+  const projects = await getCollection("projects", ({ data }) => !data.draft);
+  return projects.map((project) => ({
+    params: { slug: project.data.slug },
+    props: { project }
+  }));
+}
+
+const { project } = Astro.props;
+const { Content } = await render(project);
+---
+export const prerender = true;
+<EntryLayout
+  title={project.data.seoTitle ?? `${project.data.title} | 网页项目`}
+  description={project.data.seoDescription ?? project.data.summary}
+  kicker="网页项目"
+  heading={project.data.title}
+  meta={`${project.data.publishedAt} · ${project.data.stack} · ${project.data.status}`}
+  intro={project.data.summary}
+  ctaLabel="回到首页"
+  ctaHref="/#web-projects"
+  secondaryCtaLabel="联系合作"
+  secondaryCtaHref="/#contact"
+>
+  <Content />
+</EntryLayout>

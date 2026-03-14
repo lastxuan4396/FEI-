@@ -1,0 +1,551 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LifeOS v1.3 - Daily Engine</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="hero">
+      <p class="eyebrow">PLAYBOOK ENGINE</p>
+      <h1>LifeOS v1.3 Daily Engine</h1>
+      <p class="subtitle">单入口：只填 DL-30，自动生成 A/B/C/D。你只执行 B。</p>
+      <p class="data-policy">
+        数据策略：默认仅保存在当前浏览器（localStorage），不会自动上传服务器。可在“数据与迁移”里导出/导入。
+      </p>
+    </header>
+
+    <section class="card help-card">
+      <details class="glossary quickstart">
+        <summary>30秒上手（先看这个）</summary>
+        <ol class="quick-list">
+          <li>左侧只填 5 项事实：行为 / 结果 / 昨日B执行 / RUIN / 明日意图。</li>
+          <li>提交后右侧生成 A/B/C/D。</li>
+          <li>你只执行 B：普通日 <=15 分钟，红灯日 <=5 分钟。</li>
+          <li>次日只回答“昨日B执行 0/1”，系统自动闭环。</li>
+        </ol>
+        <p class="quick-note">原则：不断更 > 完美；红灯先防崩，再谈推进。</p>
+      </details>
+
+      <details class="glossary">
+        <summary>术语速查（输入5词 + 输出5词）</summary>
+        <div class="glossary-grid">
+          <div>
+            <h3>输入区看这里</h3>
+            <ul>
+              <li><strong>DL-30</strong>：每日最小记录，只写事实。</li>
+              <li><strong>昨日B执行 0/1</strong>：昨天系统B做没做。</li>
+              <li><strong>RUIN 0/1</strong>：是否进入红灯防崩模式。</li>
+              <li><strong>S / T / P</strong>：S睡眠红灯，T交易违规，P关键任务掉线。</li>
+              <li><strong>明日意图</strong>：一句方向；留空走默认B。</li>
+            </ul>
+          </div>
+          <div>
+            <h3>输出区看这里</h3>
+            <ul>
+              <li><strong>A 模式判断</strong>：稳态 / 重启 / 红灯。</li>
+              <li><strong>B 最小行动</strong>：唯一发动机；你只执行这一步。</li>
+              <li><strong>C 风险+防线</strong>：最易翻车点 + 默认防线。</li>
+              <li><strong>D tail bet</strong>：可选上行，不做不影响闭环。</li>
+              <li><strong>Scoreboard-5</strong>：看趋势，不看一时情绪。</li>
+            </ul>
+          </div>
+        </div>
+      </details>
+
+      <details class="glossary example-pack">
+        <summary>标准化案例（可直接照抄）</summary>
+        <div class="example-grid">
+          <article class="example-item">
+            <h3>案例A｜正常日（RUIN=0）</h3>
+            <pre>DL-30 | 2026-03-09
+行为：写论文提纲 15 分钟
+结果：完成“标题+3要点”
+昨日B执行：1
+RUIN：0
+明日意图：把3要点扩成1段</pre>
+            <p>预期：B 会给你一个 ≤15min 的推进步骤。</p>
+          </article>
+
+          <article class="example-item">
+            <h3>案例B｜红灯日（RUIN=1, S）</h3>
+            <pre>DL-30 | 2026-03-09
+行为：熬夜后只做恢复动作 5 分钟
+结果：完成最小动作，无加码
+昨日B执行：0
+RUIN：1（码=S）
+明日意图：</pre>
+            <p>预期：B 自动降级为 ≤5min，C 自动给睡眠防线。</p>
+          </article>
+
+          <article class="example-item">
+            <h3>案例C｜Zero-Day（忙爆不断更）</h3>
+            <pre>DL-30 | 2026-03-09
+行为：回顾明日清单 2 分钟
+结果：写下唯一关键动作
+昨日B执行：0
+RUIN：0
+明日意图：</pre>
+            <p>预期：算完成当日更新，系统不断链。</p>
+          </article>
+        </div>
+      </details>
+    </section>
+
+    <section class="grid">
+      <article class="card input-card">
+        <h2>DL-30 输入</h2>
+        <div class="mode-switch" role="tablist" aria-label="输入模式">
+          <button id="modeQuick" type="button" class="active" aria-pressed="true">Quick Mode</button>
+          <button id="modeFull" type="button" aria-pressed="false">Full Mode</button>
+        </div>
+        <div id="quickModeBanner" class="hint-card quick-mode-banner">
+          <strong>Quick Mode：今天只判断 3 件事</strong>
+          <p class="hint-copy">1）昨天的 B 做没做 2）今天有没有红灯 3）结果一句话。其他都交给系统。</p>
+        </div>
+        <form id="dlForm" autocomplete="off">
+          <label>
+            日期
+            <input id="date" name="date" type="date" required>
+          </label>
+
+          <label>
+            行为（动词+对象+时长/次数）
+            <input id="behavior" name="behavior" type="text" placeholder="例：写论文提纲 20 分钟" required>
+          </label>
+
+          <label>
+            结果（完成/产出/指标）
+            <input id="result" name="result" type="text" placeholder="例：完成一页提纲" required>
+          </label>
+
+          <fieldset>
+            <legend>昨日B执行</legend>
+            <label class="inline">
+              <input type="radio" name="bExecuted" value="1" checked>
+              1（已执行）
+            </label>
+            <label class="inline">
+              <input type="radio" name="bExecuted" value="0">
+              0（未执行）
+            </label>
+          </fieldset>
+          <div id="yesterdayBHint" class="hint-card">
+            <strong id="yesterdayBTitle">昨日系统B：暂无可参考数据</strong>
+            <pre id="yesterdayBText">先提交至少一天 DL-30，系统会在这里自动回填“昨天生成的B步骤”。</pre>
+          </div>
+          <div id="quickFillCard" class="hint-card quick-fill-card">
+            <strong id="quickFillTitle">今天最低阻力填法</strong>
+            <p id="quickFillText" class="hint-copy">如果你今天只是按昨天的 B 往前推，直接用下面的一键填法，不用自己组织句子。</p>
+            <div class="quick-fill-actions">
+              <button id="behaviorFromYesterdayB" type="button">行为=昨天B</button>
+              <button id="resultDoneMinimal" type="button">结果=完成最小动作</button>
+              <button id="resultStartedMinimal" type="button">结果=只完成启动</button>
+            </div>
+          </div>
+
+          <fieldset>
+            <legend>RUIN</legend>
+            <label class="inline">
+              <input type="radio" name="ruin" value="0" checked>
+              0（无红灯）
+            </label>
+            <label class="inline">
+              <input type="radio" name="ruin" value="1">
+              1（红灯）
+            </label>
+          </fieldset>
+
+          <fieldset id="ruinCodesWrap" class="hidden">
+            <legend>RUIN 码（可多选）</legend>
+            <label class="inline">
+              <input type="checkbox" name="ruinCodes" value="S">
+              S（Sleep）
+            </label>
+            <label class="inline">
+              <input type="checkbox" name="ruinCodes" value="T">
+              T（Trading）
+            </label>
+            <label class="inline">
+              <input type="checkbox" name="ruinCodes" value="P">
+              P（Priority Drop）
+            </label>
+          </fieldset>
+          <div id="ruinAssist" class="hint-card hidden">
+            <strong id="ruinAssistTitle">检测到睡眠红灯</strong>
+            <p id="ruinAssistText" class="hint-copy">睡眠 < 6.5h 时，建议按规则切到 `RUIN=1（S）`。</p>
+            <div class="quick-fill-actions">
+              <button id="applySleepRuin" type="button">一键按睡眠红灯处理</button>
+            </div>
+          </div>
+
+          <div id="engineSignalCard" class="hint-card engine-signal-card">
+            <strong id="engineSignalTitle">当前默认B方向：Output</strong>
+            <p id="engineSignalText" class="hint-copy">如果你留空，系统会优先给你一个锚点式输出动作。</p>
+          </div>
+
+          <details id="intentDetails" class="intent-details">
+            <summary>方向输入（可选，不知道就留空）</summary>
+            <label>
+              明日意图（可空）
+              <input id="intent" name="intent" type="text" placeholder="不知道写啥就留空；系统会默认给 B">
+            </label>
+            <div id="intentAssist" class="hint-card intent-assist">
+              <strong id="intentAssistTitle">当前建议：可以直接留空</strong>
+              <p id="intentAssistText" class="hint-copy">如果你现在不确定写什么，直接留空，系统会默认给 Output 优先的 B。</p>
+              <div class="quick-fill-actions">
+                <button id="intentApplySuggestion" type="button">用当前建议</button>
+              </div>
+            </div>
+            <div class="intent-tools">
+              <button id="intentDefault" type="button">不用写（默认B）</button>
+              <button id="intentCarry" type="button">沿用昨天</button>
+              <button id="intentVoice" type="button">语音输入</button>
+              <button id="intentAi" type="button">刷新建议</button>
+            </div>
+            <ul class="intent-rules">
+              <li>不知道写啥：直接留空。</li>
+              <li>只知道方向：写一个词。</li>
+              <li>真有明确推进点：再写一句话。</li>
+              <li>无论如何，最终 B 由系统生成，不由你自己设计。</li>
+            </ul>
+          </details>
+
+          <details>
+            <summary>可选指标（可自动从 Apple 快捷指令填充）</summary>
+            <div class="optional-grid">
+              <label>
+                睡眠（小时）
+                <input id="sleepHours" name="sleepHours" type="number" step="0.1" min="0" max="24" placeholder="7.2">
+              </label>
+              <label>
+                训练分钟
+                <input id="trainingMinutes" name="trainingMinutes" type="number" min="0" placeholder="30">
+              </label>
+              <label>
+                深度工作分钟
+                <input id="deepWorkMinutes" name="deepWorkMinutes" type="number" min="0" placeholder="45">
+              </label>
+              <label>
+                输出字数
+                <input id="outputWords" name="outputWords" type="number" min="0" placeholder="300">
+              </label>
+              <label>
+                软件使用总分钟（设备总和）
+                <input id="appUsageMinutes" name="appUsageMinutes" type="number" min="0" placeholder="180">
+              </label>
+              <label>
+                手机使用分钟
+                <input id="phoneUsageMinutes" name="phoneUsageMinutes" type="number" min="0" placeholder="120">
+              </label>
+              <label>
+                电脑使用分钟
+                <input id="macUsageMinutes" name="macUsageMinutes" type="number" min="0" placeholder="60">
+              </label>
+              <label>
+                头号应用（可选）
+                <input id="topAppName" name="topAppName" type="text" placeholder="例：WeChat">
+              </label>
+              <label>
+                头号应用分钟（可选）
+                <input id="topAppMinutes" name="topAppMinutes" type="number" min="0" placeholder="45">
+              </label>
+              <label>
+                步数（可选）
+                <input id="steps" name="steps" type="number" min="0" placeholder="8000">
+              </label>
+              <label>
+                活动卡路里（可选）
+                <input id="activeCalories" name="activeCalories" type="number" min="0" placeholder="420">
+              </label>
+              <label>
+                运动距离 km（可选）
+                <input id="distanceKm" name="distanceKm" type="number" min="0" step="0.1" placeholder="5.2">
+              </label>
+            </div>
+            <div class="apple-sync">
+              <div class="apple-sync-head">
+                <strong>Apple 自动填充</strong>
+                <button id="copyAppleTemplate" type="button">复制快捷指令 URL 模板</button>
+              </div>
+              <p class="module-note">网页无法直接读取 Apple Health 权限；建议用 iPhone 快捷指令每天自动打开此页面并带入数据。</p>
+              <pre id="appleSyncStatus" class="module-output apple-sync-status empty">尚未接收 Apple 自动填充数据</pre>
+              <div class="actions">
+                <button id="copyMacBridgeCmd" type="button">复制 Mac 自动采集命令</button>
+              </div>
+              <details class="apple-help">
+                <summary>一键配置步骤（只做一次）</summary>
+                <ol class="quick-list">
+                  <li>在 iPhone 快捷指令里新建自动化（建议每天 22:30）。</li>
+                  <li>读取健康数据：睡眠时长、运动分钟；学习时间可用你自己的“学习分钟”变量。</li>
+                  <li>动作“打开 URL”，把变量拼到模板 URL 中。</li>
+                  <li>打开页面后会自动回填睡眠/训练/深度工作/输出字数。</li>
+                  <li>Mac 软件使用时间可点“复制 Mac 自动采集命令”后在终端运行（建议每天 22:35）。</li>
+                </ol>
+              </details>
+            </div>
+          </details>
+
+          <div class="actions">
+            <button type="submit" class="primary">生成 A/B/C/D 并保存</button>
+            <button id="quickZeroDay" type="button">Zero-Day 一键记录</button>
+          </div>
+        </form>
+      </article>
+
+      <article class="card output-card">
+        <h2>LifeOS 输出（验收标准）</h2>
+        <div class="execution-lock">
+          <p class="exec-label">今日执行焦点（只做B）</p>
+          <pre id="bFocus" class="exec-focus">提交 DL-30 后，这里会锁定显示你明天唯一要做的 B。</pre>
+        </div>
+        <div id="output" class="output empty">提交 DL-30 后显示 A/B/C/D</div>
+        <div id="woopLiteCard" class="execution-lock woop-card hidden">
+          <p class="exec-label">WOOP-lite（连续失败自动触发）</p>
+          <pre id="woopLiteText" class="exec-focus">连续 2 天 B=0 时，这里会自动给出“障碍 -> if-then 计划”。</pre>
+        </div>
+        <div class="actions">
+          <button id="copyDl" type="button">复制 DL-30</button>
+          <button id="copyOutput" type="button">复制 A/B/C/D</button>
+          <button id="copyLifeOS" type="button">复制给 LifeOS（含规则前缀）</button>
+        </div>
+      </article>
+    </section>
+
+    <section class="grid bottom-grid">
+      <article class="card">
+        <h2>Scoreboard-5 v1.3（近7天）</h2>
+        <pre id="scoreboard" class="scoreboard">暂无数据</pre>
+      </article>
+
+      <article class="card">
+        <h2>最近记录</h2>
+        <div id="history" class="history">暂无记录</div>
+      </article>
+    </section>
+
+    <section class="card flow-card">
+      <h2>完整流程工作台（周 / 双周 / 月 / 训练）</h2>
+      <p class="flow-intro">日常只跑 DL-30；下面 4 个模块按节奏触发，默认折叠，不占空间。</p>
+
+      <details class="flow-block">
+        <summary>WR-10（每周 10 分钟）</summary>
+        <form id="wrForm" class="mini-form" autocomplete="off">
+          <label>
+            周期
+            <input id="wrWeekRange" name="wrWeekRange" type="text" placeholder="Week of 2026-03-09 ~ 2026-03-15" required>
+          </label>
+          <label>
+            本周最有效动作（1条）
+            <input id="wrBestAction" name="wrBestAction" type="text" placeholder="例：每天晨间 15 分钟写作" required>
+          </label>
+          <label>
+            本周最大浪费/失控（1条）
+            <input id="wrWorstLeak" name="wrWorstLeak" type="text" placeholder="例：夜间刷手机导致晚睡" required>
+          </label>
+          <label>
+            本周模式（if-then）
+            <input id="wrIfThen" name="wrIfThen" type="text" placeholder="例：IF 晚睡 THEN 次日执行率显著下降" required>
+          </label>
+          <label>
+            下周唯一优先事项
+            <input id="wrPriority" name="wrPriority" type="text" placeholder="例：论文第二章首稿" required>
+          </label>
+
+          <div class="micro-card">
+            <strong>下周唯一实验（7天，≤15分钟/天）</strong>
+            <div class="mini-grid">
+              <label>
+                实验名
+                <input id="wrExpName" name="wrExpName" type="text" placeholder="例：晨间 15 分钟写作" required>
+              </label>
+              <label>
+                假设
+                <input id="wrExpHypothesis" name="wrExpHypothesis" type="text" placeholder="例：先写标题+3要点，输出会更稳定" required>
+              </label>
+              <label>
+                每日最小动作
+                <input id="wrExpAction" name="wrExpAction" type="text" placeholder="例：洗漱后写 15 分钟" required>
+              </label>
+              <label>
+                成功标准
+                <input id="wrExpMetric" name="wrExpMetric" type="text" placeholder="例：≥5天完成" required>
+              </label>
+            </div>
+          </div>
+
+          <label>
+            下周唯一改动（只改1条）
+            <input id="wrOneChange" name="wrOneChange" type="text" placeholder="例：晚上 23:30 手机不进卧室" required>
+          </label>
+
+          <div class="micro-card">
+            <strong>Scoreboard-5（可手填，也可一键带入近7天）</strong>
+            <div class="mini-grid compact">
+              <label>
+                DL完成
+                <input id="wrDlDone" name="wrDlDone" type="number" min="0" max="7" value="0" required>
+              </label>
+              <label>
+                B执行
+                <input id="wrBDone" name="wrBDone" type="number" min="0" max="7" value="0" required>
+              </label>
+              <label>
+                红灯天数
+                <input id="wrRuinDays" name="wrRuinDays" type="number" min="0" max="7" value="0" required>
+              </label>
+              <label>
+                S码次数
+                <input id="wrCodeS" name="wrCodeS" type="number" min="0" max="7" value="0" required>
+              </label>
+              <label>
+                T码次数
+                <input id="wrCodeT" name="wrCodeT" type="number" min="0" max="7" value="0" required>
+              </label>
+              <label>
+                P码次数
+                <input id="wrCodeP" name="wrCodeP" type="number" min="0" max="7" value="0" required>
+              </label>
+            </div>
+            <div class="inline-checks">
+              <label class="inline"><input id="wrSleepPass" name="wrSleepPass" type="checkbox"> Sleep底线达成</label>
+              <label class="inline"><input id="wrTrainingPass" name="wrTrainingPass" type="checkbox"> Training达成</label>
+              <label class="inline"><input id="wrOutputPass" name="wrOutputPass" type="checkbox"> Output达成</label>
+            </div>
+          </div>
+
+          <div class="actions">
+            <button id="wrAutofill" type="button">一键带入近7天</button>
+            <button type="submit" class="primary">生成 WR-10 结果</button>
+            <button id="copyWrOutput" type="button">复制 WR-10</button>
+          </div>
+        </form>
+        <pre id="wrOutput" class="module-output empty">提交 WR-10 后显示周总结与下周执行稿</pre>
+      </details>
+
+      <details class="flow-block">
+        <summary>System Patch（每两周 5-10 分钟，只改一处）</summary>
+        <form id="patchForm" class="mini-form" autocomplete="off">
+          <label>
+            系统最卡点（1条）
+            <input id="patchBottleneck" name="patchBottleneck" type="text" placeholder="例：总在晚间才想起写 DL" required>
+          </label>
+          <label>
+            最常断点（1条）
+            <input id="patchBreak" name="patchBreak" type="text" placeholder="例：明日最小行动写得太大，无法启动" required>
+          </label>
+          <label>
+            减摩擦改动（只改一处）
+            <input id="patchFix" name="patchFix" type="text" placeholder="例：明日动作强制写成“5分钟可启动”" required>
+          </label>
+          <label>
+            从哪天执行
+            <input id="patchStartDate" name="patchStartDate" type="date" required>
+          </label>
+          <div class="actions">
+            <button type="submit" class="primary">生成 Patch 规则</button>
+            <button id="copyPatchOutput" type="button">复制 Patch</button>
+          </div>
+        </form>
+        <pre id="patchOutput" class="module-output empty">提交 System Patch 后显示新规则（≤3条）</pre>
+      </details>
+
+      <details class="flow-block">
+        <summary>Playbook 月度升级（每月一次）</summary>
+        <div class="mini-form">
+          <label>
+            月份
+            <input id="playbookMonth" name="playbookMonth" type="month">
+          </label>
+          <p class="module-note">基于已保存的 WR / DL / Patch 自动提炼：Top动作、Top触发器、Anti-ruin、实验库。</p>
+          <div class="actions">
+            <button id="buildPlaybook" type="button" class="primary">生成 Playbook v1 草案</button>
+            <button id="copyPlaybook" type="button">复制 Playbook</button>
+          </div>
+        </div>
+        <pre id="playbookOutput" class="module-output empty">点击“生成 Playbook v1 草案”后显示</pre>
+      </details>
+
+      <details class="flow-block">
+        <summary>Dojo 5轮训练（随时 5 分钟）</summary>
+        <form id="dojoForm" class="mini-form" autocomplete="off">
+          <div class="mini-grid">
+            <label>
+              场景
+              <input id="dojoScene" name="dojoScene" type="text" placeholder="例：面试官压力追问" required>
+            </label>
+            <label>
+              目标
+              <input id="dojoGoal" name="dojoGoal" type="text" placeholder="例：30秒内讲清项目价值" required>
+            </label>
+            <label>
+              约束
+              <input id="dojoConstraint" name="dojoConstraint" type="text" placeholder="例：礼貌但坚定，不解释过多" required>
+            </label>
+          </div>
+          <div class="actions">
+            <button type="submit" class="primary">生成 5轮训练脚本</button>
+            <button id="copyDojoStarter" type="button">复制启动语句</button>
+            <button id="copyDojoOutput" type="button">复制训练脚本</button>
+          </div>
+        </form>
+        <pre id="dojoOutput" class="module-output empty">提交场景后显示 Dojo 5轮脚本 + 评分规则</pre>
+      </details>
+
+      <details class="flow-block">
+        <summary>数据与迁移（导出 / 导入）</summary>
+        <div class="mini-form">
+          <p class="module-note">用于跨设备备份与恢复。建议每周导出一次 JSON。</p>
+          <div class="actions">
+            <button id="exportJson" type="button">导出 JSON（完整备份）</button>
+            <button id="exportCsv" type="button">导出 CSV（表格）</button>
+            <button id="exportMd" type="button">导出 Markdown（归档）</button>
+          </div>
+          <label>
+            导入备份文件（JSON）
+            <input id="importFile" type="file" accept=".json,application/json">
+          </label>
+          <div class="actions">
+            <button id="importData" type="button" class="primary">导入并覆盖本地数据</button>
+          </div>
+          <div class="sync-box">
+            <strong>多端云同步（GitHub Gist）</strong>
+            <p class="module-note">一次配置后，手机和电脑都可点“同步现在”。推荐使用 Fine-grained token（仅 Gists 读写）。</p>
+            <label>
+              GitHub Token（本机保存）
+              <input id="syncToken" type="password" placeholder="github_pat_...">
+            </label>
+            <label>
+              Gist ID
+              <input id="syncGistId" type="text" placeholder="留空可点“初始化云仓”自动创建">
+            </label>
+            <label class="inline">
+              <input id="syncAuto" type="checkbox">
+              每次保存后自动同步
+            </label>
+            <div class="actions">
+              <button id="syncSave" type="button">保存同步配置</button>
+              <button id="syncInit" type="button">初始化云仓</button>
+              <button id="syncNow" type="button" class="primary">同步现在（先拉后推）</button>
+            </div>
+            <pre id="syncOutput" class="module-output empty">尚未配置云同步</pre>
+          </div>
+        </div>
+        <pre id="dataOutput" class="module-output empty">导出/导入结果会显示在这里</pre>
+      </details>
+    </section>
+  </main>
+
+  <template id="historyItemTpl">
+    <article class="history-item">
+      <div class="history-meta"></div>
+      <div class="history-text"></div>
+    </article>
+  </template>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>

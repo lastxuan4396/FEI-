@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Velocity Apex GP</title>
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <canvas id="game-canvas" aria-label="F1 game canvas"></canvas>
+
+      <section id="menu-overlay" class="overlay visible" aria-live="polite">
+        <div class="panel">
+          <p class="eyebrow">Racing Simulator</p>
+          <h1>Velocity Apex GP</h1>
+          <p class="subtitle">A complete F1-inspired race weekend in one browser tab.</p>
+
+          <div class="grid-form">
+            <label>
+              Track
+              <select id="track-select">
+                <option value="azure">Azure Coast Circuit</option>
+                <option value="ember">Ember Ring</option>
+                <option value="storm">Storm Valley</option>
+              </select>
+            </label>
+            <label>
+              Weather
+              <select id="weather-select">
+                <option value="sunny">Sunny</option>
+                <option value="mixed">Mixed Clouds</option>
+                <option value="rain">Rain</option>
+              </select>
+            </label>
+            <label>
+              Difficulty
+              <select id="difficulty-select">
+                <option value="pro">Pro</option>
+                <option value="challenger">Challenger</option>
+                <option value="rookie">Rookie</option>
+              </select>
+            </label>
+            <label>
+              Laps
+              <select id="laps-select">
+                <option value="6">6 Laps</option>
+                <option value="8" selected>8 Laps</option>
+                <option value="12">12 Laps</option>
+              </select>
+            </label>
+            <label>
+              AI Grid
+              <select id="ai-select">
+                <option value="7">8 Cars Total</option>
+                <option value="9" selected>10 Cars Total</option>
+                <option value="13">14 Cars Total</option>
+              </select>
+            </label>
+            <label>
+              Session
+              <select id="session-select">
+                <option value="auto" selected>Auto Cycle</option>
+                <option value="day">Day Race</option>
+                <option value="sunset">Sunset Race</option>
+                <option value="night">Night Race</option>
+              </select>
+            </label>
+          </div>
+
+          <div class="actions">
+            <button id="start-btn" class="button-primary">Start Grand Prix</button>
+          </div>
+
+          <div class="controls">
+            <h2>Controls</h2>
+            <p>Steer: Arrow Left/Right or A/D</p>
+            <p>Throttle/Brake: Arrow Up/Down or W/S</p>
+            <p>DRS: D when indicator glows</p>
+            <p>ERS Boost: Hold Shift</p>
+            <p>Pit Request: P in pit window</p>
+            <p>Pause: Esc | Fullscreen: F | Music: M</p>
+            <p>Camera: C | Session Lights: N</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="finish-overlay" class="overlay" aria-live="polite">
+        <div class="panel finish-panel">
+          <p class="eyebrow">Race Complete</p>
+          <h2 id="finish-title">Results</h2>
+          <ol id="results-list"></ol>
+          <button id="restart-btn" class="button-primary">Race Again</button>
+        </div>
+      </section>
+
+      <div id="hud" class="hud hidden">
+        <div class="hud-left">
+          <p id="hud-lap">Lap 1 / 8</p>
+          <p id="hud-time">Race 00:00.000</p>
+          <p id="hud-position">P1 / 10</p>
+          <p id="hud-best">Best --:--.---</p>
+        </div>
+        <div class="hud-center">
+          <div class="speed-block">
+            <span id="hud-speed">0</span>
+            <small>km/h</small>
+          </div>
+          <div class="status-row">
+            <span id="hud-drs" class="chip">DRS LOCKED</span>
+            <span id="hud-pit" class="chip">PIT CLOSED</span>
+          </div>
+        </div>
+        <div class="hud-right">
+          <div class="bar-item">
+            <label>Fuel</label>
+            <div class="bar"><i id="fuel-bar"></i></div>
+          </div>
+          <div class="bar-item">
+            <label>Tires</label>
+            <div class="bar"><i id="tyre-bar"></i></div>
+          </div>
+          <div class="bar-item">
+            <label>Damage</label>
+            <div class="bar danger"><i id="damage-bar"></i></div>
+          </div>
+          <div class="bar-item">
+            <label>ERS</label>
+            <div class="bar"><i id="ers-bar"></i></div>
+          </div>
+        </div>
+      </div>
+
+      <aside id="leaderboard" class="leaderboard hidden">
+        <h3>Standings</h3>
+        <ol id="leader-list"></ol>
+      </aside>
+
+      <p id="status-banner" class="status-banner hidden">PAUSED</p>
+      <p id="toast-banner" class="toast-banner hidden"></p>
+      <div class="quick-controls">
+        <button id="camera-toggle" class="music-toggle" type="button">Cam: AUTO</button>
+        <button id="lights-toggle" class="music-toggle" type="button">Lights: AUTO</button>
+        <button id="music-toggle" class="music-toggle" type="button" aria-pressed="false">Music: ON</button>
+      </div>
+    </main>
+
+    <script type="module" src="./game.js"></script>
+  </body>
+</html>

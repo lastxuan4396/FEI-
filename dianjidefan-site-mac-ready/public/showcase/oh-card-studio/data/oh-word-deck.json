@@ -1,0 +1,892 @@
+[
+  {
+    "name": "空白卡",
+    "image": "./cards/oh-word/000空白卡.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "空白卡"
+    ],
+    "cue": "当你看到「空白卡」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "感情",
+    "image": "./cards/oh-word/89感情.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "感情"
+    ],
+    "cue": "当你看到「感情」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "孤独",
+    "image": "./cards/oh-word/90孤独.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "孤独"
+    ],
+    "cue": "当你看到「孤独」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "生气",
+    "image": "./cards/oh-word/91生气.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "生气"
+    ],
+    "cue": "当你看到「生气」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "焦虑",
+    "image": "./cards/oh-word/92焦虑.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "焦虑"
+    ],
+    "cue": "当你看到「焦虑」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "道歉",
+    "image": "./cards/oh-word/93道歉.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "道歉"
+    ],
+    "cue": "当你看到「道歉」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "外表",
+    "image": "./cards/oh-word/94外表.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "外表"
+    ],
+    "cue": "当你看到「外表」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "攻击",
+    "image": "./cards/oh-word/95攻击.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "攻击"
+    ],
+    "cue": "当你看到「攻击」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "吸引",
+    "image": "./cards/oh-word/96吸引.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "吸引"
+    ],
+    "cue": "当你看到「吸引」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "开始",
+    "image": "./cards/oh-word/97开始.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "开始"
+    ],
+    "cue": "当你看到「开始」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "夸赞",
+    "image": "./cards/oh-word/98夸赞.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "夸赞"
+    ],
+    "cue": "当你看到「夸赞」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "厌烦",
+    "image": "./cards/oh-word/99厌烦.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "厌烦"
+    ],
+    "cue": "当你看到「厌烦」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "上司",
+    "image": "./cards/oh-word/100上司.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "上司"
+    ],
+    "cue": "当你看到「上司」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "改变",
+    "image": "./cards/oh-word/101改变.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "改变"
+    ],
+    "cue": "当你看到「改变」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "孩童",
+    "image": "./cards/oh-word/102孩童.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "孩童"
+    ],
+    "cue": "当你看到「孩童」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "诙谐",
+    "image": "./cards/oh-word/103诙谐.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "诙谐"
+    ],
+    "cue": "当你看到「诙谐」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "强迫",
+    "image": "./cards/oh-word/104强迫.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "强迫"
+    ],
+    "cue": "当你看到「强迫」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "顺应",
+    "image": "./cards/oh-word/105顺应.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "顺应"
+    ],
+    "cue": "当你看到「顺应」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "混乱",
+    "image": "./cards/oh-word/106混乱.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "混乱"
+    ],
+    "cue": "当你看到「混乱」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "循环",
+    "image": "./cards/oh-word/107循环.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "循环"
+    ],
+    "cue": "当你看到「循环」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "危险",
+    "image": "./cards/oh-word/108危险.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "危险"
+    ],
+    "cue": "当你看到「危险」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "依赖",
+    "image": "./cards/oh-word/109依赖.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "依赖"
+    ],
+    "cue": "当你看到「依赖」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "破坏",
+    "image": "./cards/oh-word/110破坏.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "破坏"
+    ],
+    "cue": "当你看到「破坏」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "丢脸",
+    "image": "./cards/oh-word/111丢脸.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "丢脸"
+    ],
+    "cue": "当你看到「丢脸」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "不喜欢",
+    "image": "./cards/oh-word/112不喜欢.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "不喜欢"
+    ],
+    "cue": "当你看到「不喜欢」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "梦想",
+    "image": "./cards/oh-word/113梦想.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "梦想"
+    ],
+    "cue": "当你看到「梦想」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "消除",
+    "image": "./cards/oh-word/114消除.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "消除"
+    ],
+    "cue": "当你看到「消除」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "尴尬",
+    "image": "./cards/oh-word/115尴尬.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "尴尬"
+    ],
+    "cue": "当你看到「尴尬」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "色情",
+    "image": "./cards/oh-word/116色情.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "色情"
+    ],
+    "cue": "当你看到「色情」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "专家",
+    "image": "./cards/oh-word/117专家.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "专家"
+    ],
+    "cue": "当你看到「专家」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "失败",
+    "image": "./cards/oh-word/118失败.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "失败"
+    ],
+    "cue": "当你看到「失败」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "幻想",
+    "image": "./cards/oh-word/119幻想.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "幻想"
+    ],
+    "cue": "当你看到「幻想」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "父亲",
+    "image": "./cards/oh-word/120父亲.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "父亲"
+    ],
+    "cue": "当你看到「父亲」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "恐惧",
+    "image": "./cards/oh-word/121恐惧.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "恐惧"
+    ],
+    "cue": "当你看到「恐惧」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "坚定",
+    "image": "./cards/oh-word/122坚定.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "坚定"
+    ],
+    "cue": "当你看到「坚定」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "游戏",
+    "image": "./cards/oh-word/123游戏.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "游戏"
+    ],
+    "cue": "当你看到「游戏」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "付出",
+    "image": "./cards/oh-word/124付出.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "付出"
+    ],
+    "cue": "当你看到「付出」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "前进",
+    "image": "./cards/oh-word/125前进.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "前进"
+    ],
+    "cue": "当你看到「前进」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "哀伤",
+    "image": "./cards/oh-word/126哀伤.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "哀伤"
+    ],
+    "cue": "当你看到「哀伤」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "罪恶感",
+    "image": "./cards/oh-word/127罪恶感.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "罪恶感"
+    ],
+    "cue": "当你看到「罪恶感」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "习惯",
+    "image": "./cards/oh-word/128习惯.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "习惯"
+    ],
+    "cue": "当你看到「习惯」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "憎恨",
+    "image": "./cards/oh-word/129憎恨.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "憎恨"
+    ],
+    "cue": "当你看到「憎恨」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "犹豫",
+    "image": "./cards/oh-word/130犹豫.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "犹豫"
+    ],
+    "cue": "当你看到「犹豫」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "躲藏",
+    "image": "./cards/oh-word/131躲藏.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "躲藏"
+    ],
+    "cue": "当你看到「躲藏」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "执着",
+    "image": "./cards/oh-word/132执着.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "执着"
+    ],
+    "cue": "当你看到「执着」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "家",
+    "image": "./cards/oh-word/133家.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "家"
+    ],
+    "cue": "当你看到「家」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "同性恋",
+    "image": "./cards/oh-word/134同性恋.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "同性恋"
+    ],
+    "cue": "当你看到「同性恋」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "希望",
+    "image": "./cards/oh-word/135希望.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "希望"
+    ],
+    "cue": "当你看到「希望」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "羞辱",
+    "image": "./cards/oh-word/136羞辱.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "羞辱"
+    ],
+    "cue": "当你看到「羞辱」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "喜悦",
+    "image": "./cards/oh-word/137喜悦.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "喜悦"
+    ],
+    "cue": "当你看到「喜悦」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "恐吓",
+    "image": "./cards/oh-word/138恐吓.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "恐吓"
+    ],
+    "cue": "当你看到「恐吓」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "欢笑",
+    "image": "./cards/oh-word/139欢笑.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "欢笑"
+    ],
+    "cue": "当你看到「欢笑」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "放开",
+    "image": "./cards/oh-word/140放开.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "放开"
+    ],
+    "cue": "当你看到「放开」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "男性",
+    "image": "./cards/oh-word/142男性.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "男性"
+    ],
+    "cue": "当你看到「男性」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "母亲",
+    "image": "./cards/oh-word/143母亲.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "母亲"
+    ],
+    "cue": "当你看到「母亲」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "谎言",
+    "image": "./cards/oh-word/143谎言.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "谎言"
+    ],
+    "cue": "当你看到「谎言」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "裸体",
+    "image": "./cards/oh-word/144裸体.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "裸体"
+    ],
+    "cue": "当你看到「裸体」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "亏欠",
+    "image": "./cards/oh-word/145亏欠.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "亏欠"
+    ],
+    "cue": "当你看到「亏欠」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "痛苦",
+    "image": "./cards/oh-word/146痛苦.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "痛苦"
+    ],
+    "cue": "当你看到「痛苦」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "姿态",
+    "image": "./cards/oh-word/147姿态.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "姿态"
+    ],
+    "cue": "当你看到「姿态」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "权利游戏",
+    "image": "./cards/oh-word/148权利游戏.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "权利游戏"
+    ],
+    "cue": "当你看到「权利游戏」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "憎恶",
+    "image": "./cards/oh-word/149憎恶.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "憎恶"
+    ],
+    "cue": "当你看到「憎恶」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "抗拒",
+    "image": "./cards/oh-word/150抗拒.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "抗拒"
+    ],
+    "cue": "当你看到「抗拒」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "退省",
+    "image": "./cards/oh-word/151退省.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "退省"
+    ],
+    "cue": "当你看到「退省」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "固执",
+    "image": "./cards/oh-word/152固执.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "固执"
+    ],
+    "cue": "当你看到「固执」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "敌对",
+    "image": "./cards/oh-word/153敌对.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "敌对"
+    ],
+    "cue": "当你看到「敌对」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "腐朽",
+    "image": "./cards/oh-word/154腐朽.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "腐朽"
+    ],
+    "cue": "当你看到「腐朽」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "弄巧成拙",
+    "image": "./cards/oh-word/155弄巧成拙.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "弄巧成拙"
+    ],
+    "cue": "当你看到「弄巧成拙」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "羞愧",
+    "image": "./cards/oh-word/156羞愧.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "羞愧"
+    ],
+    "cue": "当你看到「羞愧」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "分享",
+    "image": "./cards/oh-word/157分享.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "分享"
+    ],
+    "cue": "当你看到「分享」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "应该",
+    "image": "./cards/oh-word/158应该.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "应该"
+    ],
+    "cue": "当你看到「应该」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "奴隶",
+    "image": "./cards/oh-word/159奴隶.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "奴隶"
+    ],
+    "cue": "当你看到「奴隶」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "停止",
+    "image": "./cards/oh-word/160停止.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "停止"
+    ],
+    "cue": "当你看到「停止」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "陌生人",
+    "image": "./cards/oh-word/161陌生人.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "陌生人"
+    ],
+    "cue": "当你看到「陌生人」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "愚蠢",
+    "image": "./cards/oh-word/162愚蠢.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "愚蠢"
+    ],
+    "cue": "当你看到「愚蠢」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "成功",
+    "image": "./cards/oh-word/163成功.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "成功"
+    ],
+    "cue": "当你看到「成功」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "压抑",
+    "image": "./cards/oh-word/164压抑.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "压抑"
+    ],
+    "cue": "当你看到「压抑」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "掠夺",
+    "image": "./cards/oh-word/165掠夺.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "掠夺"
+    ],
+    "cue": "当你看到「掠夺」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "威胁",
+    "image": "./cards/oh-word/166威胁.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "威胁"
+    ],
+    "cue": "当你看到「威胁」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "丑陋",
+    "image": "./cards/oh-word/167丑陋.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "丑陋"
+    ],
+    "cue": "当你看到「丑陋」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "受害者",
+    "image": "./cards/oh-word/168受害者.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "受害者"
+    ],
+    "cue": "当你看到「受害者」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "违背",
+    "image": "./cards/oh-word/169违背.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "违背"
+    ],
+    "cue": "当你看到「违背」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "等候",
+    "image": "./cards/oh-word/170等候.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "等候"
+    ],
+    "cue": "当你看到「等候」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "疲惫",
+    "image": "./cards/oh-word/171疲惫.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "疲惫"
+    ],
+    "cue": "当你看到「疲惫」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "聪明",
+    "image": "./cards/oh-word/172聪明.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "聪明"
+    ],
+    "cue": "当你看到「聪明」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "女人",
+    "image": "./cards/oh-word/173女人.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "女人"
+    ],
+    "cue": "当你看到「女人」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "奇妙",
+    "image": "./cards/oh-word/174奇妙.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "奇妙"
+    ],
+    "cue": "当你看到「奇妙」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "错误",
+    "image": "./cards/oh-word/175错误.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "错误"
+    ],
+    "cue": "当你看到「错误」时，第一反应是什么？它和你当前议题有什么连接？"
+  },
+  {
+    "name": "爱情",
+    "image": "./cards/oh-word/176爱情.jpg",
+    "glyph": "",
+    "tone": "night",
+    "keywords": [
+      "爱情"
+    ],
+    "cue": "当你看到「爱情」时，第一反应是什么？它和你当前议题有什么连接？"
+  }
+]

@@ -1,0 +1,588 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import { siteConfig } from "../config/site";
+import { archiveWorks, directWorks, filterOptions, githubShelf, serviceWorks } from "../data/showcase";
+import type { ShowcaseWork, WorkCategory } from "../data/showcase";
+
+const showGithub = false;
+const showPrivateSections = false;
+const visibleServiceWorks = showPrivateSections ? serviceWorks : [];
+const visibleArchiveWorks = showPrivateSections ? archiveWorks : [];
+const visibleGithubShelf = showGithub ? githubShelf : [];
+const featuredWorks = directWorks.filter((work) => work.featured);
+const [leadFeature, ...supportFeatures] = featuredWorks;
+const totalWorks = directWorks.length + visibleServiceWorks.length + visibleArchiveWorks.length;
+const curatorNotes = [
+  "不是简历页，而是一座可逛可玩的作品展厅",
+  "先按体验方式看，再按项目类型深入",
+  "后面做新站、新游戏时还能继续往里长"
+] as const;
+const categoryBlueprints: Record<WorkCategory, { label: string; description: string; tone: ShowcaseWork["tone"] }> = {
+  game: {
+    label: "游戏",
+    description: "竞速、棋盘、测评和轻互动，重点是单局体验、节奏和可玩性。",
+    tone: "ember"
+  },
+  tool: {
+    label: "工具",
+    description: "执行系统、成长面板、签到页和训练引擎，偏解决问题和长期使用。",
+    tone: "lagoon"
+  },
+  story: {
+    label: "关系 / 叙事",
+    description: "抽卡、修复、沟通和情绪表达，重点是双人体验和引导流程。",
+    tone: "citrus"
+  },
+  special: {
+    label: "专题页",
+    description: "为某个主题单独做气氛、视觉和情绪张力，偏定制化微站表达。",
+    tone: "graphite"
+  }
+};
+const categoryPaths = (Object.entries(categoryBlueprints) as Array<
+  [WorkCategory, { label: string; description: string; tone: ShowcaseWork["tone"] }]
+>).map(([key, meta]) => ({
+  key,
+  ...meta,
+  directCount: directWorks.filter((work) => work.category === key).length,
+  systemCount: visibleServiceWorks.filter((work) => work.category === key).length
+}));
+const heroStats = [
+  { value: totalWorks.toString().padStart(2, "0"), label: "已公开作品" },
+  { value: featuredWorks.length.toString().padStart(2, "0"), label: "精选主展厅" },
+  { value: categoryPaths.length.toString().padStart(2, "0"), label: "浏览路线" },
+  { value: Math.max(directWorks.length - featuredWorks.length, 0).toString().padStart(2, "0"), label: "更多卡片" }
+] as const;
+---
+<BaseLayout
+  title={`${siteConfig.name} | 作品归档馆`}
+  description="把公开可展示的网页、游戏和互动实验整理成一面可浏览、可跳转、可持续扩展的作品墙。"
+>
+  <a class="skip-link" href="#top">跳到主要内容</a>
+  <div class="scroll-progress" aria-hidden="true">
+    <div id="scroll-progress-bar"></div>
+  </div>
+  <div class="bg-glow bg-glow-1" aria-hidden="true"></div>
+  <div class="bg-glow bg-glow-2" aria-hidden="true"></div>
+
+  <header class="site-header museum-header">
+    <a href="#top" class="brand">
+      <span class="brand-badge">ARCHIVE</span>
+      <span class="brand-name">{siteConfig.name}</span>
+    </a>
+    <nav class="main-nav" aria-label="站点导航">
+      <a href="#paths">路线</a>
+      <a href="#featured">精选</a>
+      <a href="#catalog">作品墙</a>
+      {visibleServiceWorks.length > 0 && <a href="#systems">系统版</a>}
+      {visibleArchiveWorks.length > 0 && <a href="#archive">归档</a>}
+      <a href="#contact">联系</a>
+    </nav>
+  </header>
+
+  <main id="top" class="home-main museum-main">
+    <section class="museum-hero reveal">
+      <div class="hero-grid">
+        <div class="hero-copy-block">
+          <p class="hero-kicker">Creative archive / Web playground</p>
+          <h1>把网页、游戏和互动实验，做成一个能逛、能玩、能继续长的线上展厅。</h1>
+          <p class="hero-copy">
+            这不是简历页，也不是只推一个主项目的产品页。它更像作品馆入口: 先给人清楚的路线，再把当前愿意公开展示、可直接体验的页面排成一套容易浏览的秩序。
+          </p>
+          <div class="hero-actions">
+            <a class="btn btn-primary" href="#featured">先看精选主展厅</a>
+            <a class="btn btn-ghost" href="#paths">按类型找路线</a>
+          </div>
+          <ul class="hero-note-row">
+            {curatorNotes.map((note) => (
+              <li class="hero-note">{note}</li>
+            ))}
+          </ul>
+        </div>
+
+        <aside class="hero-panel">
+          <div class="hero-stage-head">
+            <p class="hero-panel-kicker">馆内导览</p>
+            <h2>先看主展厅，再往不同路线分流。</h2>
+          </div>
+          <div class="hero-stat-grid">
+            {heroStats.map((item) => (
+              <article class="hero-stat-card">
+                <span class="hero-stat-value">{item.value}</span>
+                <p>{item.label}</p>
+              </article>
+            ))}
+          </div>
+          <div class="hero-stage-divider" aria-hidden="true"></div>
+          <div class="hero-stage-list">
+            {featuredWorks.map((work, index) => (
+              <a class:list={["hero-stage-item", `tone-${work.tone}`]} href={work.href ?? "#catalog"}>
+                <span class="hero-stage-index">{String(index + 1).padStart(2, "0")}</span>
+                <div class="hero-stage-copy">
+                  <p class="card-eyebrow">{work.categoryLabel}</p>
+                  <strong>{work.title}</strong>
+                  <span>{work.summary}</span>
+                </div>
+              </a>
+            ))}
+          </div>
+        </aside>
+      </div>
+    </section>
+
+    <section id="paths" class="showcase-section section-shell section-shell-muted reveal">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Routes</p>
+          <h2>第一次进来，先按目的看</h2>
+        </div>
+        <p class="section-copy">
+          你做的东西横跨游戏、工具、叙事和专题页，所以首页不该按文件夹堆。先告诉别人你有哪些“路线”，他们更容易理解。
+        </p>
+      </div>
+
+      <div class="path-grid">
+        {categoryPaths.map((path) => (
+          <article class:list={["path-card", `tone-${path.tone}`]}>
+            <div class="path-top">
+              <p class="card-eyebrow">Route</p>
+              <span class="path-count">{String(path.directCount).padStart(2, "0")}</span>
+            </div>
+            <h3>{path.label}</h3>
+            <p>{path.description}</p>
+            <div class="token-row">
+              <span class="token token-strong">可直接打开 {path.directCount}</span>
+              {path.systemCount > 0 && <span class="token">系统版 {path.systemCount}</span>}
+            </div>
+            <a class="card-link-secondary" href="#catalog" data-work-jump={path.key}>
+              查看这一路线
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    <section id="featured" class="showcase-section section-shell section-shell-dark reveal">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Spotlight</p>
+          <h2>主展厅先放这三件</h2>
+        </div>
+        <p class="section-copy">
+          苹果式大主角叙事只适合少数产品，所以这里改成“一件主角 + 两件侧翼”的方式: 既保留重点，也不牺牲作品站该有的广度。
+        </p>
+      </div>
+
+      <div class="feature-grid">
+        <article class:list={["feature-primary", `tone-${leadFeature.tone}`]}>
+          <div class="feature-copy">
+            <p class="card-eyebrow">{leadFeature.eyebrow}</p>
+            <h3>{leadFeature.title}</h3>
+            <p class="spotlight-summary">{leadFeature.summary}</p>
+            <p class="feature-body">
+              这件放在最前面，因为它同时代表了你最有辨识度的一条线: 不是工具味很重的纯功能页，也不是只有外壳的展示页，而是把互动、引导和情绪体验真正揉到了一起。
+            </p>
+          </div>
+          <div class="feature-side">
+            {leadFeature.coverImage && (
+              <figure class="card-cover feature-cover">
+                <img
+                  src={leadFeature.coverImage}
+                  alt={leadFeature.coverAlt ?? `${leadFeature.title} 封面图`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
+            )}
+            <div class="feature-meta">
+              <div class="token-row">
+                <span class="token token-strong">{leadFeature.categoryLabel}</span>
+                {leadFeature.badges.map((badge) => <span class="token">{badge}</span>)}
+              </div>
+              <div class="card-actions">
+                {leadFeature.href && (
+                  <a class="card-cta" href={leadFeature.href}>
+                    打开作品
+                  </a>
+                )}
+                {showGithub && leadFeature.repoUrl && (
+                  <a class="card-link-secondary" href={leadFeature.repoUrl} target="_blank" rel="noreferrer">
+                    GitHub
+                  </a>
+                )}
+              </div>
+              {(leadFeature.createdAt || leadFeature.updatedAt) && (
+                <p class="work-dates">
+                  {leadFeature.createdAt && <span>创建：{leadFeature.createdAt}</span>}
+                  {leadFeature.updatedAt && <span>更新：{leadFeature.updatedAt}</span>}
+                </p>
+              )}
+              <p class="origin-label">原目录：<code>{leadFeature.origin}</code></p>
+            </div>
+          </div>
+        </article>
+
+        <div class="feature-stack">
+          {supportFeatures.map((work) => (
+            <article class:list={["spotlight-card", "feature-secondary", `tone-${work.tone}`]}>
+              {work.coverImage && (
+                <figure class="card-cover">
+                  <img
+                    src={work.coverImage}
+                    alt={work.coverAlt ?? `${work.title} 封面图`}
+                    loading="lazy"
+                    decoding="async"
+                  />
+                </figure>
+              )}
+              <p class="card-eyebrow">{work.eyebrow}</p>
+              <h3>{work.title}</h3>
+              <p class="spotlight-summary">{work.summary}</p>
+              <div class="token-row">
+                <span class="token token-strong">{work.categoryLabel}</span>
+                {work.badges.map((badge) => <span class="token">{badge}</span>)}
+              </div>
+              <div class="card-actions">
+                {work.href && (
+                  <a class="card-cta" href={work.href}>
+                    打开作品
+                  </a>
+                )}
+                {showGithub && work.repoUrl && (
+                  <a class="card-link-secondary" href={work.repoUrl} target="_blank" rel="noreferrer">
+                    GitHub
+                  </a>
+                )}
+              </div>
+              {(work.createdAt || work.updatedAt) && (
+                <p class="work-dates">
+                  {work.createdAt && <span>创建：{work.createdAt}</span>}
+                  {work.updatedAt && <span>更新：{work.updatedAt}</span>}
+                </p>
+              )}
+              <p class="origin-label">原目录：<code>{work.origin}</code></p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="catalog" class="showcase-section section-shell section-shell-light reveal">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Direct access</p>
+          <h2>可直接打开的作品墙</h2>
+        </div>
+        <p class="section-copy">
+          这里的项目都已经接进当前站点，可从这页直接跳转。筛选只影响这一组卡片，不会把服务端系统混进来。
+        </p>
+      </div>
+
+      <div class="catalog-toolbar">
+        <div class="filter-row" role="tablist" aria-label="作品筛选">
+          {filterOptions.map((option, index) => (
+            <button
+              class:list={{ "filter-btn": true, active: index === 0 }}
+              type="button"
+              data-work-filter={option.key}
+              aria-pressed={index === 0}
+            >
+              {option.label}
+            </button>
+          ))}
+        </div>
+        <p id="catalog-status" class="catalog-status">当前显示 {directWorks.length} 个作品</p>
+      </div>
+
+      <div class="work-grid">
+        {directWorks.map((work) => (
+          <article
+            class:list={["work-card", `tone-${work.tone}`]}
+            data-work-tags={`all ${work.category}`}
+          >
+            {work.coverImage && (
+              <figure class="card-cover">
+                <img
+                  src={work.coverImage}
+                  alt={work.coverAlt ?? `${work.title} 封面图`}
+                  loading="lazy"
+                  decoding="async"
+                />
+              </figure>
+            )}
+            <div class="work-card-top">
+              <p class="card-eyebrow">{work.eyebrow}</p>
+              <span class="category-pill">{work.categoryLabel}</span>
+            </div>
+            <h3>{work.title}</h3>
+            <p class="work-summary">{work.summary}</p>
+            <p class="work-stack">{work.stack}</p>
+            {(work.createdAt || work.updatedAt) && (
+              <p class="work-dates">
+                {work.createdAt && <span>创建：{work.createdAt}</span>}
+                {work.updatedAt && <span>更新：{work.updatedAt}</span>}
+              </p>
+            )}
+            <div class="token-row">
+              {work.badges.map((badge) => <span class="token">{badge}</span>)}
+            </div>
+            <div class="card-actions">
+              {work.href && (
+                <a class="card-cta" href={work.href}>
+                  打开作品
+                </a>
+              )}
+              {showGithub && work.repoUrl && (
+                <a class="card-link-secondary" href={work.repoUrl} target="_blank" rel="noreferrer">
+                  GitHub
+                </a>
+              )}
+            </div>
+            <p class="origin-label">原目录：<code>{work.origin}</code></p>
+          </article>
+        ))}
+      </div>
+    </section>
+
+    {visibleServiceWorks.length > 0 && (
+    <section id="systems" class="showcase-section section-shell section-shell-dark reveal">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Backend required</p>
+          <h2>需要独立部署的系统版</h2>
+        </div>
+        <p class="section-copy">
+          这些作品完整体验依赖 Node、数据库、实时同步或分享链路，所以我没有伪装成“静态也能用”，而是明确保留成系统入口。
+        </p>
+      </div>
+
+      <div class="service-grid">
+        {visibleServiceWorks.map((work) => (
+          <article class:list={["service-card", `tone-${work.tone}`]}>
+            <div class="work-card-top">
+              <p class="card-eyebrow">{work.eyebrow}</p>
+              <span class="category-pill">需要服务端</span>
+            </div>
+            <h3>{work.title}</h3>
+            <p class="work-summary">{work.summary}</p>
+            <p class="work-stack">{work.stack}</p>
+            <div class="token-row">
+              {work.badges.map((badge) => <span class="token">{badge}</span>)}
+            </div>
+            <div class="card-actions">
+              {showGithub && work.repoUrl && (
+                <a class="card-cta" href={work.repoUrl} target="_blank" rel="noreferrer">
+                  打开仓库
+                </a>
+              )}
+              <span class="card-note">建议单独部署后展示</span>
+            </div>
+            <p class="origin-label">原目录：<code>{work.origin}</code></p>
+          </article>
+        ))}
+      </div>
+    </section>
+    )}
+
+    {visibleGithubShelf.length > 0 && (
+    <section id="github" class="showcase-section section-shell section-shell-muted reveal">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Repository shelf</p>
+          <h2>GitHub 仓库书架</h2>
+        </div>
+        <p class="section-copy">
+          这组卡片用来放 GitHub 上更像“入口”或“分支仓库”的项目。它们未必都在本地工作区里，但应该出现在你的创作脉络里。
+        </p>
+      </div>
+
+      <div class="repo-grid">
+        {visibleGithubShelf.map((repo) => (
+          <article class="repo-card">
+            <p class="repo-name">{repo.name}</p>
+            <h3>{repo.title}</h3>
+            <p>{repo.summary}</p>
+            <div class="token-row">
+              {repo.tags.map((tag) => <span class="token">{tag}</span>)}
+            </div>
+            <a class="card-cta" href={repo.url} target="_blank" rel="noreferrer">
+              去 GitHub 看
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+    )}
+
+    {visibleArchiveWorks.length > 0 && (
+    <section id="archive" class="showcase-section section-shell section-shell-light reveal">
+      <div class="section-head">
+        <div>
+          <p class="section-kicker">Archive</p>
+          <h2>归档与旧分支</h2>
+        </div>
+        <p class="section-copy">旧版、部署分支和功能迭代中的岔路，放在这里，不让主作品墙变得发散。</p>
+      </div>
+
+      <div class="archive-grid">
+        {visibleArchiveWorks.map((work) => (
+          <article class="archive-card">
+            <p class="card-eyebrow">{work.eyebrow}</p>
+            <h3>{work.title}</h3>
+            <p>{work.summary}</p>
+            <div class="archive-meta">
+              <span class="token">{work.stack}</span>
+              <span class="token">原目录：{work.origin}</span>
+            </div>
+            {showGithub && work.repoUrl && (
+              <a class="card-link-secondary" href={work.repoUrl} target="_blank" rel="noreferrer">
+                对应仓库
+              </a>
+            )}
+          </article>
+        ))}
+      </div>
+    </section>
+    )}
+
+    <section id="contact" class="showcase-section section-shell section-shell-light reveal">
+      <div class="contact-panel">
+        <div>
+          <p class="section-kicker">Contact</p>
+          <h2>这页后面还能继续长</h2>
+          <p class="section-copy">
+            现在这版已经不只是“项目列表”，而是一套更像线上展厅的结构。后面继续做新站、新游戏或新实验时，只要往数据里加卡片，这一页就能继续自然地长下去。
+          </p>
+        </div>
+        <div class="contact-actions">
+          <p>邮箱：<strong>{siteConfig.email}</strong></p>
+          <p>微信：<strong>{siteConfig.wechat}</strong></p>
+          {showGithub && <a class="btn btn-ghost" href="https://github.com/lastxuan4396?tab=repositories" target="_blank" rel="noreferrer">
+            打开 GitHub 仓库页
+          </a>}
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer reveal">
+    <p>{siteConfig.name} · 作品归档馆</p>
+    <p>当前仅展示公开可发布的作品</p>
+  </footer>
+
+  <button id="back-to-top" class="back-to-top" type="button" aria-label="回到顶部">↑</button>
+
+  <script is:inline>
+    const revealItems = document.querySelectorAll(".reveal");
+    const navLinks = document.querySelectorAll(".main-nav a");
+    const filterButtons = document.querySelectorAll("[data-work-filter]");
+    const jumpButtons = document.querySelectorAll("[data-work-jump]");
+    const workCards = document.querySelectorAll("[data-work-tags]");
+    const backToTopBtn = document.getElementById("back-to-top");
+    const progressBar = document.getElementById("scroll-progress-bar");
+    const catalogStatus = document.getElementById("catalog-status");
+
+    const sectionMap = [...navLinks]
+      .map((link) => {
+        const id = link.getAttribute("href");
+        if (!id || !id.startsWith("#")) return null;
+        const section = document.querySelector(id);
+        return section ? { link, section } : null;
+      })
+      .filter(Boolean);
+
+    const observer = "IntersectionObserver" in window
+      ? new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) entry.target.classList.add("in-view");
+            });
+          },
+          { threshold: 0.16, rootMargin: "0px 0px -8% 0px" }
+        )
+      : null;
+
+    if (observer) {
+      revealItems.forEach((item) => observer.observe(item));
+    } else {
+      revealItems.forEach((item) => item.classList.add("in-view"));
+    }
+
+    const updateActiveLink = () => {
+      const offset = window.scrollY + 140;
+      let current = sectionMap[0]?.link || null;
+      sectionMap.forEach(({ link, section }) => {
+        if (section.offsetTop <= offset) current = link;
+      });
+      navLinks.forEach((link) => link.classList.remove("active"));
+      current?.classList.add("active");
+    };
+
+    const updateScrollProgress = () => {
+      if (!progressBar) return;
+      const max = document.documentElement.scrollHeight - window.innerHeight;
+      const ratio = max > 0 ? Math.min(100, Math.max(0, (window.scrollY / max) * 100)) : 0;
+      progressBar.style.width = `${ratio}%`;
+    };
+
+    const updateBackToTop = () => {
+      if (!backToTopBtn) return;
+      backToTopBtn.classList.toggle("visible", window.scrollY > 360);
+    };
+
+    const updateCatalogCount = () => {
+      if (!catalogStatus) return;
+      const visibleCount = [...workCards].filter((card) => !card.classList.contains("is-hidden")).length;
+      catalogStatus.textContent = `当前显示 ${visibleCount} 个作品`;
+    };
+
+    const applyFilter = (filter) => {
+      filterButtons.forEach((button) => {
+        const isActive = button.dataset.workFilter === filter;
+        button.classList.toggle("active", isActive);
+        button.setAttribute("aria-pressed", String(isActive));
+      });
+
+      workCards.forEach((card) => {
+        const tags = (card.dataset.workTags || "").split(" ");
+        card.classList.toggle("is-hidden", filter !== "all" && !tags.includes(filter));
+      });
+
+      updateCatalogCount();
+    };
+
+    let scrolling = false;
+    const onScroll = () => {
+      if (scrolling) return;
+      scrolling = true;
+      window.requestAnimationFrame(() => {
+        updateActiveLink();
+        updateScrollProgress();
+        updateBackToTop();
+        scrolling = false;
+      });
+    };
+
+    updateActiveLink();
+    updateScrollProgress();
+    updateBackToTop();
+    updateCatalogCount();
+    window.addEventListener("scroll", onScroll, { passive: true });
+
+    filterButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        applyFilter(button.dataset.workFilter || "all");
+      });
+    });
+
+    jumpButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        applyFilter(button.dataset.workJump || "all");
+      });
+    });
+
+    backToTopBtn?.addEventListener("click", () => {
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    });
+  </script>
+</BaseLayout>

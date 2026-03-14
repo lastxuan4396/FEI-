@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OH Card 修复中</title>
+    <style>
+      body {
+        margin: 0;
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        font-family: "Noto Serif SC", serif;
+        background: #f6efe4;
+        color: #2b241d;
+      }
+      .box {
+        width: min(560px, 90vw);
+        background: #fffaf2;
+        border: 1px solid rgba(95, 70, 45, 0.2);
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 10px 30px rgba(50, 33, 15, 0.1);
+      }
+      h1 {
+        margin: 0 0 12px;
+        font-size: 24px;
+      }
+      p {
+        margin: 0;
+        line-height: 1.7;
+      }
+      code {
+        background: rgba(193, 123, 63, 0.1);
+        padding: 2px 6px;
+        border-radius: 6px;
+      }
+    </style>
+  </head>
+  <body>
+    <main class="box">
+      <h1>正在修复缓存...</h1>
+      <p id="status">正在清理旧缓存与 Service Worker，请稍等，完成后会自动跳转。</p>
+    </main>
+    <script>
+      (async () => {
+        const status = document.getElementById("status");
+        try {
+          if ("serviceWorker" in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(regs.map((reg) => reg.unregister()));
+          }
+          if ("caches" in window) {
+            const keys = await caches.keys();
+            await Promise.all(keys.map((key) => caches.delete(key)));
+          }
+          status.textContent = "缓存清理完成，正在进入新版...";
+          setTimeout(() => {
+            location.replace("./?rev=20260312-19&repaired=1");
+          }, 500);
+        } catch (error) {
+          status.textContent = "自动修复失败，请手动刷新页面（Cmd/Ctrl+Shift+R）后重试。";
+        }
+      })();
+    </script>
+  </body>
+</html>

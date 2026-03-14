@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>习惯盲盒</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Ma+Shan+Zheng&family=Noto+Sans+SC:wght@400;600;800&display=swap');
+
+    :root {
+      --bg-1: #1c2a53;
+      --bg-2: #10354a;
+      --card: rgba(255, 255, 255, 0.14);
+      --line: rgba(255, 255, 255, 0.28);
+      --text: #f7f9ff;
+      --accent: #ffd670;
+      --accent-2: #ff8fab;
+      --ok: #b9fbc0;
+      --danger: #ffadad;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      font-family: "Noto Sans SC", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 15% 10%, rgba(255, 214, 112, 0.2), transparent 30%),
+        radial-gradient(circle at 90% 85%, rgba(255, 143, 171, 0.2), transparent 35%),
+        linear-gradient(140deg, var(--bg-1), var(--bg-2));
+      display: grid;
+      place-items: center;
+      padding: 20px;
+    }
+
+    .app {
+      width: min(920px, 100%);
+      border: 1px solid var(--line);
+      border-radius: 24px;
+      backdrop-filter: blur(12px);
+      background: var(--card);
+      box-shadow: 0 24px 80px rgba(0, 0, 0, 0.3);
+      overflow: hidden;
+    }
+
+    .top {
+      padding: 26px 24px 12px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .title {
+      margin: 0;
+      font-family: "Ma Shan Zheng", cursive;
+      font-size: 44px;
+      line-height: 1;
+      letter-spacing: 1px;
+    }
+
+    .sub {
+      margin: 8px 0 0;
+      opacity: 0.86;
+      font-size: 14px;
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(88px, 1fr));
+      gap: 10px;
+      width: min(420px, 100%);
+    }
+
+    .stat {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 10px 12px;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+    }
+
+    .stat .num {
+      font-size: 22px;
+      font-weight: 800;
+    }
+
+    .stat .label {
+      font-size: 12px;
+      opacity: 0.85;
+    }
+
+    .main {
+      padding: 22px;
+      display: grid;
+      grid-template-columns: 1.2fr 1fr;
+      gap: 18px;
+    }
+
+    .panel {
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      padding: 18px;
+      background: rgba(255, 255, 255, 0.06);
+    }
+
+    .box-wrap {
+      min-height: 260px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      gap: 14px;
+      padding: 10px;
+    }
+
+    .box {
+      width: 190px;
+      height: 160px;
+      border-radius: 22px;
+      background:
+        linear-gradient(150deg, rgba(255, 214, 112, 0.95), rgba(255, 166, 96, 0.95));
+      color: #1b1b2f;
+      display: grid;
+      place-items: center;
+      font-weight: 800;
+      font-size: 30px;
+      position: relative;
+      cursor: pointer;
+      transition: transform 220ms ease;
+      border: 2px solid rgba(255, 255, 255, 0.55);
+    }
+
+    .box:hover {
+      transform: translateY(-2px);
+    }
+
+    .box.open {
+      animation: pop 500ms ease;
+    }
+
+    @keyframes pop {
+      0% { transform: scale(1) rotate(0deg); }
+      30% { transform: scale(1.07) rotate(-3deg); }
+      60% { transform: scale(0.96) rotate(2deg); }
+      100% { transform: scale(1) rotate(0deg); }
+    }
+
+    .habit-card {
+      border: 1px solid var(--line);
+      border-radius: 14px;
+      padding: 14px;
+      text-align: left;
+      background: rgba(7, 16, 32, 0.38);
+      width: min(400px, 100%);
+    }
+
+    .habit-title {
+      margin: 0 0 8px;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--accent);
+    }
+
+    .habit-detail {
+      margin: 0;
+      line-height: 1.55;
+      font-size: 14px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 12px;
+    }
+
+    button {
+      border: 1px solid transparent;
+      border-radius: 12px;
+      padding: 10px 14px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 180ms ease;
+    }
+
+    .primary {
+      background: var(--accent);
+      color: #23232f;
+    }
+
+    .primary:hover {
+      filter: brightness(1.04);
+    }
+
+    .ghost {
+      background: transparent;
+      color: var(--text);
+      border-color: var(--line);
+    }
+
+    .ghost:hover {
+      background: rgba(255, 255, 255, 0.08);
+    }
+
+    .ok {
+      background: var(--ok);
+      color: #14351f;
+    }
+
+    .history {
+      max-height: 360px;
+      overflow: auto;
+      padding-right: 4px;
+    }
+
+    .history-item {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 2px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.22);
+      font-size: 14px;
+    }
+
+    .history-item:last-child {
+      border-bottom: 0;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      font-size: 12px;
+      padding: 2px 9px;
+      white-space: nowrap;
+    }
+
+    .msg {
+      font-size: 14px;
+      min-height: 20px;
+      opacity: 0.92;
+    }
+
+    .msg.warn {
+      color: var(--danger);
+    }
+
+    @media (max-width: 820px) {
+      .main {
+        grid-template-columns: 1fr;
+      }
+      .title {
+        font-size: 38px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <section class="top">
+      <div>
+        <h1 class="title">Habit Box</h1>
+        <p class="sub" id="todayText"></p>
+      </div>
+      <div class="stats">
+        <div class="stat">
+          <div class="num" id="streak">0</div>
+          <div class="label">连击天数</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="doneDays">0</div>
+          <div class="label">完成天数</div>
+        </div>
+        <div class="stat">
+          <div class="num" id="points">0</div>
+          <div class="label">积分</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="main">
+      <article class="panel">
+        <div class="box-wrap">
+          <div class="box" id="boxBtn" role="button" tabindex="0">盲盒</div>
+          <div class="habit-card" id="habitCard" hidden>
+            <h2 class="habit-title" id="habitTitle"></h2>
+            <p class="habit-detail" id="habitDetail"></p>
+            <div class="actions">
+              <button class="primary" id="completeBtn">今日已完成</button>
+              <button class="ghost" id="rerollBtn">重抽一次</button>
+            </div>
+          </div>
+          <p class="msg" id="msg"></p>
+        </div>
+      </article>
+
+      <article class="panel">
+        <h3 style="margin-top: 0">最近记录</h3>
+        <div class="history" id="history"></div>
+      </article>
+    </section>
+  </main>
+
+  <script>
+    const STORAGE_KEY = "habitBlindBoxV1";
+    const HABITS = [
+      { id: "water", title: "喝一杯温水", detail: "现在去接一杯 300ml 左右的温水，慢慢喝完。" },
+      { id: "stretch", title: "拉伸 3 分钟", detail: "站起来拉伸肩颈、背部和小腿，保持均匀呼吸。" },
+      { id: "walk", title: "走路 10 分钟", detail: "离开座位去走一圈，别带手机也行。" },
+      { id: "read", title: "阅读 5 分钟", detail: "打开一本书或一篇文章，专注阅读，不切换窗口。" },
+      { id: "desk", title: "整理桌面", detail: "清理桌面 5 样物品，让工作区更清爽。" },
+      { id: "meditate", title: "闭眼呼吸 2 分钟", detail: "闭眼，缓慢吸气和呼气，放松肩膀。" },
+      { id: "note", title: "写一句复盘", detail: "写下今天做得最好的一件小事。" },
+      { id: "no-phone", title: "10 分钟不碰手机", detail: "把手机放远一点，完成一段不被打断的专注。" }
+    ];
+
+    function getDateKey(date = new Date()) {
+      const y = date.getFullYear();
+      const m = String(date.getMonth() + 1).padStart(2, "0");
+      const d = String(date.getDate()).padStart(2, "0");
+      return `${y}-${m}-${d}`;
+    }
+
+    function loadState() {
+      const raw = localStorage.getItem(STORAGE_KEY);
+      if (!raw) {
+        return {
+          today: "",
+          todayHabitId: "",
+          todayCompleted: false,
+          rerolled: false,
+          doneDates: [],
+          points: 0,
+          history: []
+        };
+      }
+      try {
+        return JSON.parse(raw);
+      } catch {
+        return {
+          today: "",
+          todayHabitId: "",
+          todayCompleted: false,
+          rerolled: false,
+          doneDates: [],
+          points: 0,
+          history: []
+        };
+      }
+    }
+
+    function saveState() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
+
+    function resetForNewDay() {
+      const today = getDateKey();
+      if (state.today !== today) {
+        state.today = today;
+        state.todayHabitId = "";
+        state.todayCompleted = false;
+        state.rerolled = false;
+      }
+    }
+
+    function pickHabit(excludeId = "") {
+      const pool = excludeId ? HABITS.filter(h => h.id !== excludeId) : HABITS.slice();
+      const idx = Math.floor(Math.random() * pool.length);
+      return pool[idx];
+    }
+
+    function calcStreak(doneDates) {
+      const set = new Set(doneDates);
+      let streak = 0;
+      let cursor = new Date();
+      while (true) {
+        const key = getDateKey(cursor);
+        if (!set.has(key)) break;
+        streak += 1;
+        cursor.setDate(cursor.getDate() - 1);
+      }
+      return streak;
+    }
+
+    function renderHistory() {
+      const el = document.getElementById("history");
+      if (!state.history.length) {
+        el.innerHTML = "<p style='opacity:.8'>还没有记录，先开今天的盲盒吧。</p>";
+        return;
+      }
+      el.innerHTML = state.history
+        .slice(0, 20)
+        .map(item => {
+          const tag = item.completed ? "已完成" : "未完成";
+          return `
+            <div class="history-item">
+              <div>${item.date} · ${item.title}</div>
+              <span class="pill">${tag}</span>
+            </div>
+          `;
+        })
+        .join("");
+    }
+
+    function renderHabit() {
+      const card = document.getElementById("habitCard");
+      const msg = document.getElementById("msg");
+      const completeBtn = document.getElementById("completeBtn");
+      if (!state.todayHabitId) {
+        card.hidden = true;
+        msg.textContent = "点击盲盒，抽取今日微习惯。";
+        msg.className = "msg";
+        return;
+      }
+      const habit = HABITS.find(h => h.id === state.todayHabitId);
+      if (!habit) return;
+      card.hidden = false;
+      document.getElementById("habitTitle").textContent = habit.title;
+      document.getElementById("habitDetail").textContent = habit.detail;
+      completeBtn.disabled = state.todayCompleted;
+      completeBtn.className = state.todayCompleted ? "ok" : "primary";
+      completeBtn.textContent = state.todayCompleted ? "今天已打卡" : "今日已完成";
+      if (state.todayCompleted) {
+        msg.textContent = "今天完成了，明天再来抽盲盒。";
+        msg.className = "msg";
+      } else {
+        msg.textContent = "";
+      }
+    }
+
+    function renderStats() {
+      document.getElementById("streak").textContent = calcStreak(state.doneDates);
+      document.getElementById("doneDays").textContent = state.doneDates.length;
+      document.getElementById("points").textContent = state.points;
+      document.getElementById("todayText").textContent = `今天是 ${state.today}`;
+    }
+
+    function createOrUpdateTodayHistory(title, completed) {
+      const idx = state.history.findIndex(item => item.date === state.today);
+      if (idx >= 0) {
+        state.history[idx].title = title;
+        state.history[idx].completed = completed;
+      } else {
+        state.history.unshift({ date: state.today, title, completed });
+      }
+    }
+
+    function openBox(forceReroll = false) {
+      if (state.todayHabitId && !forceReroll) {
+        renderHabit();
+        return;
+      }
+      if (forceReroll && state.rerolled) {
+        const msg = document.getElementById("msg");
+        msg.textContent = "今天已经重抽过一次了。";
+        msg.className = "msg warn";
+        return;
+      }
+      if (state.todayCompleted) {
+        const msg = document.getElementById("msg");
+        msg.textContent = "今天已完成，明天再抽吧。";
+        msg.className = "msg warn";
+        return;
+      }
+      const habit = pickHabit(forceReroll ? state.todayHabitId : "");
+      state.todayHabitId = habit.id;
+      if (forceReroll) state.rerolled = true;
+      createOrUpdateTodayHistory(habit.title, false);
+      saveState();
+      const box = document.getElementById("boxBtn");
+      box.classList.remove("open");
+      void box.offsetWidth;
+      box.classList.add("open");
+      render();
+    }
+
+    function markComplete() {
+      if (!state.todayHabitId || state.todayCompleted) return;
+      state.todayCompleted = true;
+      if (!state.doneDates.includes(state.today)) {
+        state.doneDates.push(state.today);
+      }
+      state.points += state.rerolled ? 1 : 2;
+      const habit = HABITS.find(h => h.id === state.todayHabitId);
+      createOrUpdateTodayHistory(habit.title, true);
+      saveState();
+      render();
+    }
+
+    function render() {
+      renderStats();
+      renderHabit();
+      renderHistory();
+    }
+
+    const state = loadState();
+    resetForNewDay();
+    saveState();
+    render();
+
+    document.getElementById("boxBtn").addEventListener("click", () => openBox(false));
+    document.getElementById("boxBtn").addEventListener("keydown", (e) => {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        openBox(false);
+      }
+    });
+    document.getElementById("rerollBtn").addEventListener("click", () => openBox(true));
+    document.getElementById("completeBtn").addEventListener("click", markComplete);
+  </script>
+</body>
+</html>

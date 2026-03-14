@@ -1,0 +1,251 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>四因素训练舱</title>
+  <meta
+    name="description"
+    content="把自我批评、好奇心、专注、毅力拆成每天可练的四张卡片，配专注计时、本地存档和七日回看。"
+  >
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="hero panel">
+      <div class="hero-copy">
+        <p class="eyebrow">FOUR FACTORS TRAINING LAB</p>
+        <h1>四因素训练舱</h1>
+        <p class="lead">
+          把自我批评、好奇心、专注、毅力从抽象品质，拆成你今天就能完成的一轮训练。
+        </p>
+        <p class="hero-note">
+          这里不追求“感觉自己很上进”，只追求四件事：看见盲点、提出问题、单线程投入、在阻力里继续往前。
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#practice">开始今日训练</a>
+          <button id="seedToday" class="button ghost" type="button">换一组今日题目</button>
+        </div>
+      </div>
+
+      <div class="hero-side">
+        <div class="hero-stats">
+          <article class="stat-card">
+            <span id="todayDate" class="stat-value">--</span>
+            <p>今天</p>
+          </article>
+          <article class="stat-card">
+            <span id="todayScore" class="stat-value">0 / 4</span>
+            <p>今日完成</p>
+          </article>
+          <article class="stat-card">
+            <span id="activeStreak" class="stat-value">0 天</span>
+            <p>连续推进</p>
+          </article>
+          <article class="stat-card">
+            <span id="focusMinutes7d" class="stat-value">0 分钟</span>
+            <p>7日专注</p>
+          </article>
+        </div>
+
+        <form id="northStarForm" class="north-star-card" autocomplete="off">
+          <p class="eyebrow">NORTH STAR</p>
+          <label>
+            你在训练成什么样的人
+            <input id="northStar" type="text" maxlength="80" placeholder="例如：能看清自己，也能把事做完的人">
+          </label>
+          <label>
+            今天最想验证的实验
+            <input id="todayIntent" type="text" maxlength="80" placeholder="例如：45 分钟只做一件事，看看阻力什么时候出现">
+          </label>
+          <div class="inline-actions">
+            <button class="button secondary" type="submit">保存主线</button>
+            <p id="saveStateText" class="inline-status">本地自动保存</p>
+          </div>
+          <p id="heroNarrative" class="hero-narrative"></p>
+        </form>
+      </div>
+    </section>
+
+    <section class="panel overview">
+      <div class="section-heading">
+        <div>
+          <p class="eyebrow">DAILY BOARD</p>
+          <h2>今天的训练协议</h2>
+        </div>
+        <p class="section-copy">
+          四张卡片不要求你写很多，只要求你把今天真正发生的判断、问题、投入和阻力讲清楚。
+        </p>
+      </div>
+      <div id="moduleStatus" class="module-status-grid"></div>
+    </section>
+
+    <section id="practice" class="practice-grid">
+      <article class="panel factor-card tone-self">
+        <div class="card-heading">
+          <p class="eyebrow">SELF-CRITICISM</p>
+          <h2>自我批评</h2>
+          <p>不是责骂自己，而是识别失真、找证据、修正下一步。</p>
+        </div>
+        <form id="selfForm" class="stack-form" autocomplete="off">
+          <label>
+            今天哪里最可能判断失真
+            <textarea id="blindSpot" rows="3" placeholder="例如：我把一次卡顿直接解释成“我就是不行”"></textarea>
+          </label>
+          <label>
+            证据和反证分别是什么
+            <textarea id="evidence" rows="3" placeholder="写事实，不写情绪判词"></textarea>
+          </label>
+          <label>
+            明天要修正的一格动作
+            <textarea id="adjustment" rows="3" placeholder="例如：先做 10 分钟再评价今天值不值得继续"></textarea>
+          </label>
+          <button class="button secondary" type="submit">保存这一轮修正</button>
+        </form>
+      </article>
+
+      <article class="panel factor-card tone-curiosity">
+        <div class="card-heading">
+          <p class="eyebrow">CURIOSITY</p>
+          <h2>好奇心</h2>
+          <p>把“我懂了”打碎，逼自己再追问一层，再换一个角度看。</p>
+        </div>
+        <div class="prompt-box">
+          <span class="prompt-label">随机探索题</span>
+          <p id="curiosityPrompt" class="prompt-text"></p>
+          <button id="regenPrompt" class="button ghost subtle" type="button">换一题</button>
+        </div>
+        <form id="curiosityForm" class="stack-form" autocomplete="off">
+          <label>
+            你决定追哪条线
+            <input id="curiosityAngle" type="text" maxlength="100" placeholder="例如：为什么我总在快完成时开始分心">
+          </label>
+          <label>
+            今天发现了什么意外
+            <textarea id="curiosityDiscovery" rows="3" placeholder="写下新的解释、反常识线索或被你忽略的变量"></textarea>
+          </label>
+          <label>
+            你准备继续追问的下一题
+            <textarea id="curiosityNext" rows="3" placeholder="例如：如果把这件事当实验，我下次先改哪个变量"></textarea>
+          </label>
+          <button class="button secondary" type="submit">保存今天的探索</button>
+        </form>
+      </article>
+
+      <article class="panel factor-card tone-focus">
+        <div class="card-heading">
+          <p class="eyebrow">FOCUS</p>
+          <h2>专注</h2>
+          <p>把注意力收束到单一任务上，不同时开十个解释和十个窗口。</p>
+        </div>
+        <form id="focusForm" class="stack-form" autocomplete="off">
+          <label>
+            本轮唯一任务
+            <input id="focusTask" type="text" maxlength="100" placeholder="例如：只写完 landing page 首屏结构">
+          </label>
+          <div class="split-row">
+            <label>
+              单次时长
+              <select id="focusPreset">
+                <option value="25">25 分钟</option>
+                <option value="45">45 分钟</option>
+                <option value="60">60 分钟</option>
+                <option value="90">90 分钟</option>
+              </select>
+            </label>
+            <label>
+              开始前承诺
+              <input id="focusCommitment" type="text" maxlength="80" placeholder="例如：这一轮不切消息，不看别的点子">
+            </label>
+          </div>
+          <div class="timer-box">
+            <span id="timerDisplay" class="timer-display">45:00</span>
+            <div class="inline-actions wrap">
+              <button id="startTimer" class="button primary" type="button">开始</button>
+              <button id="pauseTimer" class="button ghost subtle" type="button">暂停</button>
+              <button id="resetTimer" class="button ghost subtle" type="button">重置</button>
+              <button id="logRound" class="button secondary" type="button">记一轮完成</button>
+            </div>
+          </div>
+          <div class="focus-meta">
+            <button id="markDistraction" class="button ghost subtle" type="button">+1 分心</button>
+            <span id="focusLedger" class="focus-ledger">已完成 0 轮 / 分心 0 次</span>
+          </div>
+          <label>
+            结束后的一句复盘
+            <textarea id="focusNote" rows="3" placeholder="例如：最难的是前 7 分钟，真正进入状态后反而很稳"></textarea>
+          </label>
+          <button class="button secondary" type="submit">保存专注记录</button>
+        </form>
+      </article>
+
+      <article class="panel factor-card tone-perseverance">
+        <div class="card-heading">
+          <p class="eyebrow">PERSEVERANCE</p>
+          <h2>毅力</h2>
+          <p>不是硬扛到底，而是在阻力出现时准备回路，让自己继续前进。</p>
+        </div>
+        <form id="perseveranceForm" class="stack-form" autocomplete="off">
+          <label>
+            你现在最想逃开的阻力
+            <textarea id="resistance" rows="3" placeholder="例如：我想先去刷点别的，因为这一步会暴露我的不足"></textarea>
+          </label>
+          <label>
+            低到不能拒绝的最小动作
+            <input id="minimumMove" type="text" maxlength="100" placeholder="例如：只写出三个模块标题">
+          </label>
+          <label>
+            中途掉线时的拉回方案
+            <textarea id="rescuePlan" rows="3" placeholder="例如：站起来走 30 秒，然后立刻回到最小动作，不重新规划整天"></textarea>
+          </label>
+          <label>
+            你最后坚持到了什么程度
+            <textarea id="followThrough" rows="3" placeholder="写事实，例如：做完了 2 轮，虽然第二轮质量下降"></textarea>
+          </label>
+          <button class="button secondary" type="submit">保存坚持记录</button>
+        </form>
+      </article>
+    </section>
+
+    <section class="review-grid">
+      <article class="panel review-card">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">WEEKLY PULSE</p>
+            <h2>最近 7 天</h2>
+          </div>
+          <p class="section-copy">看趋势，不靠感觉。你到底练了哪几项，会一眼看出来。</p>
+        </div>
+        <div id="weekMetrics" class="metric-grid"></div>
+        <div id="weekBars" class="week-bars"></div>
+      </article>
+
+      <article class="panel review-card">
+        <div class="section-heading compact">
+          <div>
+            <p class="eyebrow">TRAINING TRACE</p>
+            <h2>训练痕迹</h2>
+          </div>
+          <p class="section-copy">保留最近的判断修正、好问题和顶住阻力的证据。</p>
+        </div>
+        <div id="historyList" class="history-list"></div>
+      </article>
+    </section>
+
+    <section class="panel archive-panel">
+      <div>
+        <p class="eyebrow">LOCAL ARCHIVE</p>
+        <h2>数据只存在这台设备</h2>
+        <p class="section-copy">导出一份 JSON 备份；如果想重练，也可以只清空今天。</p>
+      </div>
+      <div class="inline-actions wrap">
+        <button id="exportData" class="button secondary" type="button">导出 JSON</button>
+        <button id="resetDay" class="button ghost subtle" type="button">清空今天</button>
+      </div>
+    </section>
+  </main>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>

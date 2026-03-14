@@ -1,0 +1,178 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Fitness Engine</title>
+  <link rel="icon" href="data:,">
+  <link rel="stylesheet" href="./styles.css">
+</head>
+<body>
+  <main class="page">
+    <header class="hero card">
+      <p class="eyebrow">PRIVATE FITNESS ENGINE</p>
+      <h1>184cm / 90kg 私人健身计划</h1>
+      <p class="subtitle">目标：在 12 周内完成体能重建 + 体脂优化。你只需要每日打卡，系统负责阶段建议和渐进升级。</p>
+    </header>
+
+    <section class="grid two-col">
+      <article class="card">
+        <h2>个人基线</h2>
+        <form id="profileForm" class="form-grid" autocomplete="off">
+          <label>
+            身高（cm）
+            <input id="heightCm" type="number" min="120" max="230" step="1" value="184" required>
+          </label>
+          <label>
+            初始体重（kg）
+            <input id="startWeightKg" type="number" min="35" max="250" step="0.1" value="90" required>
+          </label>
+          <label>
+            目标体重（kg）
+            <input id="goalWeightKg" type="number" min="35" max="250" step="0.1" value="82" required>
+          </label>
+          <label>
+            计划开始日
+            <input id="planStartDate" type="date" required>
+          </label>
+          <div class="actions">
+            <button id="saveProfile" type="submit" class="primary">保存基线</button>
+          </div>
+        </form>
+        <div id="profileSummary" class="kpi-stack"></div>
+      </article>
+
+      <article class="card">
+        <h2>当前阶段</h2>
+        <div id="phaseStatus" class="phase-status"></div>
+        <div class="progress-wrap">
+          <div class="progress-bar"><span id="phaseProgress"></span></div>
+          <p id="progressText" class="muted">第 1 / 12 周</p>
+        </div>
+        <div id="weeklyScore" class="kpi-stack"></div>
+      </article>
+    </section>
+
+    <section class="grid two-col">
+      <article class="card">
+        <h2>今日打卡</h2>
+        <form id="logForm" class="form-grid" autocomplete="off">
+          <label>
+            日期
+            <input id="logDate" type="date" required>
+          </label>
+          <label>
+            体重（kg）
+            <input id="weightKg" type="number" min="35" max="250" step="0.1" placeholder="89.4">
+          </label>
+          <label>
+            腰围（cm，可选）
+            <input id="waistCm" type="number" min="40" max="180" step="0.1" placeholder="95">
+          </label>
+          <label>
+            静息心率（bpm，可选）
+            <input id="restingHr" type="number" min="35" max="130" step="1" placeholder="62">
+          </label>
+          <label>
+            睡眠（小时）
+            <input id="sleepHours" type="number" min="0" max="24" step="0.1" placeholder="7.1">
+          </label>
+          <label>
+            步数
+            <input id="steps" type="number" min="0" step="1" placeholder="8500">
+          </label>
+          <label>
+            训练时长（分钟）
+            <input id="trainingMinutes" type="number" min="0" step="1" placeholder="55">
+          </label>
+          <label>
+            训练类型
+            <select id="workoutSlot" required></select>
+          </label>
+          <label>
+            主观强度 RPE（1-10）
+            <input id="rpe" type="number" min="1" max="10" step="1" placeholder="7">
+          </label>
+          <label>
+            酸痛程度（1-10）
+            <input id="soreness" type="number" min="1" max="10" step="1" placeholder="4">
+          </label>
+          <label>
+            活动卡路里（可选）
+            <input id="activeCalories" type="number" min="0" step="1" placeholder="420">
+          </label>
+          <label>
+            运动距离（km，可选）
+            <input id="distanceKm" type="number" min="0" step="0.1" placeholder="5.8">
+          </label>
+          <label class="full-row">
+            备注（可选）
+            <textarea id="notes" rows="2" placeholder="例如：深蹲最后一组速度明显下降，明天恢复优先"></textarea>
+          </label>
+
+          <div class="full-row">
+            <p class="subheading">动作完成记录</p>
+            <div id="exerciseChecklist" class="checklist"></div>
+          </div>
+
+          <div class="actions full-row">
+            <button type="submit" class="primary">保存今日记录</button>
+            <button id="quickCardio" type="button">一键记“10分钟启动有氧”</button>
+          </div>
+        </form>
+      </article>
+
+      <article class="card">
+        <h2>阶段计划与动作模板</h2>
+        <div id="phasePlan" class="plan-board"></div>
+      </article>
+    </section>
+
+    <section class="grid two-col">
+      <article class="card">
+        <h2>数据监测（近14天）</h2>
+        <div id="trendCards" class="kpi-stack"></div>
+        <div class="table-wrap">
+          <table>
+            <thead>
+              <tr>
+                <th>日期</th>
+                <th>体重</th>
+                <th>睡眠</th>
+                <th>步数</th>
+                <th>训练</th>
+                <th>完成动作</th>
+              </tr>
+            </thead>
+            <tbody id="historyRows"></tbody>
+          </table>
+        </div>
+      </article>
+
+      <article class="card">
+        <h2>渐进建议引擎</h2>
+        <p class="muted">基于训练完成率、睡眠、RPE、体重趋势，自动给出下周升级/减量建议。</p>
+        <div class="actions">
+          <button id="generateAdvice" type="button" class="primary">生成本周建议</button>
+        </div>
+        <pre id="adviceOutput" class="advice empty">点击“生成本周建议”后显示。</pre>
+      </article>
+    </section>
+
+    <section class="card">
+      <h2>多端同步（手机/电脑）</h2>
+      <p class="muted">当前为本地存储。你可以每日或每周导出 JSON，再在另一台设备导入，实现跨端同步。</p>
+      <div class="actions">
+        <button id="exportJson" type="button">导出数据 JSON</button>
+        <label class="import-btn">
+          导入数据 JSON
+          <input id="importJson" type="file" accept="application/json">
+        </label>
+      </div>
+      <p id="syncStatus" class="muted sync-status">尚未执行导入/导出</p>
+    </section>
+  </main>
+
+  <script src="./app.js" defer></script>
+</body>
+</html>

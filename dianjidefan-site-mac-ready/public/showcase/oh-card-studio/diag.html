@@ -1,0 +1,217 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>OH Card 自检</title>
+    <style>
+      body { margin:0; font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif; background:#f5efe4; color:#2b241d; }
+      .wrap { max-width: 980px; margin: 24px auto; padding: 0 16px; }
+      .card { background:#fffaf2; border:1px solid rgba(95,70,45,.18); border-radius:14px; padding:16px; margin-bottom:12px; }
+      h1 { margin:0 0 10px; font-size:24px; }
+      .row { display:flex; gap:8px; flex-wrap:wrap; }
+      button { border:1px solid #6b5b4a; background:#fff; border-radius:10px; padding:8px 12px; cursor:pointer; }
+      button.primary { background:#2f7a6a; color:#fff; border-color:#2f7a6a; }
+      pre { margin:0; white-space:pre-wrap; word-break:break-word; background:#1d1f21; color:#d9e2f2; border-radius:10px; padding:12px; min-height:160px; }
+      .ok { color:#2f7a6a; font-weight:700; }
+      .bad { color:#b83f2a; font-weight:700; }
+      .muted { color:#7a6a59; }
+      a { color:#2f7a6a; }
+    </style>
+  </head>
+  <body>
+    <div class="wrap">
+      <div class="card">
+        <h1>OH Card 图片自检</h1>
+        <p class="muted">此页面会自动检查：图片 URL、fetch、img 解码、Service Worker、缓存。</p>
+        <div class="row" style="margin-top:10px;">
+          <button class="primary" id="runBtn">运行检测</button>
+          <button id="repairBtn">清理缓存并重测</button>
+          <button id="inspectDeckBtn">检查当前卡组配置</button>
+          <button id="resetDeckBtn">重置为内置卡组</button>
+          <button id="copyBtn">复制结果</button>
+          <a href="./?rev=20260312-19" target="_blank" rel="noopener">返回主站</a>
+        </div>
+      </div>
+      <div class="card">
+        <pre id="log"></pre>
+      </div>
+    </div>
+
+    <script>
+      const logEl = document.getElementById('log');
+      const urls = [
+        './cards/oh-image/60.jpg?rev=20260312-19',
+        './cards/oh-image/11.jpg?rev=20260312-19',
+        './cards/oh-word/112不喜欢.jpg?rev=20260312-19',
+        './cards/oh-word/89感情.jpg?rev=20260312-19',
+        './data/oh-image-deck.json?rev=20260312-19',
+        './data/oh-word-deck.json?rev=20260312-19'
+      ];
+      const CUSTOM_DECK_STORAGE_KEY = 'oh-card-custom-decks-v1';
+      const CURRENT_SESSION_STORAGE_KEY = 'oh-card-current-session-v1';
+
+      function line(text = '') {
+        logEl.textContent += text + '\n';
+      }
+
+      function clearLog() {
+        logEl.textContent = '';
+      }
+
+      async function testFetch(url) {
+        try {
+          const res = await fetch(url, { cache: 'no-store' });
+          line(`[fetch] ${url} -> ${res.status} ${res.ok ? 'OK' : 'FAIL'} ct=${res.headers.get('content-type') || ''}`);
+          return res.ok;
+        } catch (e) {
+          line(`[fetch] ${url} -> ERROR: ${e && e.message ? e.message : e}`);
+          return false;
+        }
+      }
+
+      function testImg(url) {
+        return new Promise((resolve) => {
+          const img = new Image();
+          img.onload = () => {
+            line(`[img]   ${url} -> OK ${img.naturalWidth}x${img.naturalHeight}`);
+            resolve(true);
+          };
+          img.onerror = () => {
+            line(`[img]   ${url} -> ERROR`);
+            resolve(false);
+          };
+          img.src = url + (url.includes('?') ? '&' : '?') + 'diag=' + Date.now();
+        });
+      }
+
+      async function run() {
+        clearLog();
+        line('=== OH Card 自检开始 ===');
+        line('time: ' + new Date().toISOString());
+        line('location: ' + location.href);
+        line('ua: ' + navigator.userAgent);
+
+        try {
+          const regs = 'serviceWorker' in navigator ? await navigator.serviceWorker.getRegistrations() : [];
+          line(`serviceWorker registrations: ${regs.length}`);
+          line(`serviceWorker controller: ${navigator.serviceWorker && navigator.serviceWorker.controller ? 'YES' : 'NO'}`);
+        } catch (e) {
+          line('serviceWorker detect error: ' + (e.message || e));
+        }
+
+        try {
+          if ('caches' in window) {
+            const keys = await caches.keys();
+            line('cache keys: ' + (keys.length ? keys.join(', ') : '(none)'));
+          } else {
+            line('cache api: not supported');
+          }
+        } catch (e) {
+          line('cache detect error: ' + (e.message || e));
+        }
+
+        line('--- fetch test ---');
+        for (const url of urls) {
+          await testFetch(url);
+        }
+
+        line('--- img decode test ---');
+        for (const url of urls.filter((u) => /\/cards\//.test(u))) {
+          await testImg(url);
+        }
+
+        line('=== 检测结束 ===');
+        line('请把这一整页截图发给我。');
+      }
+
+      function inspectDeckConfig() {
+        line('--- localStorage deck inspect ---');
+        try {
+          const raw = localStorage.getItem(CUSTOM_DECK_STORAGE_KEY);
+          if (!raw) {
+            line('custom deck: (none)');
+          } else {
+            const parsed = JSON.parse(raw);
+            const imageDeck = Array.isArray(parsed?.imageDeck) ? parsed.imageDeck : [];
+            const wordDeck = Array.isArray(parsed?.wordDeck) ? parsed.wordDeck : [];
+            line(`custom image deck count: ${imageDeck.length}`);
+            line(`custom word deck count: ${wordDeck.length}`);
+            const imageSamples = imageDeck.slice(0, 6).map((item) => item?.image).filter(Boolean);
+            const wordSamples = wordDeck.slice(0, 6).map((item) => item?.image).filter(Boolean);
+            line(`custom image samples: ${imageSamples.length ? imageSamples.join(' | ') : '(none)'}`);
+            line(`custom word samples: ${wordSamples.length ? wordSamples.join(' | ') : '(none)'}`);
+          }
+        } catch (e) {
+          line('custom deck parse error: ' + (e.message || e));
+        }
+        try {
+          const sessionRaw = localStorage.getItem(CURRENT_SESSION_STORAGE_KEY);
+          if (sessionRaw) {
+            const session = JSON.parse(sessionRaw);
+            const cards = Array.isArray(session?.cards) ? session.cards : [];
+            line(`current session cards: ${cards.length}`);
+            const samples = cards.slice(0, 4).map((c) => {
+              if (c?.kind === 'pair') {
+                return `[pair] image=${c?.imageCard?.image || ''} | word=${c?.wordCard?.image || ''}`;
+              }
+              return `[${c?.kind || 'word'}] ${c?.image || c?.name || ''}`;
+            });
+            line(`current session samples: ${samples.length ? samples.join(' || ') : '(none)'}`);
+          } else {
+            line('current session: (none)');
+          }
+        } catch (e) {
+          line('current session parse error: ' + (e.message || e));
+        }
+      }
+
+      async function repair() {
+        line('开始清理缓存...');
+        try {
+          if ('serviceWorker' in navigator) {
+            const regs = await navigator.serviceWorker.getRegistrations();
+            await Promise.all(regs.map((r) => r.unregister()));
+            line(`已注销 SW: ${regs.length}`);
+          }
+          if ('caches' in window) {
+            const keys = await caches.keys();
+            await Promise.all(keys.map((k) => caches.delete(k)));
+            line(`已清理 cache: ${keys.length}`);
+          }
+          line('缓存清理完成，重新检测中...');
+          await run();
+        } catch (e) {
+          line('清理失败: ' + (e.message || e));
+        }
+      }
+
+      function resetDeckConfig() {
+        try {
+          localStorage.removeItem(CUSTOM_DECK_STORAGE_KEY);
+          localStorage.removeItem(CURRENT_SESSION_STORAGE_KEY);
+          line('已清除自定义卡组与当前会话，主站将回到内置卡组。');
+        } catch (e) {
+          line('清除失败: ' + (e.message || e));
+        }
+      }
+
+      document.getElementById('runBtn').addEventListener('click', run);
+      document.getElementById('repairBtn').addEventListener('click', repair);
+      document.getElementById('inspectDeckBtn').addEventListener('click', inspectDeckConfig);
+      document.getElementById('resetDeckBtn').addEventListener('click', () => {
+        resetDeckConfig();
+      });
+      document.getElementById('copyBtn').addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(logEl.textContent || '');
+          line('已复制检测结果');
+        } catch {
+          line('复制失败，请手动截图');
+        }
+      });
+
+      run();
+    </script>
+  </body>
+</html>
