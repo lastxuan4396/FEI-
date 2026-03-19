@@ -134,8 +134,8 @@ const faqItems = [
           </p>
 
           <div class="hero-actions">
-            <a class="hero-btn hero-btn-primary" href="#waitlist">申请早期内测</a>
-            <a class="hero-btn hero-btn-secondary" href="#demo">先试一笔</a>
+            <a class="hero-btn hero-btn-primary" href="#demo">立即试用 MVP</a>
+            <a class="hero-btn hero-btn-secondary" href="#waitlist">申请早期内测</a>
           </div>
 
           <div class="hero-metrics" aria-label="页面摘要指标">
@@ -301,34 +301,94 @@ const faqItems = [
       <section id="demo" class="content-section reveal">
         <div class="section-head">
           <div>
-            <p class="section-tag">Interactive Demo</p>
-            <h2>试一笔，你会更明白“结账”到底是什么意思。</h2>
+            <p class="section-tag">MVP beta</p>
+            <h2>现在这块不只是 demo 了，已经能处理真实的 Downloads 和收藏夹。</h2>
           </div>
-          <p>下面这块是可操作的。它把对话里的核心体验直接翻成一个小收银台：一张卡、一个动作、立刻反馈。</p>
+          <p>支持的浏览器里，你可以直接连接本地 Downloads 文件夹，或导入浏览器书签导出 HTML。所有分析都在当前浏览器里完成，不上传数据，队列也会自动保存在本机。</p>
         </div>
 
-        <div class="demo-layout">
-          <article class="demo-console">
-            <div class="demo-console-top">
+        <div class="mvp-layout">
+          <article class="mvp-source-panel">
+            <div class="mvp-source-head">
               <div>
-                <p class="card-kicker">今日收银台</p>
-                <h3 id="demo-queue-title">文件账单</h3>
+                <p class="card-kicker">Source hub</p>
+                <h3>先把待结队列接进来</h3>
               </div>
-              <div class="queue-counter">
-                <span id="demo-index">1</span>
-                <span>/</span>
-                <span id="demo-total">{demoCards.length}</span>
+              <div class="mvp-chip-row">
+                <span id="mvp-session-mode">示例队列已就绪</span>
+                <span id="mvp-privacy-note">本地解析，本机自动保存</span>
               </div>
             </div>
 
-            <div id="demo-card" class="demo-card">
-              <p id="demo-kicker" class="demo-card-kicker">Downloads</p>
-              <h3 id="demo-title">IMG_8473.PNG</h3>
-              <p id="demo-meta" class="demo-card-meta">截屏 · 14 天没打开 · 24.8 MB</p>
-              <p id="demo-message" class="demo-card-message">
+            <div class="mvp-source-grid">
+              <article class="source-card">
+                <p class="card-kicker">Source 01</p>
+                <h3>Downloads 文件夹</h3>
+                <p>优先识别截图、安装包、临时文档和久未处理的大文件，先把最容易继续的一笔排前面。</p>
+                <div class="source-actions">
+                  <button id="mvp-connect-downloads" class="demo-btn demo-btn-primary" type="button">连接文件夹</button>
+                  <label class="demo-btn source-upload">
+                    选择文件夹
+                    <input id="mvp-downloads-input" type="file" webkitdirectory directory multiple hidden />
+                  </label>
+                </div>
+                <p id="mvp-downloads-status" class="source-status">
+                  还没接入。Chrome / Edge 可直接连接文件夹，其他浏览器可手动选择。
+                </p>
+              </article>
+
+              <article class="source-card">
+                <p class="card-kicker">Source 02</p>
+                <h3>浏览器收藏夹</h3>
+                <p>导入书签导出 HTML 后，待结会按重复主题、存入时长和处理成本，生成信息账单队列。</p>
+                <div class="source-actions">
+                  <label class="demo-btn demo-btn-primary source-upload">
+                    导入书签 HTML
+                    <input id="mvp-bookmarks-input" type="file" accept=".html,text/html" hidden />
+                  </label>
+                </div>
+                <p id="mvp-bookmarks-status" class="source-status">还没导入。建议直接用浏览器自带的“导出书签”文件。</p>
+              </article>
+            </div>
+
+            <div class="mvp-source-footer">
+              <div class="mvp-source-summary">
+                <strong id="mvp-loaded-count">{demoCards.length}</strong>
+                <span>当前队列</span>
+              </div>
+              <div class="mvp-source-summary">
+                <strong id="mvp-source-count">0</strong>
+                <span>已接来源</span>
+              </div>
+              <div class="mvp-utility-actions">
+                <button id="mvp-load-sample" class="demo-btn" type="button">载入示例队列</button>
+                <button id="mvp-clear-session" class="demo-btn" type="button">清空本轮</button>
+              </div>
+            </div>
+          </article>
+
+          <div class="demo-layout mvp-workspace">
+            <article class="demo-console">
+            <div class="demo-console-top">
+              <div>
+                <p class="card-kicker">今日收银台</p>
+                <h3 id="mvp-queue-title">文件账单</h3>
+              </div>
+              <div class="queue-counter">
+                <span id="mvp-index">1</span>
+                <span>/</span>
+                <span id="mvp-total">{demoCards.length}</span>
+              </div>
+            </div>
+
+            <div id="mvp-card" class="demo-card">
+              <p id="mvp-kicker" class="demo-card-kicker">Downloads</p>
+              <h3 id="mvp-title">IMG_8473.PNG</h3>
+              <p id="mvp-meta" class="demo-card-meta">截屏 · 14 天没打开 · 24.8 MB</p>
+              <p id="mvp-message" class="demo-card-message">
                 这类临时截图通常只在当下有用。现在看一眼，决定它还值不值得继续占空间。
               </p>
-              <div id="demo-tags" class="pill-row">
+              <div id="mvp-tags" class="pill-row">
                 <span>临时文件</span>
                 <span>处理成本低</span>
                 <span>适合先结</span>
@@ -336,22 +396,22 @@ const faqItems = [
             </div>
 
             <div class="demo-actions">
-              <button class="demo-btn demo-btn-primary" type="button" data-demo-action="process">现在处理</button>
-              <button class="demo-btn" type="button" data-demo-action="later">稍后</button>
-              <button class="demo-btn" type="button" data-demo-action="archive">归档</button>
-              <button class="demo-btn demo-btn-danger" type="button" data-demo-action="drop">丢掉</button>
+              <button id="mvp-primary-action" class="demo-btn demo-btn-primary" type="button" data-mvp-action="process">打开看</button>
+              <button class="demo-btn" type="button" data-mvp-action="later">稍后</button>
+              <button id="mvp-archive-action" class="demo-btn" type="button" data-mvp-action="archive">归档</button>
+              <button id="mvp-drop-action" class="demo-btn demo-btn-danger" type="button" data-mvp-action="drop">删除</button>
             </div>
 
             <div class="demo-feedback-row">
-              <button id="demo-undo" class="demo-undo" type="button">撤回上一笔</button>
-              <p id="demo-feedback">还没开始。先结一笔看看。</p>
+              <button id="mvp-undo" class="demo-undo" type="button">撤回上一笔</button>
+              <p id="mvp-feedback">示例队列已经就绪。你也可以直接接入自己的 Downloads 和收藏夹。</p>
             </div>
           </article>
 
           <aside class="demo-sidebar">
             <article class="sidebar-card">
               <p class="card-kicker">为什么这张先出现</p>
-              <ul id="demo-reasons" class="reason-list">
+              <ul id="mvp-reasons" class="reason-list">
                 <li>久未处理，但判断成本低</li>
                 <li>不会牵出新的复杂步骤</li>
                 <li>先赢一笔，更容易继续</li>
@@ -362,19 +422,19 @@ const faqItems = [
               <p class="card-kicker">本轮结算</p>
               <div class="summary-grid">
                 <article>
-                  <strong id="demo-processed">0</strong>
+                  <strong id="mvp-processed">0</strong>
                   <span>已处理</span>
                 </article>
                 <article>
-                  <strong id="demo-released">0.0 MB</strong>
+                  <strong id="mvp-released">0.0 MB</strong>
                   <span>释放空间</span>
                 </article>
                 <article>
-                  <strong id="demo-lightness">0</strong>
+                  <strong id="mvp-lightness">0</strong>
                   <span>轻松感分值</span>
                 </article>
                 <article>
-                  <strong id="demo-remaining">{demoCards.length}</strong>
+                  <strong id="mvp-remaining">{demoCards.length}</strong>
                   <span>剩余悬账</span>
                 </article>
               </div>
@@ -382,11 +442,12 @@ const faqItems = [
 
             <article class="sidebar-card">
               <p class="card-kicker">今日收据</p>
-              <ol id="demo-receipts" class="receipt-list">
+              <ol id="mvp-receipts" class="receipt-list">
                 <li>等待第一笔结账...</li>
               </ol>
             </article>
           </aside>
+          </div>
         </div>
       </section>
 
@@ -394,19 +455,19 @@ const faqItems = [
         <div class="section-head">
           <div>
             <p class="section-tag">Early access</p>
-            <h2>官网先上线，早期内测名单先收起来。</h2>
+            <h2>产品已经开跑，早期内测名单继续收起来。</h2>
           </div>
           <p>
-            这一版先把产品形状讲清楚。真正的第一版会优先跑顺 Downloads 和收藏夹，所以内测阶段更重视“你最想先清什么债”。
+            第一版先把 Downloads 和收藏夹做成真能用的浏览器端 MVP。内测阶段更重视的是，你最想先清什么债，以及这套节奏有没有真的帮你轻下来。
           </p>
         </div>
 
         <div class="waitlist-panel">
           <div class="waitlist-copy">
             <p class="card-kicker">当前阶段</p>
-            <h3>产品官网 Beta</h3>
+            <h3>产品 Beta</h3>
             <p>
-              当前官网已经能完整展示定位、流程、悬账队列和交互 demo。内测申请先通过邮件收集，后面再接正式等待名单流程。
+              现在这页已经不是纯官网了，里面带着一个浏览器端 MVP。你可以直接接入本地 Downloads、导入书签 HTML，再一张张结掉真实的文件债和信息债。
             </p>
             <div class="pill-row">
               <span>桌面优先</span>
@@ -599,7 +660,13 @@ const faqItems = [
     </main>
   </div>
 
-  <script is:inline id="daijie-demo-data" type="application/json" set:html={JSON.stringify(demoCards)}></script>
+  <script
+    is:inline
+    id="daijie-app-bootstrap"
+    type="application/json"
+    set:html={JSON.stringify({ demoCards })}
+  ></script>
+  <script defer src="/daijie-mvp.js"></script>
 
   <script is:inline>
     const revealItems = document.querySelectorAll(".reveal");
@@ -649,195 +716,6 @@ const faqItems = [
     });
 
     updateIdeaCount();
-
-    const demoData = JSON.parse(document.getElementById("daijie-demo-data")?.textContent || "[]");
-    const demoState = {
-      index: 0,
-      processed: 0,
-      released: 0,
-      lightness: 0,
-      receipts: [],
-      history: []
-    };
-
-    const demoQueueTitle = document.getElementById("demo-queue-title");
-    const demoIndex = document.getElementById("demo-index");
-    const demoTotal = document.getElementById("demo-total");
-    const demoKicker = document.getElementById("demo-kicker");
-    const demoTitle = document.getElementById("demo-title");
-    const demoMeta = document.getElementById("demo-meta");
-    const demoMessage = document.getElementById("demo-message");
-    const demoTags = document.getElementById("demo-tags");
-    const demoReasons = document.getElementById("demo-reasons");
-    const demoProcessed = document.getElementById("demo-processed");
-    const demoReleased = document.getElementById("demo-released");
-    const demoLightness = document.getElementById("demo-lightness");
-    const demoRemaining = document.getElementById("demo-remaining");
-    const demoReceipts = document.getElementById("demo-receipts");
-    const demoFeedback = document.getElementById("demo-feedback");
-    const demoUndo = document.getElementById("demo-undo");
-    const demoButtons = document.querySelectorAll("[data-demo-action]");
-    const demoCard = document.getElementById("demo-card");
-
-    if (demoTotal) demoTotal.textContent = String(demoData.length);
-
-    const renderDemoTags = (tags) => {
-      if (!demoTags) return;
-      demoTags.innerHTML = "";
-      tags.forEach((tag) => {
-        const node = document.createElement("span");
-        node.textContent = tag;
-        demoTags.appendChild(node);
-      });
-    };
-
-    const renderDemoReasons = (reasons) => {
-      if (!demoReasons) return;
-      demoReasons.innerHTML = "";
-      reasons.forEach((reason) => {
-        const item = document.createElement("li");
-        item.textContent = reason;
-        demoReasons.appendChild(item);
-      });
-    };
-
-    const renderDemoReceipts = () => {
-      if (!demoReceipts) return;
-      demoReceipts.innerHTML = "";
-
-      if (demoState.receipts.length === 0) {
-        const item = document.createElement("li");
-        item.textContent = "等待第一笔结账...";
-        demoReceipts.appendChild(item);
-        return;
-      }
-
-      demoState.receipts.slice().reverse().forEach((receipt) => {
-        const item = document.createElement("li");
-        item.textContent = receipt;
-        demoReceipts.appendChild(item);
-      });
-    };
-
-    const updateDemoSummary = () => {
-      if (demoProcessed) demoProcessed.textContent = String(demoState.processed);
-      if (demoReleased) demoReleased.textContent = `${demoState.released.toFixed(1)} MB`;
-      if (demoLightness) demoLightness.textContent = String(demoState.lightness);
-      if (demoRemaining) demoRemaining.textContent = String(Math.max(demoData.length - demoState.processed, 0));
-      if (demoUndo) demoUndo.disabled = demoState.history.length === 0;
-    };
-
-    const demoBackgrounds = [
-      "linear-gradient(145deg, rgba(255,255,255,0.98), rgba(250,231,203,0.92))",
-      "linear-gradient(145deg, rgba(255,255,255,0.98), rgba(245,224,220,0.92))",
-      "linear-gradient(145deg, rgba(255,255,255,0.98), rgba(220,239,228,0.92))",
-      "linear-gradient(145deg, rgba(255,255,255,0.98), rgba(227,229,238,0.92))"
-    ];
-
-    const renderDemoCard = () => {
-      const card = demoData[demoState.index];
-
-      if (!card) {
-        if (demoQueueTitle) demoQueueTitle.textContent = "今日结清";
-        if (demoIndex) demoIndex.textContent = String(demoData.length);
-        if (demoKicker) demoKicker.textContent = "Receipt";
-        if (demoTitle) demoTitle.textContent = "这轮收银台已经结完了。";
-        if (demoMeta) demoMeta.textContent = "你没有整理人生，只是放下了几笔一直挂着的小账。";
-        if (demoMessage) demoMessage.textContent = "好的节奏不是一次性清空，而是明天还愿意继续回来。";
-        renderDemoTags(["今日完成", "可以明天再来", "轻一点"]);
-        renderDemoReasons(["本轮 demo 已完成", "用户获得轻松感而不是压力", "可撤回上一笔，不必怕做错"]);
-        demoButtons.forEach((button) => {
-          button.disabled = true;
-        });
-        return;
-      }
-
-      if (demoQueueTitle) demoQueueTitle.textContent = card.queue;
-      if (demoIndex) demoIndex.textContent = String(demoState.index + 1);
-      if (demoKicker) demoKicker.textContent = card.kicker;
-      if (demoTitle) demoTitle.textContent = card.title;
-      if (demoMeta) demoMeta.textContent = card.meta;
-      if (demoMessage) demoMessage.textContent = card.message;
-      renderDemoTags(card.tags);
-      renderDemoReasons(card.reasons);
-      if (demoCard) demoCard.style.background = demoBackgrounds[demoState.index % demoBackgrounds.length];
-      demoButtons.forEach((button) => {
-        button.disabled = false;
-      });
-    };
-
-    const labelForAction = (action) => {
-      switch (action) {
-        case "process":
-          return "现在处理";
-        case "later":
-          return "稍后";
-        case "archive":
-          return "归档";
-        case "drop":
-          return "丢掉";
-        default:
-          return "处理";
-      }
-    };
-
-    const applyDemoAction = (action) => {
-      const card = demoData[demoState.index];
-      if (!card) return;
-
-      demoState.history.push({
-        index: demoState.index,
-        processed: demoState.processed,
-        released: demoState.released,
-        lightness: demoState.lightness,
-        receipts: [...demoState.receipts]
-      });
-
-      demoState.index += 1;
-      demoState.processed += 1;
-      demoState.released += action === "drop" || action === "archive" ? card.release : 0;
-      demoState.lightness += action === "process" ? 18 : action === "drop" ? 16 : action === "archive" ? 14 : 10;
-      demoState.receipts.push(`${labelForAction(action)} · ${card.title}`);
-
-      if (demoFeedback) {
-        demoFeedback.textContent = `${labelForAction(action)}了「${card.title}」，脑子里又少挂了一件事。`;
-      }
-
-      updateDemoSummary();
-      renderDemoReceipts();
-      renderDemoCard();
-    };
-
-    const undoDemoAction = () => {
-      const previous = demoState.history.pop();
-      if (!previous) return;
-
-      demoState.index = previous.index;
-      demoState.processed = previous.processed;
-      demoState.released = previous.released;
-      demoState.lightness = previous.lightness;
-      demoState.receipts = previous.receipts;
-
-      if (demoFeedback) {
-        demoFeedback.textContent = "已撤回上一笔。做决定不该因为怕错而变慢。";
-      }
-
-      updateDemoSummary();
-      renderDemoReceipts();
-      renderDemoCard();
-    };
-
-    demoButtons.forEach((button) => {
-      button.addEventListener("click", () => {
-        applyDemoAction(button.dataset.demoAction);
-      });
-    });
-
-    demoUndo?.addEventListener("click", undoDemoAction);
-
-    updateDemoSummary();
-    renderDemoReceipts();
-    renderDemoCard();
 
     const waitlistForm = document.getElementById("waitlist-form");
     const waitlistEmail = document.getElementById("waitlist-email");
@@ -1102,6 +980,8 @@ const faqItems = [
     .insight-card,
     .fit-card,
     .idea-card,
+    .mvp-source-panel,
+    .source-card,
     .sidebar-card,
     .step-card,
     .panel-card,
@@ -1233,6 +1113,7 @@ const faqItems = [
     .insight-card h3,
     .fit-card h3,
     .idea-card h3,
+    .source-card h3,
     .queue-item h3,
     .step-card h3,
     .stack-item h3,
@@ -1247,6 +1128,7 @@ const faqItems = [
     .insight-card h3,
     .fit-card h3,
     .idea-card h3,
+    .source-card h3,
     .step-card h3,
     .stack-item h3,
     .queue-item h3,
@@ -1260,6 +1142,7 @@ const faqItems = [
     .insight-card p,
     .fit-card p,
     .idea-card p,
+    .source-card p,
     .step-card p,
     .stack-item p,
     .queue-item p,
@@ -1491,6 +1374,107 @@ const faqItems = [
       grid-template-columns: repeat(2, minmax(0, 1fr));
     }
 
+    .mvp-layout {
+      display: grid;
+      gap: 18px;
+    }
+
+    .mvp-source-panel {
+      padding: 22px;
+      border-radius: 30px;
+    }
+
+    .mvp-source-head,
+    .mvp-source-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .mvp-source-head h3 {
+      margin: 8px 0 0;
+      font-size: 1.5rem;
+      line-height: 1.1;
+    }
+
+    .mvp-chip-row,
+    .source-actions,
+    .mvp-utility-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .mvp-chip-row span {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid rgba(66, 46, 24, 0.08);
+      color: #54473c;
+      font-size: 0.92rem;
+    }
+
+    .mvp-source-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .source-card {
+      padding: 22px;
+      border-radius: 26px;
+      min-height: 220px;
+    }
+
+    .source-actions {
+      margin-top: 16px;
+    }
+
+    .source-upload {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .source-upload input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .source-status {
+      margin-top: 14px;
+      color: var(--muted);
+      line-height: 1.65;
+    }
+
+    .mvp-source-footer {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px dashed rgba(66, 46, 24, 0.12);
+    }
+
+    .mvp-source-summary {
+      min-width: 110px;
+    }
+
+    .mvp-source-summary strong {
+      display: block;
+      font-size: 1.7rem;
+      line-height: 1;
+    }
+
+    .mvp-source-summary span {
+      display: block;
+      margin-top: 6px;
+      color: #695d50;
+      line-height: 1.5;
+    }
+
     .queue-item {
       padding: 18px;
       border-radius: 22px;
@@ -1609,7 +1593,7 @@ const faqItems = [
       transform: none;
     }
 
-    #demo-feedback {
+    #mvp-feedback {
       margin: 0;
       color: #62564a;
       text-align: right;
@@ -1884,6 +1868,7 @@ const faqItems = [
       .insight-grid,
       .fit-grid,
       .workflow-grid,
+      .mvp-source-grid,
       .queue-list,
       .rhythm-grid,
       .phase-grid {
@@ -1916,6 +1901,7 @@ const faqItems = [
       .insight-grid,
       .fit-grid,
       .workflow-grid,
+      .mvp-source-grid,
       .idea-grid,
       .convergence-steps,
       .summary-grid,
@@ -1939,12 +1925,14 @@ const faqItems = [
         transform: none;
       }
 
-      .demo-feedback-row {
+      .demo-feedback-row,
+      .mvp-source-footer,
+      .mvp-source-head {
         flex-direction: column;
         align-items: start;
       }
 
-      #demo-feedback {
+      #mvp-feedback {
         text-align: left;
       }
 
