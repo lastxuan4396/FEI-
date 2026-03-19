@@ -7,13 +7,21 @@ interface Props {
   description?: string;
   image?: string;
   canonical?: string;
+  manifest?: string;
+  themeColor?: string;
+  appleTouchIcon?: string;
+  appleTitle?: string;
 }
 
 const {
   title = siteConfig.titleSuffix,
   description = siteConfig.description,
   image = siteConfig.ogImage,
-  canonical = Astro.url.href
+  canonical = Astro.url.href,
+  manifest = "/site.webmanifest",
+  themeColor = "#f6f2e9",
+  appleTouchIcon = "",
+  appleTitle = siteConfig.shortName
 } = Astro.props;
 
 const imageUrl = new URL(image, Astro.site ?? siteConfig.siteUrl).href;
@@ -24,13 +32,18 @@ const canonicalUrl = canonical.startsWith("http") ? canonical : new URL(canonica
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="theme-color" content="#f6f2e9" />
+    <meta name="theme-color" content={themeColor} />
     <meta name="description" content={description} />
     <meta name="keywords" content={siteConfig.keywords.join(",")} />
     <meta name="author" content={siteConfig.name} />
     <link rel="canonical" href={canonicalUrl} />
-    <link rel="manifest" href="/site.webmanifest" />
+    <link rel="manifest" href={manifest} />
     <link rel="icon" href="/assets/icon.svg" type="image/svg+xml" />
+    {appleTouchIcon && <link rel="apple-touch-icon" href={appleTouchIcon} />}
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content={appleTitle} />
+    <meta name="mobile-web-app-capable" content="yes" />
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />

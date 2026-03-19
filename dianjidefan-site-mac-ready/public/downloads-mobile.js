@@ -50,12 +50,15 @@
     dropTotal: document.getElementById("mobile-drop-total"),
     dropList: document.getElementById("mobile-drop-list"),
     restoreDropped: document.getElementById("mobile-restore-dropped"),
-    exportDrops: document.getElementById("mobile-export-drops")
+    exportDrops: document.getElementById("mobile-export-drops"),
+    installApp: document.getElementById("mobile-install-app"),
+    installNote: document.getElementById("mobile-install-note")
   };
 
   if (!refs.queueTitle || !refs.title) return;
 
   const runtimeFiles = new Map();
+  let deferredInstallPrompt = null;
   const cardBackgrounds = [
     "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(254,242,224,0.96))",
     "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(239,246,255,0.96))",
@@ -63,6 +66,14 @@
     "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(236,248,241,0.96))"
   ];
   const defaultStatus = refs.sourceStatus?.textContent || "";
+  const isStandalone = () =>
+    window.matchMedia("(display-mode: standalone)").matches || window.navigator.standalone === true;
+  const isIosSafari = () => {
+    const ua = window.navigator.userAgent;
+    const isIos = /iPad|iPhone|iPod/.test(ua);
+    const isSafari = /Safari/.test(ua) && !/CriOS|FxiOS|EdgiOS/.test(ua);
+    return isIos && isSafari;
+  };
 
   const state = {
     mode: "sample",
@@ -76,6 +87,38 @@
     dropped: [],
     history: [],
     sources: 0
+  };
+
+  const setInstallUi = ({ enabled = false, label = "安装到主屏幕", note = "PWA 正在准备安装能力。支持的浏览器里会出现安装入口。" } = {}) => {
+    if (refs.installApp) {
+      refs.installApp.disabled = !enabled;
+      refs.installApp.textContent = label;
+    }
+
+    if (refs.installNote) {
+      refs.installNote.textContent = note;
+    }
+  };
+
+  const registerServiceWorker = async () => {
+    if (!("serviceWorker" in navigator)) {
+      setInstallUi({
+        enabled: false,
+        label: "当前浏览器不支持安装",
+        note: "这个浏览器不支持 service worker，所以当前页还不能以 PWA 方式安装。"
+      });
+      return;
+    }
+
+    try {
+      await navigator.serviceWorker.register("/downloads-checkout/mobile/sw.js");
+    } catch {
+      setInstallUi({
+        enabled: false,
+        label: "安装准备失败",
+        note: "service worker 注册失败了，先按网页继续用；PWA 安装能力稍后再试。"
+      });
+    }
   };
 
   const hasLocalStorage = (() => {
@@ -752,6 +795,80 @@
   refs.archivedList?.addEventListener("click", handleReviewAction);
   refs.deferredList?.addEventListener("click", handleReviewAction);
   refs.dropList?.addEventListener("click", handleReviewAction);
+  refs.installApp?.addEventListener("click", async () => {
+    if (isStandalone()) {
+      setInstallUi({
+        enabled: false,
+        label: "已安装",
+        note: "你已经是用主屏幕安装版打开它了。"
+      });
+      return;
+    }
+
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      const choice = await deferredInstallPrompt.userChoice.catch(() => null);
+      deferredInstallPrompt = null;
+      setInstallUi({
+        enabled: false,
+        label: choice?.outcome === "accepted" ? "安装中" : "安装到主屏幕",
+        note: choice?.outcome === "accepted"
+          ? "安装提示已经发出。安装完成后，下次可以直接从主屏幕打开。"
+          : "你这次先跳过了安装。之后仍然可以再装。"
+      });
+      return;
+    }
+
+    if (isIosSafari()) {
+      setInstallUi({
+        enabled: false,
+        label: "去 Safari 安装",
+        note: "在 iPhone 上，请点 Safari 的分享按钮，再选“添加到主屏幕”。"
+      });
+      return;
+    }
+
+    setInstallUi({
+      enabled: false,
+      label: "等待浏览器支持",
+      note: "这个环境还没给出安装提示。你可以先正常使用，等支持时再安装。"
+    });
+  });
+
+  window.addEventListener("beforeinstallprompt", (event) => {
+    event.preventDefault();
+    deferredInstallPrompt = event;
+    setInstallUi({
+      enabled: true,
+      label: "安装到主屏幕",
+      note: "这个浏览器已经允许安装了。点上面的按钮，就能把它放到主屏幕。"
+    });
+  });
+
+  window.addEventListener("appinstalled", () => {
+    deferredInstallPrompt = null;
+    setInstallUi({
+      enabled: false,
+      label: "已安装",
+      note: "主屏安装已完成。下次可以像普通 App 一样直接打开。"
+    });
+  });
+
+  if (isStandalone()) {
+    setInstallUi({
+      enabled: false,
+      label: "已安装",
+      note: "你现在已经是用主屏幕安装版打开它了。"
+    });
+  } else if (isIosSafari()) {
+    setInstallUi({
+      enabled: false,
+      label: "去 Safari 安装",
+      note: "iPhone 上请用 Safari 打开，然后点分享按钮里的“添加到主屏幕”。"
+    });
+  }
+
+  registerServiceWorker();
 
   const restored = restorePersistedState();
   if (restored && (state.pending.length || state.archived.length || state.deferred.length || state.dropped.length)) {

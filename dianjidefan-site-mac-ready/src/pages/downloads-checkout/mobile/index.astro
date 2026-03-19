@@ -18,6 +18,10 @@ import {
   description={pageMeta.description}
   image="/assets/downloads-checkout-cover.svg"
   canonical="/downloads-checkout/mobile/"
+  manifest="/downloads-checkout/mobile/manifest.webmanifest"
+  themeColor="#fbf5ed"
+  appleTouchIcon="/assets/pwa/downloads-mobile-apple-touch-icon.png"
+  appleTitle="下载区去留器"
 >
   <a class="skip-link" href="#mobile-main">跳到主要内容</a>
 
@@ -60,7 +64,9 @@ import {
           <div class="hero-actions">
             <a class="hero-btn hero-btn-primary" href="#demo">试手机版原型</a>
             <a class="hero-btn hero-btn-secondary" href="/downloads-checkout/">回桌面版</a>
+            <button id="mobile-install-app" class="hero-btn hero-btn-secondary" type="button" disabled>安装到主屏幕</button>
           </div>
+          <p id="mobile-install-note" class="install-note">PWA 正在准备安装能力。支持的浏览器里会出现安装入口。</p>
 
           <div class="hero-metrics" aria-label="下载区去留器手机版摘要指标">
             <article>
@@ -632,6 +638,7 @@ import {
 
     .hero-lead,
     .hero-note,
+    .install-note,
     .section-head p,
     .pillar-card p,
     .route-card p,
@@ -680,6 +687,13 @@ import {
     .hero-btn:hover,
     .ghost-btn:hover {
       transform: translateY(-1px);
+    }
+
+    .hero-btn[disabled] {
+      opacity: 0.52;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
     }
 
     .hero-btn-primary {
