@@ -50,7 +50,14 @@
     sourceCount: document.getElementById("mvp-source-count"),
     loadSample: document.getElementById("mvp-load-sample"),
     clearSession: document.getElementById("mvp-clear-session"),
-    exportDropList: document.getElementById("mvp-export-drop-list")
+    exportDropList: document.getElementById("mvp-export-drop-list"),
+    deferredCount: document.getElementById("mvp-deferred-count"),
+    deferredList: document.getElementById("mvp-deferred-list"),
+    resumeDeferred: document.getElementById("mvp-resume-deferred"),
+    dropCount: document.getElementById("mvp-drop-count"),
+    dropTotal: document.getElementById("mvp-drop-total"),
+    dropReviewList: document.getElementById("mvp-drop-review-list"),
+    restoreDropped: document.getElementById("mvp-restore-dropped")
   };
 
   if (!refs.queueTitle || !refs.card) return;
@@ -76,6 +83,7 @@
     released: 0,
     lightness: 0,
     receipts: [],
+    deferred: [],
     dropped: [],
     history: [],
     sources: {
@@ -234,6 +242,86 @@
       });
   };
 
+  const createReviewAction = (label, action, id) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "review-action";
+    button.textContent = label;
+    button.dataset.reviewAction = action;
+    button.dataset.reviewId = id;
+    return button;
+  };
+
+  const renderReviewList = (container, items, emptyText, actionsBuilder, metaBuilder) => {
+    if (!container) return;
+    container.innerHTML = "";
+
+    if (!items.length) {
+      const item = document.createElement("li");
+      item.className = "review-empty";
+      item.textContent = emptyText;
+      container.appendChild(item);
+      return;
+    }
+
+    items
+      .slice()
+      .reverse()
+      .forEach((item) => {
+        const row = document.createElement("li");
+        row.className = "review-item";
+
+        const copyBlock = document.createElement("div");
+        copyBlock.className = "review-copy";
+
+        const title = document.createElement("strong");
+        title.textContent = item.title;
+        copyBlock.appendChild(title);
+
+        const meta = document.createElement("span");
+        meta.textContent = metaBuilder(item);
+        copyBlock.appendChild(meta);
+
+        const actions = document.createElement("div");
+        actions.className = "review-item-actions";
+        actionsBuilder(item).forEach((button) => actions.appendChild(button));
+
+        row.appendChild(copyBlock);
+        row.appendChild(actions);
+        container.appendChild(row);
+      });
+  };
+
+  const renderReviewQueues = () => {
+    if (refs.deferredCount) refs.deferredCount.textContent = String(state.deferred.length);
+    if (refs.dropCount) refs.dropCount.textContent = String(state.dropped.length);
+    if (refs.dropTotal) {
+      const total = state.dropped.reduce((sum, item) => sum + (Number(item.release) || 0), 0);
+      refs.dropTotal.textContent = formatSizeMb(total);
+    }
+    if (refs.resumeDeferred) refs.resumeDeferred.disabled = state.deferred.length === 0;
+    if (refs.restoreDropped) refs.restoreDropped.disabled = state.dropped.length === 0;
+
+    renderReviewList(
+      refs.deferredList,
+      state.deferred,
+      "还没有文件进入稍后区。现在不想决定的，先放这里就行。",
+      (item) => [createReviewAction("回到队列", "resume-deferred", item.id)],
+      (item) => [item.meta, item.deferredAt ? `稍后于 ${formatTimestamp(item.deferredAt)}` : ""].filter(Boolean).join(" · ")
+    );
+
+    renderReviewList(
+      refs.dropReviewList,
+      state.dropped,
+      "待删清单还是空的。真正删之前，先把这里当成可复核区。",
+      (item) => [
+        createReviewAction("恢复到队列", "restore-drop", item.id),
+        createReviewAction("移出清单", "forget-drop", item.id)
+      ],
+      (item) => [item.meta, item.droppedAt ? `标记于 ${formatTimestamp(item.droppedAt)}` : ""].filter(Boolean).join(" · ")
+    );
+  };
+
   const setFeedback = (message) => {
     if (refs.feedback) refs.feedback.textContent = message;
   };
@@ -254,7 +342,7 @@
   };
 
   const updateSourceSummary = () => {
-    if (refs.loadedCount) refs.loadedCount.textContent = String(state.pending.length + state.processed);
+    if (refs.loadedCount) refs.loadedCount.textContent = String(state.pending.length + state.processed + state.deferred.length);
     if (refs.sourceCount) {
       refs.sourceCount.textContent = String(["downloads", "bookmarks"].filter((key) => state.sources[key] > 0).length);
     }
@@ -267,9 +355,18 @@
     if (refs.released) refs.released.textContent = formatSizeMb(state.released);
     if (refs.lightness) refs.lightness.textContent = String(state.lightness);
     if (refs.remaining) refs.remaining.textContent = String(state.pending.length);
-    if (refs.total) refs.total.textContent = String(state.pending.length + state.processed);
+    if (refs.total) refs.total.textContent = String(state.pending.length + state.processed + state.deferred.length);
     if (refs.undo) refs.undo.disabled = state.history.length === 0;
     updateSourceSummary();
+    renderReviewQueues();
+  };
+
+  const toPendingItem = (item) => {
+    const { deferredAt, droppedAt, savedAt, ...rest } = item;
+    return {
+      ...rest,
+      restored: !item.sample && item.kind === "file" ? true : item.restored
+    };
   };
 
   const snapshotState = () => ({
@@ -279,6 +376,7 @@
     released: state.released,
     lightness: state.lightness,
     receipts: state.receipts.slice(),
+    deferred: state.deferred.slice(),
     dropped: state.dropped.slice(),
     sources: { ...state.sources }
   });
@@ -290,6 +388,7 @@
     released: state.released,
     lightness: state.lightness,
     receipts: state.receipts.slice(),
+    deferred: state.deferred.slice(),
     dropped: state.dropped.slice(),
     sources: { ...state.sources },
     statuses: {
@@ -325,16 +424,12 @@
       if (!saved || typeof saved !== "object") return false;
 
       state.mode = ["sample", "real", "empty"].includes(saved.mode) ? saved.mode : "sample";
-      state.pending = Array.isArray(saved.pending)
-        ? saved.pending.map((item) => ({
-            ...item,
-            restored: !item.sample && item.kind === "file"
-          }))
-        : [];
+      state.pending = Array.isArray(saved.pending) ? saved.pending.map(toPendingItem) : [];
       state.processed = Number(saved.processed) || 0;
       state.released = Number(saved.released) || 0;
       state.lightness = Number(saved.lightness) || 0;
       state.receipts = Array.isArray(saved.receipts) ? saved.receipts.slice(0, 24) : [];
+      state.deferred = Array.isArray(saved.deferred) ? saved.deferred.map(toPendingItem) : [];
       state.dropped = Array.isArray(saved.dropped) ? saved.dropped.slice(0, 200) : [];
       state.history = [];
       state.sources = {
@@ -370,6 +465,7 @@
     state.released = 0;
     state.lightness = 0;
     state.receipts = [];
+    state.deferred = [];
     state.dropped = [];
     state.history = [];
   };
@@ -400,19 +496,34 @@
     if (!card) {
       refs.queueTitle.textContent = state.processed > 0 ? "今日结清" : "待结收银台";
       if (refs.index) refs.index.textContent = String(state.processed);
+      const hasDeferred = state.deferred.length > 0;
       refs.kicker.textContent = state.processed > 0 ? "Receipt" : "Ready";
-      refs.title.textContent = state.processed > 0 ? "这轮真实队列已经结完了。" : "先接入你的 Downloads 或收藏夹。";
-      refs.meta.textContent = state.processed > 0
-        ? "你没有整理人生，只是放下了几笔一直挂着的小账。"
-        : "支持连接本地文件夹或导入浏览器书签导出 HTML。";
-      refs.message.textContent = state.processed > 0
-        ? "好的节奏不是一次性清空，而是明天还愿意继续回来。"
-        : "如果你只想先感受节奏，也可以继续使用示例队列。";
-      renderTags(state.processed > 0 ? ["今日完成", "可以明天再来", "轻一点"] : ["本地运行", "不上传数据", "先接来源"]);
+      refs.title.textContent = hasDeferred
+        ? `主队列先结完了，稍后区还有 ${state.deferred.length} 笔。`
+        : state.processed > 0
+          ? "这轮真实队列已经结完了。"
+          : "先接入你的 Downloads 或收藏夹。";
+      refs.meta.textContent = hasDeferred
+        ? "你已经把难决定的先挪开了。今天不必全清，但它们也不会再继续卡住这一轮。"
+        : state.processed > 0
+          ? "你没有整理人生，只是放下了几笔一直挂着的小账。"
+          : "支持连接本地文件夹或导入浏览器书签导出 HTML。";
+      refs.message.textContent = hasDeferred
+        ? "需要的话，可以把稍后区一键放回队列；不需要的话，就先停在这里。"
+        : state.processed > 0
+          ? "好的节奏不是一次性清空，而是明天还愿意继续回来。"
+          : "如果你只想先感受节奏，也可以继续使用示例队列。";
+      renderTags(hasDeferred
+        ? ["主队列已清", "稍后区可回看", "继续也行"]
+        : state.processed > 0
+          ? ["今日完成", "可以明天再来", "轻一点"]
+          : ["本地运行", "不上传数据", "先接来源"]);
       renderReasons(
-        state.processed > 0
-          ? ["本轮真实队列已完成", "用户获得轻松感而不是压力", "待删项目可导出清单，文件归档可接入归档文件夹"]
-          : ["先接入真实来源", "Downloads 与收藏夹都支持", "待删只会进入清单，不会直接消失"]
+        hasDeferred
+          ? ["主队列已完成", "稍后区里的文件没有丢，只是被安全推迟", "你可以一键把它们放回队列"]
+          : state.processed > 0
+            ? ["本轮真实队列已完成", "用户获得轻松感而不是压力", "待删项目可导出清单，文件归档可接入归档文件夹"]
+            : ["先接入真实来源", "Downloads 与收藏夹都支持", "待删只会进入清单，不会直接消失"]
       );
 
       refs.actionButtons.forEach((button) => {
@@ -447,6 +558,30 @@
     return cursor;
   };
 
+  const createUniqueArchiveHandle = async (directoryHandle, filename) => {
+    const dotIndex = filename.lastIndexOf(".");
+    const hasExtension = dotIndex > 0;
+    const stem = hasExtension ? filename.slice(0, dotIndex) : filename;
+    const extension = hasExtension ? filename.slice(dotIndex) : "";
+    let candidate = filename;
+    let suffix = 1;
+
+    while (true) {
+      try {
+        await directoryHandle.getFileHandle(candidate);
+        candidate = `${stem}-copy-${suffix}${extension}`;
+        suffix += 1;
+      } catch (error) {
+        if (error && error.name === "NotFoundError") {
+          const handle = await directoryHandle.getFileHandle(candidate, { create: true });
+          return { handle, filename: candidate };
+        }
+
+        throw error;
+      }
+    }
+  };
+
   const archiveFile = async (item) => {
     if (item.kind !== "file" || item.sample) {
       return { mode: "logical" };
@@ -466,16 +601,17 @@
       if (!file) return { mode: "missing-runtime" };
 
       const segments = (item.path || item.title).split("/").filter(Boolean);
-      const filename = segments.pop() || item.title;
+      const originalFilename = segments.pop() || item.title;
       const targetDirectory = await ensureDirectory(runtime.archiveHandle, segments);
-      const fileHandle = await targetDirectory.getFileHandle(filename, { create: true });
+      const { handle: fileHandle, filename } = await createUniqueArchiveHandle(targetDirectory, originalFilename);
       const writable = await fileHandle.createWritable();
       await writable.write(file);
       await writable.close();
 
       return {
         mode: "copied",
-        destination: `${runtime.archiveName || "归档目录"}/${[...segments, filename].join("/")}`
+        destination: `${runtime.archiveName || "归档目录"}/${[...segments, filename].join("/")}`,
+        renamed: filename !== originalFilename
       };
     } catch {
       return { mode: "archive-error" };
@@ -494,15 +630,16 @@
     return {};
   };
 
+  const removeReceiptEntry = (action, item) => {
+    const target = `${labelForAction(action, item)} · ${item.title}`;
+    const index = state.receipts.lastIndexOf(target);
+    if (index >= 0) state.receipts.splice(index, 1);
+  };
+
   const pushDroppedItem = (item) => {
     state.dropped.push({
-      id: item.id,
-      kind: item.kind,
-      title: item.title,
-      path: item.path || "",
-      url: item.url || "",
-      queue: item.queue,
-      savedAt: new Date().toISOString()
+      ...item,
+      droppedAt: new Date().toISOString()
     });
   };
 
@@ -520,9 +657,10 @@
       lines.push(`${index + 1}. ${item.title}`);
       lines.push(`   类型：${item.kind === "file" ? "文件" : "链接"}`);
       lines.push(`   来源：${item.queue}`);
+      if (item.meta) lines.push(`   信息：${item.meta}`);
       if (item.path) lines.push(`   路径：${item.path}`);
       if (item.url) lines.push(`   URL：${item.url}`);
-      lines.push(`   标记时间：${formatTimestamp(item.savedAt)}`);
+      lines.push(`   标记时间：${formatTimestamp(item.droppedAt || item.savedAt)}`);
       lines.push("");
     });
 
@@ -547,6 +685,63 @@
     setFeedback(`已导出 ${state.dropped.length} 条待删清单。删除这件事，先安全地做成可复核。`);
   };
 
+  const resumeDeferredItems = (ids) => {
+    const selectedIds = ids ? new Set(ids) : null;
+    const selected = selectedIds
+      ? state.deferred.filter((item) => selectedIds.has(item.id))
+      : state.deferred.slice();
+    if (!selected.length) return;
+
+    state.history.push(snapshotState());
+    state.deferred = selectedIds
+      ? state.deferred.filter((item) => !selectedIds.has(item.id))
+      : [];
+    state.pending = sortQueue([...selected.map(toPendingItem), ...state.pending]);
+    setFeedback(`已把 ${selected.length} 笔稍后文件放回队列。真正的稍后，不该等于消失。`);
+    persistState();
+    updateSummary();
+    renderReceipts();
+    renderCard();
+  };
+
+  const restoreDroppedItems = (ids) => {
+    const selectedIds = ids ? new Set(ids) : null;
+    const selected = selectedIds
+      ? state.dropped.filter((item) => selectedIds.has(item.id))
+      : state.dropped.slice();
+    if (!selected.length) return;
+
+    state.history.push(snapshotState());
+    state.dropped = selectedIds
+      ? state.dropped.filter((item) => !selectedIds.has(item.id))
+      : [];
+    state.pending = sortQueue([...selected.map(toPendingItem), ...state.pending]);
+    state.processed = Math.max(0, state.processed - selected.length);
+    state.released = Math.max(0, state.released - selected.reduce((sum, item) => sum + (Number(item.release) || 0), 0));
+    state.lightness = Math.max(0, state.lightness - selected.length * 16);
+    selected.forEach((item) => removeReceiptEntry("drop", item));
+    setFeedback(`已把 ${selected.length} 笔待删文件恢复到队列。删之前先复核，才像真产品。`);
+    persistState();
+    updateSummary();
+    renderReceipts();
+    renderCard();
+  };
+
+  const forgetDroppedItems = (ids) => {
+    const selectedIds = ids ? new Set(ids) : null;
+    const countBefore = state.dropped.length;
+    state.history.push(snapshotState());
+    state.dropped = selectedIds
+      ? state.dropped.filter((item) => !selectedIds.has(item.id))
+      : [];
+    const removedCount = countBefore - state.dropped.length;
+    setFeedback(`已从待删清单移出 ${removedCount} 笔。适合你已经在别处手动处理完的文件。`);
+    persistState();
+    updateSummary();
+    renderReceipts();
+    renderCard();
+  };
+
   const applyItemAction = async (action) => {
     const item = state.pending[0];
     if (!item) return;
@@ -556,15 +751,30 @@
     const result = await runAction(action, item);
 
     state.pending = state.pending.slice(1);
+    if (action === "later") {
+      state.deferred.push({
+        ...item,
+        deferredAt: new Date().toISOString()
+      });
+      state.lightness += 6;
+      setFeedback(`已把「${item.title}」放进稍后区。它不会消失，但今天这轮也不用再卡在这里。`);
+      persistState();
+      updateSummary();
+      renderReceipts();
+      renderCard();
+      return;
+    }
+
     state.processed += 1;
     state.released += action === "drop" ? item.release : 0;
-    state.lightness += action === "process" ? 18 : action === "drop" ? 16 : action === "archive" ? 14 : 10;
+    state.lightness += action === "process" ? 18 : action === "drop" ? 16 : 14;
     state.receipts.push(`${labelForAction(action, item)} · ${item.title}`);
     if (action === "drop") pushDroppedItem(item);
 
     if (action === "archive" && item.kind === "file") {
       if (result.mode === "copied") {
-        setFeedback(`已把「${item.title}」复制到归档目录。原文件还在原处，等你确认后再清理会更安全。`);
+        const renameNote = result.renamed ? " 目标目录里已有同名文件，这次自动补了后缀，避免静默覆盖。" : "";
+        setFeedback(`已把「${item.title}」复制到归档目录。原文件还在原处，等你确认后再清理会更安全。${renameNote}`);
       } else if (result.mode === "missing-archive") {
         setFeedback(`已先把「${item.title}」标记为归档。连接归档文件夹后，下一笔就能直接落到归档目录。`);
       } else if (result.mode === "archive-error") {
@@ -908,6 +1118,28 @@
     }
   };
 
+  const handleReviewAction = (event) => {
+    const button = event.target.closest("[data-review-action]");
+    if (!button) return;
+
+    const id = button.dataset.reviewId;
+    const action = button.dataset.reviewAction;
+
+    if (action === "resume-deferred" && id) {
+      resumeDeferredItems([id]);
+      return;
+    }
+
+    if (action === "restore-drop" && id) {
+      restoreDroppedItems([id]);
+      return;
+    }
+
+    if (action === "forget-drop" && id) {
+      forgetDroppedItems([id]);
+    }
+  };
+
   refs.actionButtons.forEach((button) => {
     button.addEventListener("click", async () => {
       const action = button.dataset.mvpAction;
@@ -920,6 +1152,10 @@
   refs.connectArchive?.addEventListener("click", handleArchivePicker);
   refs.downloadsInput?.addEventListener("change", handleDownloadsInput);
   refs.bookmarksInput?.addEventListener("change", handleBookmarksInput);
+  refs.deferredList?.addEventListener("click", handleReviewAction);
+  refs.dropReviewList?.addEventListener("click", handleReviewAction);
+  refs.resumeDeferred?.addEventListener("click", () => resumeDeferredItems());
+  refs.restoreDropped?.addEventListener("click", () => restoreDroppedItems());
   refs.exportDropList?.addEventListener("click", exportDropList);
   refs.loadSample?.addEventListener("click", () => {
     loadSampleQueue(copy.sampleReloaded);

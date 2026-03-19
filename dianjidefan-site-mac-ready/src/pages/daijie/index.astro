@@ -461,6 +461,54 @@ const faqItems = [
             </article>
           </aside>
           </div>
+
+          <div class="review-grid">
+            <article class="review-card">
+              <div class="review-head">
+                <div>
+                  <p class="card-kicker">Later queue</p>
+                  <h3>稍后区</h3>
+                </div>
+                <div class="review-stat">
+                  <strong id="mvp-deferred-count">0</strong>
+                  <span>暂时放下的卡片</span>
+                </div>
+              </div>
+              <p class="review-note">现在不想决定的卡，先放这里。待结的“稍后”不等于消失，而是安全延后。</p>
+              <ol id="mvp-deferred-list" class="review-list">
+                <li class="review-empty">还没有卡片进入稍后区。遇到现在不想决定的，先放这里就行。</li>
+              </ol>
+              <div class="review-footer">
+                <button id="mvp-resume-deferred" class="demo-btn" type="button" disabled>把稍后区放回队列</button>
+              </div>
+            </article>
+
+            <article class="review-card">
+              <div class="review-head">
+                <div>
+                  <p class="card-kicker">Drop review</p>
+                  <h3>待删 / 丢弃清单</h3>
+                </div>
+                <div class="review-stat-group">
+                  <div class="review-stat">
+                    <strong id="mvp-drop-count">0</strong>
+                    <span>待删项目</span>
+                  </div>
+                  <div class="review-stat">
+                    <strong id="mvp-drop-total">0.0 MB</strong>
+                    <span>涉及空间</span>
+                  </div>
+                </div>
+              </div>
+              <p class="review-note">真正删之前，先让它们留在可复核区。恢复回队列，或者导出清单后再手动处理。</p>
+              <ol id="mvp-drop-review-list" class="review-list">
+                <li class="review-empty">待删清单还是空的。真正删之前，先把这里当成可复核区。</li>
+              </ol>
+              <div class="review-footer">
+                <button id="mvp-restore-dropped" class="demo-btn" type="button" disabled>全部恢复到队列</button>
+              </div>
+            </article>
+          </div>
         </div>
       </section>
 
@@ -1658,6 +1706,116 @@ const faqItems = [
       line-height: 1.5;
     }
 
+    .review-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .review-card {
+      padding: 22px;
+      border-radius: 28px;
+      border: 1px solid rgba(66, 46, 24, 0.08);
+      background: rgba(255, 251, 244, 0.86);
+      box-shadow: var(--shadow);
+    }
+
+    .review-head,
+    .review-stat-group,
+    .review-footer,
+    .review-item,
+    .review-item-actions {
+      display: flex;
+      gap: 12px;
+    }
+
+    .review-head,
+    .review-item {
+      align-items: start;
+      justify-content: space-between;
+    }
+
+    .review-stat-group {
+      flex-wrap: wrap;
+      justify-content: end;
+    }
+
+    .review-stat {
+      min-width: 108px;
+      text-align: right;
+    }
+
+    .review-stat strong {
+      display: block;
+      font-size: 1.35rem;
+      line-height: 1;
+    }
+
+    .review-stat span,
+    .review-copy span {
+      display: block;
+      margin-top: 6px;
+      color: #695d50;
+      line-height: 1.5;
+      font-size: 0.94rem;
+    }
+
+    .review-note {
+      margin: 14px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .review-list {
+      margin: 16px 0 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 12px;
+    }
+
+    .review-item,
+    .review-empty {
+      padding: 16px 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.66);
+      border: 1px solid rgba(66, 46, 24, 0.08);
+    }
+
+    .review-copy {
+      min-width: 0;
+    }
+
+    .review-copy strong {
+      display: block;
+      font-size: 1rem;
+      line-height: 1.45;
+      word-break: break-word;
+    }
+
+    .review-item-actions {
+      flex-wrap: wrap;
+      justify-content: end;
+      flex: none;
+    }
+
+    .review-action {
+      border: 1px solid rgba(66, 46, 24, 0.12);
+      background: rgba(255, 255, 255, 0.92);
+      color: var(--ink);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font: inherit;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .review-footer {
+      justify-content: flex-end;
+      margin-top: 16px;
+    }
+
     .waitlist-panel {
       display: grid;
       grid-template-columns: minmax(0, 0.86fr) minmax(320px, 0.94fr);
@@ -1862,6 +2020,7 @@ const faqItems = [
       .idea-layout,
       .product-layout,
       .demo-layout,
+      .review-grid,
       .waitlist-panel,
       .roadmap-layout,
       .timeline-layout,
@@ -1940,13 +2099,22 @@ const faqItems = [
 
       .demo-feedback-row,
       .mvp-source-footer,
-      .mvp-source-head {
+      .mvp-source-head,
+      .review-head,
+      .review-item,
+      .review-footer {
         flex-direction: column;
         align-items: start;
       }
 
       #mvp-feedback {
         text-align: left;
+      }
+
+      .review-stat,
+      .review-item-actions {
+        text-align: left;
+        justify-content: start;
       }
 
       .closing-actions {
