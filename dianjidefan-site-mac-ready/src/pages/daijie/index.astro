@@ -23,6 +23,7 @@ const familyCounts = ideaFamilies.map((family) => ({
   ...family,
   count: ideaCards.filter((idea) => idea.family === family.key).length
 }));
+const directoryPickerAttrs = { webkitdirectory: true, directory: true } as const;
 
 const promiseCards = [
   {
@@ -38,8 +39,8 @@ const promiseCards = [
     body: "反馈不是绩效打分，而是今天清掉了多少负担、释放了多少空间。"
   },
   {
-    title: "从真实来源切进去",
-    body: "第一版只先接 Downloads 和收藏夹，不做假需求，也不做大全。"
+    title: "先从最硬的一笔切进去",
+    body: "当前主方向已经收敛到 Downloads 文件账单，先把减法收益最硬的入口打穿，再决定别的账单要不要接。"
   }
 ] as const;
 
@@ -80,7 +81,7 @@ const faqItems = [
   },
   {
     question: "第一版最先会处理什么？",
-    answer: "第一版只先做 Downloads 和收藏夹，把“信息债”和“文件债”这两类最真实、最容易验证的痛点跑顺。"
+    answer: "当前先主打 Downloads 文件账单，因为它的减法收益最硬：真减空间、真减混乱、真能立刻感到轻。收藏夹和别的悬账保留为待结后续方向。"
   },
   {
     question: "会不会自动删东西？",
@@ -114,6 +115,7 @@ const faqItems = [
         <a href="#overview">概览</a>
         <a href="#why">为什么是它</a>
         <a href="#workflow">怎么工作</a>
+        <a href="/downloads-checkout/">主方向</a>
         <a href="#demo">体验</a>
         <a href="#faq">FAQ</a>
         <a href="#waitlist">内测</a>
@@ -135,7 +137,7 @@ const faqItems = [
 
           <div class="hero-actions">
             <a class="hero-btn hero-btn-primary" href="#demo">立即试用 MVP</a>
-            <a class="hero-btn hero-btn-secondary" href="#waitlist">申请早期内测</a>
+            <a class="hero-btn hero-btn-secondary" href="/downloads-checkout/">打开下载区去留器</a>
           </div>
 
           <div class="hero-metrics" aria-label="页面摘要指标">
@@ -172,8 +174,8 @@ const faqItems = [
 
           <article class="board-card board-card-product">
             <p class="card-kicker">第一版先做什么</p>
-            <h2>先跑顺 Downloads + 收藏夹。</h2>
-            <p>先把文件债和信息债做顺，再决定消息、关系、购物冲动要不要接进来。</p>
+            <h2>先打穿 Downloads 文件账单。</h2>
+            <p>先把减法收益最硬的文件债做顺，再决定收藏夹、消息、关系和购物冲动要不要接进来。</p>
             <div class="pill-row">
               <span>桌面优先</span>
               <span>轻交互</span>
@@ -304,7 +306,7 @@ const faqItems = [
             <p class="section-tag">MVP beta</p>
             <h2>现在这块不只是 demo 了，已经能处理真实的 Downloads 和收藏夹。</h2>
           </div>
-          <p>支持的浏览器里，你可以直接连接本地 Downloads 文件夹，或导入浏览器书签导出 HTML。所有分析都在当前浏览器里完成，不上传数据，队列也会自动保存在本机。</p>
+          <p>当前主打是 Downloads 文件账单；这页仍保留收藏夹作为待结母产品的候选方向。所有分析都在当前浏览器里完成，不上传数据，队列也会自动保存在本机。</p>
         </div>
 
         <div class="mvp-layout">
@@ -329,7 +331,7 @@ const faqItems = [
                   <button id="mvp-connect-downloads" class="demo-btn demo-btn-primary" type="button">连接文件夹</button>
                   <label class="demo-btn source-upload">
                     选择文件夹
-                    <input id="mvp-downloads-input" type="file" webkitdirectory directory multiple hidden />
+                    <input id="mvp-downloads-input" type="file" {...directoryPickerAttrs} multiple hidden />
                   </label>
                 </div>
                 <p id="mvp-downloads-status" class="source-status">
@@ -415,7 +417,7 @@ const faqItems = [
 
             <div class="demo-feedback-row">
               <button id="mvp-undo" class="demo-undo" type="button">撤回上一笔</button>
-              <p id="mvp-feedback">示例队列已经就绪。你也可以直接接入自己的 Downloads 和收藏夹。</p>
+              <p id="mvp-feedback">示例队列已经就绪。你也可以直接接入自己的真实来源。</p>
             </div>
           </article>
 
@@ -469,7 +471,7 @@ const faqItems = [
             <h2>产品已经开跑，早期内测名单继续收起来。</h2>
           </div>
           <p>
-            第一版先把 Downloads 和收藏夹做成真能用的浏览器端 MVP。内测阶段更重视的是，你最想先清什么债，以及这套节奏有没有真的帮你轻下来。
+            现在主方向先落在 Downloads 文件账单上；内测阶段更重视的是，这套减法节奏有没有真的帮你把最乱的文件夹轻下来，以及后续还该不该把别的悬账接回待结。
           </p>
         </div>
 
@@ -478,7 +480,7 @@ const faqItems = [
             <p class="card-kicker">当前阶段</p>
             <h3>产品 Beta</h3>
             <p>
-              现在这页已经不是纯官网了，里面带着一个浏览器端 MVP。你可以直接接入本地 Downloads、导入书签 HTML，再一张张结掉真实的文件债和信息债。
+              现在这页已经不是纯官网了，里面带着一个浏览器端 MVP。你可以直接接入本地 Downloads，也可以保留收藏夹这条母产品分支，继续观察哪类悬账最值得下一步接进来。
             </p>
             <div class="pill-row">
               <span>桌面优先</span>
@@ -658,12 +660,12 @@ const faqItems = [
             <p class="section-tag">One Line Close</p>
             <h2>待结不要求你把人生理顺，只要求你结掉下一笔小账。</h2>
             <p>
-              这页把这次对话里最有价值的内容都收在一起了：为什么这个方向成立、能长出哪些产品、为什么最后会收敛成待结，以及第一版到底该怎么开工。
+              这页保留了整次收束过程，而真正先落地的主方向，已经单独长成了下载区去留器。
             </p>
           </div>
 
           <div class="closing-actions">
-            <a class="hero-btn hero-btn-primary" href="#overview">回到开头</a>
+            <a class="hero-btn hero-btn-primary" href="/downloads-checkout/">打开下载区去留器</a>
             <a class="hero-btn hero-btn-secondary" href="/">回作品站</a>
           </div>
         </div>
@@ -677,7 +679,7 @@ const faqItems = [
     type="application/json"
     set:html={JSON.stringify({ demoCards })}
   ></script>
-  <script defer src="/daijie-mvp.js"></script>
+  <script is:inline defer src="/daijie-mvp.js"></script>
 
   <script is:inline>
     const revealItems = document.querySelectorAll(".reveal");

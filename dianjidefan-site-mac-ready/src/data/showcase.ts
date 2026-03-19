@@ -220,6 +220,22 @@ const directWorksSeed: ShowcaseWork[] = [
     tone: "citrus"
   },
   {
+    slug: "downloads-checkout",
+    title: "下载区去留器",
+    eyebrow: "Focused product page",
+    summary: "把最乱、最不想打开的 Downloads，收成一个卡片式减法产品：打开看、归档、待删、稍后，一张张结掉。",
+    category: "tool",
+    categoryLabel: "工具",
+    stack: "Astro / JavaScript / Browser file APIs",
+    origin: "downloads-checkout/",
+    href: "/downloads-checkout/",
+    coverImage: "/assets/downloads-checkout-cover.svg",
+    coverAlt: "下载区去留器产品页面封面图",
+    ...withTimeline("2026-03-19", "2026-03-19"),
+    badges: ["文件减法", "Downloads", "MVP live"],
+    tone: "lagoon"
+  },
+  {
     slug: "daijie",
     title: "待结 / 人生待处理收银台",
     eyebrow: "Product concept page",

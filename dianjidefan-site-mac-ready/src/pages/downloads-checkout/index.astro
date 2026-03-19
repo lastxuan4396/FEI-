@@ -1,0 +1,1154 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  demoCards,
+  faqItems,
+  fileBuckets,
+  hardBenefits,
+  pageMeta,
+  promiseCards,
+  roadmap,
+  trustRules,
+  workflowSteps
+} from "../../data/downloads-checkout";
+
+const directoryPickerAttrs = { webkitdirectory: true, directory: true } as const;
+---
+<BaseLayout
+  title={pageMeta.title}
+  description={pageMeta.description}
+  image="/assets/downloads-checkout-cover.svg"
+  canonical="/downloads-checkout/"
+>
+  <a class="skip-link" href="#downloads-main">跳到主要内容</a>
+
+  <div class="downloads-shell">
+    <header class="downloads-header">
+      <a class="downloads-brand" href="/">
+        <span class="downloads-brand-badge">下载区去留器</span>
+        <span class="downloads-brand-copy">
+          <strong>Downloads Checkout</strong>
+          <small>Focused product page · MVP live</small>
+        </span>
+      </a>
+
+      <nav class="downloads-nav" aria-label="下载区去留器页面导航">
+        <a href="#overview">概览</a>
+        <a href="#why">为什么成立</a>
+        <a href="#workflow">怎么工作</a>
+        <a href="#demo">体验</a>
+        <a href="#faq">FAQ</a>
+        <a href="#concept">待结</a>
+      </nav>
+
+      <div class="header-actions">
+        <a class="header-link" href="/daijie/">待结概念页</a>
+        <a class="header-link" href="/">回作品站</a>
+      </div>
+    </header>
+
+    <main id="downloads-main" class="downloads-main">
+      <section id="overview" class="hero reveal">
+        <div class="hero-copy">
+          <p class="section-tag">Focused product</p>
+          <h1>把最乱的 Downloads，一张张结掉。</h1>
+          <p class="hero-lead">{pageMeta.pitch}</p>
+          <p class="hero-note">
+            这不是“文件管理大师”，也不是“给你更多目录结构”。
+            它只做一件事：把截图、安装包、final-final 文件和久未打开的大文件，变成一个你愿意开始的减法流程。
+          </p>
+
+          <div class="hero-actions">
+            <a class="hero-btn hero-btn-primary" href="#demo">立即试用 MVP</a>
+            <a class="hero-btn hero-btn-secondary" href="/daijie/">查看待结母产品</a>
+          </div>
+
+          <div class="hero-metrics" aria-label="下载区去留器摘要指标">
+            <article>
+              <strong>1 张卡</strong>
+              <span>只做一个文件决策</span>
+            </article>
+            <article>
+              <strong>4 个动作</strong>
+              <span>打开看 / 归档 / 待删 / 稍后</span>
+            </article>
+            <article>
+              <strong>安全优先</strong>
+              <span>待删清单 + 归档复制</span>
+            </article>
+          </div>
+        </div>
+
+        <div class="hero-board" aria-label="下载区去留器主张板">
+          <article class="board-card board-card-origin">
+            <p class="card-kicker">为什么现在做它</p>
+            <h2>Downloads 的痛感够硬，但系统几乎没把它做顺。</h2>
+            <p>平台解决的是“继续收藏”，不是“文件真的越来越乱”。这块更像数字世界里的杂物堆。</p>
+          </article>
+
+          <article class="board-card board-card-middle">
+            <p class="card-kicker">这页的判断</p>
+            <ul>
+              <li>减法产品更容易成立</li>
+              <li>文件减法比内容减法更硬</li>
+              <li>下载区比收藏夹更不受平台挤压</li>
+            </ul>
+          </article>
+
+          <article class="board-card board-card-product">
+            <p class="card-kicker">主思路</p>
+            <h2>先打穿文件账单，再回头长成待结。</h2>
+            <p>下载区去留器先做独立产品，后面再作为“待结”的第一块硬模块接回去。</p>
+            <div class="pill-row">
+              <span>减法产品</span>
+              <span>桌面优先</span>
+              <span>MVP 已可试</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="why" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Why it wins</p>
+            <h2>它成立，不是因为“整理”好听，而是因为结果够硬。</h2>
+          </div>
+          <p>照片清理成立是因为真能省空间。下载区去留器成立，也要靠同样硬的减法收益，而不是抽象的“更有秩序”。</p>
+        </div>
+
+        <div class="benefit-grid">
+          {hardBenefits.map((card) => (
+            <article class="benefit-card">
+              <strong>{card.value}</strong>
+              <p>{card.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="insight-grid">
+          {promiseCards.map((card) => (
+            <article class="insight-card">
+              <h3>{card.title}</h3>
+              <p>{card.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="workflow" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">How it works</p>
+            <h2>不是大扫除，而是一轮可以在 3 分钟里完成的结账。</h2>
+          </div>
+          <p>你不用进入文件夹、开多个窗口、拖来拖去。产品只给你最该先看的那张卡，然后让你继续下一张。</p>
+        </div>
+
+        <div class="workflow-grid">
+          {workflowSteps.map((step, index) => (
+            <article class="workflow-card">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">What comes first</p>
+            <h2>先出现在前面的，不是最重要的文件，而是最容易减下去的文件。</h2>
+          </div>
+          <p>这是产品节奏的关键：先赢一笔，再继续。Downloads 真正需要的不是复杂分析，而是低阻力起手。</p>
+        </div>
+
+        <div class="bucket-grid">
+          {fileBuckets.map((bucket) => (
+            <article class="bucket-card">
+              <h3>{bucket.title}</h3>
+              <p>{bucket.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="demo" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">MVP beta</p>
+            <h2>现在这页已经是一个能用的下载区去留器，不只是概念稿。</h2>
+          </div>
+          <p>支持的浏览器里，你可以直接连接本地 Downloads 文件夹，也可以接一个归档目录。所有分析和状态都留在当前浏览器里。</p>
+        </div>
+
+        <div class="mvp-layout">
+          <article class="mvp-source-panel">
+            <div class="mvp-source-head">
+              <div>
+                <p class="card-kicker">Source hub</p>
+                <h3>先把最乱的文件接进来</h3>
+              </div>
+              <div class="mvp-chip-row">
+                <span id="mvp-session-mode">示例队列已就绪</span>
+                <span id="mvp-privacy-note">本地解析，本机自动保存</span>
+              </div>
+            </div>
+
+            <div class="mvp-source-grid">
+              <article class="source-card">
+                <p class="card-kicker">Source 01</p>
+                <h3>Downloads 文件夹</h3>
+                <p>优先识别截图、安装包、临时文档和久未处理的大文件，先把最容易继续的一笔排前面。</p>
+                <div class="source-actions">
+                  <button id="mvp-connect-downloads" class="demo-btn demo-btn-primary" type="button">连接文件夹</button>
+                  <label class="demo-btn source-upload">
+                    选择文件夹
+                    <input id="mvp-downloads-input" type="file" {...directoryPickerAttrs} multiple hidden />
+                  </label>
+                </div>
+                <p id="mvp-downloads-status" class="source-status">
+                  还没接入。Chrome / Edge 可直接连接文件夹，其他浏览器可手动选择。
+                </p>
+              </article>
+
+              <article class="source-card">
+                <p class="card-kicker">Source 02</p>
+                <h3>归档文件夹</h3>
+                <p>连接后，点“归档”会先把文件复制进去，再把删除原文件这一步留给你确认，避免减法变成误删。</p>
+                <div class="source-actions">
+                  <button id="mvp-connect-archive" class="demo-btn demo-btn-primary" type="button">连接归档文件夹</button>
+                </div>
+                <p id="mvp-archive-status" class="source-status">还没连接。待删不会直接删除，文件归档也默认先走安全路径。</p>
+              </article>
+            </div>
+
+            <div class="mvp-source-footer">
+              <div class="mvp-source-summary">
+                <strong id="mvp-loaded-count">{demoCards.length}</strong>
+                <span>当前队列</span>
+              </div>
+              <div class="mvp-source-summary">
+                <strong id="mvp-source-count">0</strong>
+                <span>已接来源</span>
+              </div>
+              <div class="mvp-utility-actions">
+                <button id="mvp-export-drop-list" class="demo-btn" type="button" disabled>导出待删清单</button>
+                <button id="mvp-load-sample" class="demo-btn" type="button">载入示例队列</button>
+                <button id="mvp-clear-session" class="demo-btn" type="button">清空本轮</button>
+              </div>
+            </div>
+          </article>
+
+          <div class="demo-layout mvp-workspace">
+            <article class="demo-console">
+              <div class="demo-console-top">
+                <div>
+                  <p class="card-kicker">今日收银台</p>
+                  <h3 id="mvp-queue-title">文件账单</h3>
+                </div>
+                <div class="queue-counter">
+                  <span id="mvp-index">1</span>
+                  <span>/</span>
+                  <span id="mvp-total">{demoCards.length}</span>
+                </div>
+              </div>
+
+              <div id="mvp-card" class="demo-card">
+                <p id="mvp-kicker" class="demo-card-kicker">Downloads</p>
+                <h3 id="mvp-title">IMG_8473.PNG</h3>
+                <p id="mvp-meta" class="demo-card-meta">截屏 · 14 天没打开 · 24.8 MB</p>
+                <p id="mvp-message" class="demo-card-message">
+                  这类临时截图通常只在当下有用。现在看一眼，决定它还值不值得继续占空间。
+                </p>
+                <div id="mvp-tags" class="pill-row">
+                  <span>临时文件</span>
+                  <span>处理成本低</span>
+                  <span>适合先结</span>
+                </div>
+              </div>
+
+              <div class="demo-actions">
+                <button id="mvp-primary-action" class="demo-btn demo-btn-primary" type="button" data-mvp-action="process">打开看</button>
+                <button class="demo-btn" type="button" data-mvp-action="later">稍后</button>
+                <button id="mvp-archive-action" class="demo-btn" type="button" data-mvp-action="archive">归档</button>
+                <button id="mvp-drop-action" class="demo-btn demo-btn-danger" type="button" data-mvp-action="drop">待删</button>
+              </div>
+
+              <div class="demo-feedback-row">
+                <button id="mvp-undo" class="demo-undo" type="button">撤回上一笔</button>
+                <p id="mvp-feedback">示例队列已经就绪。你也可以直接接入自己的 Downloads。</p>
+              </div>
+            </article>
+
+            <aside class="demo-sidebar">
+              <article class="sidebar-card">
+                <p class="card-kicker">为什么这张先出现</p>
+                <ul id="mvp-reasons" class="reason-list">
+                  <li>久未处理，但判断成本低</li>
+                  <li>不会牵出新的复杂步骤</li>
+                  <li>先赢一笔，更容易继续</li>
+                </ul>
+              </article>
+
+              <article class="sidebar-card">
+                <p class="card-kicker">本轮结算</p>
+                <div class="summary-grid">
+                  <article>
+                    <strong id="mvp-processed">0</strong>
+                    <span>已处理</span>
+                  </article>
+                  <article>
+                    <strong id="mvp-released">0.0 MB</strong>
+                    <span>待删空间</span>
+                  </article>
+                  <article>
+                    <strong id="mvp-lightness">0</strong>
+                    <span>轻松感分值</span>
+                  </article>
+                  <article>
+                    <strong id="mvp-remaining">{demoCards.length}</strong>
+                    <span>剩余文件</span>
+                  </article>
+                </div>
+              </article>
+
+              <article class="sidebar-card">
+                <p class="card-kicker">今日收据</p>
+                <ol id="mvp-receipts" class="receipt-list">
+                  <li>等待第一笔结账...</li>
+                </ol>
+              </article>
+            </aside>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Safety first</p>
+            <h2>这类产品只有在“敢快”同时“够安全”时，用户才会持续回来。</h2>
+          </div>
+          <p>Downloads 里的文件往往又乱又真实，所以交互必须把误删风险压低，才能换来更快的节奏。</p>
+        </div>
+
+        <div class="trust-grid">
+          {trustRules.map((rule) => (
+            <article class="trust-card">
+              <p>{rule}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="concept" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Bigger picture</p>
+            <h2>下载区去留器是主方向，但不是孤岛。</h2>
+          </div>
+          <p>它现在可以独立成立，未来也能自然长回“待结”母产品，作为里面最硬、最先打穿的文件账单模块。</p>
+        </div>
+
+        <div class="bridge-panel">
+          <div>
+            <p class="card-kicker">母产品关系</p>
+            <h3>先做一把锋利的小刀，再决定要不要长成整套工具。</h3>
+            <p>待结负责处理所有悬账；下载区去留器先只处理一类最硬的悬账。这个切法更现实，也更容易做出第一个真产品。</p>
+          </div>
+          <div class="bridge-actions">
+            <a class="hero-btn hero-btn-primary" href="/daijie/">看待结概念页</a>
+            <a class="hero-btn hero-btn-secondary" href="/">回作品站</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">FAQ</p>
+            <h2>先把几个最像真产品会被问到的问题答掉。</h2>
+          </div>
+          <p>这页不是脑暴笔记，而是一个真的想上线的产品页面。所以它需要回答“为什么是它、为什么先做它、它到底安不安全”。</p>
+        </div>
+
+        <div class="faq-list">
+          {faqItems.map((item) => (
+            <details class="faq-item">
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Roadmap</p>
+            <h2>先把这一刀做顺，再决定还要不要继续扩。</h2>
+          </div>
+          <p>这不是一开始就做全套待结，而是先把 Downloads 这条减法链路做得足够顺、足够安全、足够想回来。</p>
+        </div>
+
+        <div class="roadmap-grid">
+          {roadmap.map((item) => (
+            <article class="roadmap-card">
+              <span>{item.phase}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="content-section reveal">
+        <div class="closing-panel">
+          <div>
+            <p class="section-tag">One Line Close</p>
+            <h2>你不用整理整个 Downloads，只要今天先结几笔文件账。</h2>
+            <p>
+              这页把你的主思路收成了一个更像真产品的入口：独立成立、价值够硬、还能继续长回待结。
+            </p>
+          </div>
+
+          <div class="closing-actions">
+            <a class="hero-btn hero-btn-primary" href="#overview">回到开头</a>
+            <a class="hero-btn hero-btn-secondary" href="/daijie/">跳到待结</a>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script
+    is:inline
+    id="daijie-app-bootstrap"
+    type="application/json"
+    set:html={JSON.stringify({
+      demoCards,
+      storageKey: "downloads-checkout:mvp:v1",
+      copy: {
+        sampleReady: "示例队列已经就绪。你也可以直接接入自己的 Downloads。",
+        sampleReloaded: "已重新载入下载区示例队列。",
+        restored: "已恢复你上一轮文件账单。你可以继续结账，或重新接入新的 Downloads。",
+        cleared: "这一轮文件账单已经清空。你可以重新接入 Downloads，或再载入示例队列。"
+      }
+    })}
+  ></script>
+  <script is:inline defer src="/daijie-mvp.js"></script>
+
+  <script is:inline>
+    const revealItems = document.querySelectorAll(".reveal");
+    const observer = "IntersectionObserver" in window
+      ? new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) entry.target.classList.add("in-view");
+          });
+        }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" })
+      : null;
+
+    if (observer) {
+      revealItems.forEach((item) => observer.observe(item));
+    } else {
+      revealItems.forEach((item) => item.classList.add("in-view"));
+    }
+  </script>
+
+  <style>
+    .downloads-shell {
+      --paper: #f5ebdc;
+      --paper-strong: #fff7ec;
+      --paper-soft: rgba(255, 249, 241, 0.78);
+      --ink: #211a14;
+      --muted: #66594c;
+      --line: rgba(75, 50, 24, 0.12);
+      --accent: #ba5e2c;
+      --accent-deep: #8c4323;
+      --accent-soft: rgba(186, 94, 44, 0.12);
+      --success: #406b4c;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(225, 163, 112, 0.22), transparent 32%),
+        radial-gradient(circle at top right, rgba(203, 142, 73, 0.18), transparent 28%),
+        linear-gradient(180deg, #f9f1e6 0%, #f2e4d2 54%, #ebdcc7 100%);
+      min-height: 100vh;
+      padding: 22px;
+    }
+
+    .downloads-header {
+      position: sticky;
+      top: 18px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 16px 18px;
+      border-radius: 26px;
+      backdrop-filter: blur(18px);
+      background: rgba(255, 248, 238, 0.8);
+      border: 1px solid rgba(69, 47, 23, 0.08);
+      box-shadow: 0 18px 40px rgba(61, 39, 18, 0.1);
+    }
+
+    .downloads-brand,
+    .downloads-nav a,
+    .header-link {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .downloads-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .downloads-brand-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #2f2115;
+      color: #fff7ef;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+    }
+
+    .downloads-brand-copy {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .downloads-brand-copy strong {
+      font-size: 0.98rem;
+    }
+
+    .downloads-brand-copy small {
+      color: var(--muted);
+    }
+
+    .downloads-nav,
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .downloads-nav a,
+    .header-link {
+      color: #5a4d42;
+      font-weight: 600;
+    }
+
+    .downloads-main {
+      display: grid;
+      gap: 18px;
+      padding-top: 22px;
+    }
+
+    .hero,
+    .content-section,
+    .mvp-source-panel,
+    .source-card,
+    .benefit-card,
+    .insight-card,
+    .workflow-card,
+    .bucket-card,
+    .demo-console,
+    .sidebar-card,
+    .trust-card,
+    .bridge-panel,
+    .roadmap-card,
+    .closing-panel {
+      border: 1px solid var(--line);
+      background: rgba(255, 249, 241, 0.82);
+      box-shadow: 0 24px 50px rgba(63, 42, 20, 0.08);
+      backdrop-filter: blur(12px);
+    }
+
+    .hero,
+    .content-section {
+      border-radius: 36px;
+      padding: 28px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+      gap: 22px;
+      min-height: 620px;
+    }
+
+    .section-tag,
+    .card-kicker {
+      margin: 0;
+      text-transform: uppercase;
+      letter-spacing: 0.18em;
+      font-size: 0.72rem;
+      color: #8f6b52;
+      font-weight: 700;
+    }
+
+    .hero-copy h1,
+    .section-head h2,
+    .bridge-panel h3,
+    .closing-panel h2 {
+      margin: 10px 0 0;
+      font-size: clamp(2.7rem, 5vw, 4.7rem);
+      line-height: 0.96;
+      letter-spacing: -0.04em;
+    }
+
+    .section-head h2,
+    .bridge-panel h3,
+    .closing-panel h2 {
+      font-size: clamp(2rem, 3.6vw, 3.3rem);
+      line-height: 1;
+    }
+
+    .hero-lead,
+    .hero-note,
+    .section-head p,
+    .bridge-panel p,
+    .closing-panel p,
+    .benefit-card p,
+    .insight-card p,
+    .workflow-card p,
+    .bucket-card p,
+    .trust-card p,
+    .roadmap-card p,
+    .faq-item p,
+    .source-card p,
+    .demo-card-message,
+    .source-status {
+      color: var(--muted);
+      line-height: 1.72;
+      font-size: 1rem;
+    }
+
+    .hero-lead {
+      font-size: 1.2rem;
+      color: #403429;
+      max-width: 62ch;
+    }
+
+    .hero-actions,
+    .pill-row,
+    .downloads-nav,
+    .header-actions,
+    .mvp-chip-row,
+    .source-actions,
+    .mvp-utility-actions,
+    .demo-actions,
+    .demo-feedback-row,
+    .closing-actions,
+    .bridge-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      align-items: center;
+    }
+
+    .hero-btn,
+    .demo-btn,
+    .header-link {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 999px;
+      padding: 11px 16px;
+      font-weight: 700;
+      border: 1px solid rgba(66, 46, 24, 0.1);
+      transition: transform 180ms ease, background 180ms ease, color 180ms ease, border-color 180ms ease;
+    }
+
+    .hero-btn:hover,
+    .demo-btn:hover,
+    .header-link:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero-btn-primary,
+    .demo-btn-primary {
+      background: linear-gradient(135deg, var(--accent), var(--accent-deep));
+      color: #fff9f2;
+      border-color: transparent;
+      text-decoration: none;
+    }
+
+    .hero-btn-secondary,
+    .demo-btn,
+    .header-link {
+      background: rgba(255, 255, 255, 0.62);
+      color: var(--ink);
+      text-decoration: none;
+    }
+
+    .demo-btn-danger {
+      background: rgba(129, 45, 23, 0.14);
+      color: #7b341f;
+    }
+
+    .hero-metrics,
+    .benefit-grid,
+    .insight-grid,
+    .workflow-grid,
+    .bucket-grid,
+    .trust-grid,
+    .roadmap-grid,
+    .summary-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .hero-metrics,
+    .summary-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .hero-metrics article,
+    .summary-grid article {
+      padding: 18px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.6);
+      border: 1px solid rgba(66, 46, 24, 0.08);
+    }
+
+    .hero-metrics strong,
+    .summary-grid strong,
+    .mvp-source-summary strong,
+    .benefit-card strong {
+      display: block;
+      font-size: 1.5rem;
+      line-height: 1;
+    }
+
+    .hero-metrics span,
+    .summary-grid span,
+    .mvp-source-summary span {
+      display: block;
+      margin-top: 8px;
+      color: #6e5f52;
+      line-height: 1.55;
+    }
+
+    .hero-board {
+      position: relative;
+      min-height: 520px;
+    }
+
+    .board-card {
+      position: absolute;
+      border-radius: 30px;
+      padding: 22px;
+      background: rgba(255, 248, 239, 0.94);
+      border: 1px solid rgba(66, 46, 24, 0.08);
+      box-shadow: 0 20px 40px rgba(61, 39, 18, 0.09);
+    }
+
+    .board-card h2 {
+      margin: 10px 0;
+      font-size: clamp(1.5rem, 2.5vw, 2.3rem);
+      line-height: 1.02;
+      letter-spacing: -0.03em;
+    }
+
+    .board-card ul {
+      margin: 10px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .board-card-origin {
+      inset: 0 auto auto 0;
+      width: min(100%, 360px);
+    }
+
+    .board-card-middle {
+      inset: 130px 28px auto auto;
+      width: min(100%, 300px);
+      transform: rotate(2deg);
+    }
+
+    .board-card-product {
+      inset: auto 0 0 auto;
+      width: min(100%, 360px);
+    }
+
+    .pill-row span,
+    .mvp-chip-row span,
+    .demo-card #mvp-tags span {
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(66, 46, 24, 0.08);
+      color: #5b4d40;
+      font-size: 0.92rem;
+    }
+
+    .content-section {
+      display: grid;
+      gap: 18px;
+    }
+
+    .section-head {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(280px, 0.75fr);
+      gap: 18px;
+      align-items: end;
+    }
+
+    .benefit-grid,
+    .insight-grid,
+    .bucket-grid,
+    .trust-grid,
+    .roadmap-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .workflow-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .benefit-card,
+    .insight-card,
+    .bucket-card,
+    .trust-card,
+    .workflow-card,
+    .roadmap-card,
+    .bridge-panel,
+    .closing-panel {
+      padding: 22px;
+      border-radius: 28px;
+    }
+
+    .workflow-card span,
+    .roadmap-card span {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 54px;
+      height: 34px;
+      border-radius: 999px;
+      background: var(--accent-soft);
+      color: var(--accent-deep);
+      font-weight: 700;
+      font-size: 0.92rem;
+    }
+
+    .workflow-card h3,
+    .bucket-card h3,
+    .insight-card h3,
+    .roadmap-card h3,
+    .benefit-card strong {
+      margin: 14px 0 0;
+      font-size: 1.25rem;
+      line-height: 1.15;
+    }
+
+    .mvp-layout {
+      display: grid;
+      gap: 18px;
+    }
+
+    .mvp-source-panel {
+      padding: 22px;
+      border-radius: 30px;
+    }
+
+    .mvp-source-head,
+    .mvp-source-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .mvp-source-head h3 {
+      margin: 8px 0 0;
+      font-size: 1.6rem;
+      line-height: 1.08;
+    }
+
+    .mvp-source-grid {
+      margin-top: 18px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .source-card {
+      padding: 22px;
+      border-radius: 26px;
+      min-height: 220px;
+    }
+
+    .source-upload {
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+    }
+
+    .source-upload input {
+      position: absolute;
+      inset: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .mvp-source-footer {
+      margin-top: 18px;
+      padding-top: 18px;
+      border-top: 1px dashed rgba(66, 46, 24, 0.12);
+    }
+
+    .mvp-source-summary {
+      min-width: 110px;
+    }
+
+    .demo-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, 0.7fr);
+      gap: 16px;
+    }
+
+    .demo-console,
+    .sidebar-card {
+      padding: 22px;
+      border-radius: 30px;
+    }
+
+    .demo-console-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .demo-console-top h3,
+    .demo-card h3 {
+      margin: 8px 0 0;
+      font-size: 1.7rem;
+      line-height: 1.05;
+      letter-spacing: -0.02em;
+    }
+
+    .queue-counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.62);
+      border: 1px solid rgba(66, 46, 24, 0.08);
+      font-weight: 700;
+    }
+
+    .demo-card {
+      margin-top: 18px;
+      padding: 24px;
+      border-radius: 28px;
+      background: linear-gradient(145deg, rgba(255,255,255,0.98), rgba(250,231,203,0.92));
+      border: 1px solid rgba(66, 46, 24, 0.08);
+      min-height: 280px;
+    }
+
+    .demo-card-kicker,
+    .demo-card-meta {
+      color: #725e4d;
+    }
+
+    .demo-card-meta {
+      margin: 12px 0 0;
+      font-size: 0.98rem;
+      line-height: 1.6;
+    }
+
+    .reason-list,
+    .receipt-list {
+      margin: 12px 0 0;
+      padding-left: 18px;
+      color: var(--muted);
+      line-height: 1.72;
+    }
+
+    .demo-undo {
+      border: 0;
+      background: transparent;
+      color: #7a614d;
+      font-weight: 700;
+      cursor: pointer;
+      padding: 0;
+    }
+
+    .demo-undo:disabled,
+    .demo-btn:disabled {
+      opacity: 0.44;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    #mvp-feedback {
+      margin: 0;
+      color: #62564a;
+      text-align: right;
+      flex: 1;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .faq-item {
+      border-radius: 24px;
+      border: 1px solid rgba(66, 46, 24, 0.08);
+      background: rgba(255, 251, 246, 0.78);
+      padding: 18px 20px;
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      list-style: none;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-item p {
+      margin: 12px 0 0;
+    }
+
+    .bridge-panel,
+    .closing-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 520ms ease, transform 520ms ease;
+    }
+
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .reveal,
+      .hero-btn,
+      .demo-btn,
+      .header-link {
+        transition: none;
+      }
+
+      .reveal {
+        opacity: 1;
+        transform: none;
+      }
+    }
+
+    @media (max-width: 1120px) {
+      .hero,
+      .section-head,
+      .demo-layout,
+      .bridge-panel,
+      .closing-panel {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-board {
+        min-height: 540px;
+      }
+
+      .workflow-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .downloads-header {
+        position: static;
+        flex-wrap: wrap;
+      }
+
+      .downloads-nav {
+        width: 100%;
+        overflow-x: auto;
+        padding-bottom: 4px;
+      }
+
+      .hero-metrics,
+      .benefit-grid,
+      .insight-grid,
+      .workflow-grid,
+      .bucket-grid,
+      .trust-grid,
+      .roadmap-grid,
+      .summary-grid,
+      .mvp-source-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-board {
+        min-height: auto;
+        display: grid;
+        gap: 14px;
+      }
+
+      .board-card {
+        position: relative;
+        inset: auto;
+        width: 100%;
+        transform: none;
+      }
+
+      .demo-feedback-row,
+      .mvp-source-footer,
+      .mvp-source-head {
+        flex-direction: column;
+        align-items: start;
+      }
+
+      #mvp-feedback {
+        text-align: left;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .downloads-shell {
+        padding: 14px;
+      }
+
+      .hero,
+      .content-section {
+        border-radius: 28px;
+        padding: 20px;
+      }
+
+      .hero-copy h1 {
+        font-size: clamp(2.2rem, 10vw, 3rem);
+      }
+    }
+  </style>
+</BaseLayout>

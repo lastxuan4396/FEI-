@@ -4,6 +4,16 @@
 
   const bootstrap = JSON.parse(bootstrapNode.textContent || "{}");
   const sampleCards = Array.isArray(bootstrap.demoCards) ? bootstrap.demoCards : [];
+  const storageKey = typeof bootstrap.storageKey === "string" && bootstrap.storageKey
+    ? bootstrap.storageKey
+    : "daijie:mvp:v1";
+  const copy = {
+    sampleReady: "示例队列已经就绪。你也可以直接接入自己的真实来源。",
+    sampleReloaded: "已重新载入示例队列。",
+    restored: "已恢复你上一轮待结队列。你可以继续结账，或重新接入新的来源。",
+    cleared: "本轮已经清空。你可以重新接入真实来源，或再载入一轮示例队列。",
+    ...(bootstrap.copy && typeof bootstrap.copy === "object" ? bootstrap.copy : {})
+  };
 
   const refs = {
     queueTitle: document.getElementById("mvp-queue-title"),
@@ -52,7 +62,6 @@
     "linear-gradient(145deg, rgba(255,255,255,0.98), rgba(220,239,228,0.92))",
     "linear-gradient(145deg, rgba(255,255,255,0.98), rgba(227,229,238,0.92))"
   ];
-  const storageKey = "daijie:mvp:v1";
 
   const defaultStatuses = {
     downloads: refs.downloadsStatus?.textContent || "",
@@ -913,7 +922,7 @@
   refs.bookmarksInput?.addEventListener("change", handleBookmarksInput);
   refs.exportDropList?.addEventListener("click", exportDropList);
   refs.loadSample?.addEventListener("click", () => {
-    loadSampleQueue("已重新载入示例队列。");
+    loadSampleQueue(copy.sampleReloaded);
     if (refs.downloadsStatus) refs.downloadsStatus.textContent = defaultStatuses.downloads;
     if (refs.bookmarksStatus) refs.bookmarksStatus.textContent = defaultStatuses.bookmarks;
     if (refs.archiveStatus) refs.archiveStatus.textContent = defaultStatuses.archive;
@@ -923,7 +932,7 @@
     updateSummary();
     renderReceipts();
     renderCard();
-    setFeedback("本轮已经清空。你可以重新接入真实来源，或再载入一轮示例队列。");
+    setFeedback(copy.cleared);
     persistState();
   });
 
@@ -931,8 +940,8 @@
     updateSummary();
     renderReceipts();
     renderCard();
-    setFeedback("已恢复你上一轮待结队列。你可以继续结账，或重新接入新的来源。");
+    setFeedback(copy.restored);
   } else {
-    loadSampleQueue("示例队列已经就绪。你也可以直接接入自己的 Downloads 和收藏夹。");
+    loadSampleQueue(copy.sampleReady);
   }
 })();
