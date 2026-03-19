@@ -1,0 +1,1351 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../../../layouts/BaseLayout.astro";
+import {
+  demoCards,
+  faqItems,
+  pageMeta,
+  pillars,
+  roadmap,
+  sourceRoutes,
+  trustRules,
+  workflowSteps
+} from "../../../data/downloads-checkout-mobile";
+---
+<BaseLayout
+  title={pageMeta.title}
+  description={pageMeta.description}
+  image="/assets/downloads-checkout-cover.svg"
+  canonical="/downloads-checkout/mobile/"
+>
+  <a class="skip-link" href="#mobile-main">跳到主要内容</a>
+
+  <div class="mobile-page">
+    <header class="mobile-header">
+      <a class="mobile-brand" href="/downloads-checkout/">
+        <span class="mobile-brand-badge">手机版</span>
+        <span class="mobile-brand-copy">
+          <strong>下载区去留器</strong>
+          <small>Mobile-first product page</small>
+        </span>
+      </a>
+
+      <nav class="mobile-nav" aria-label="下载区去留器手机版页面导航">
+        <a href="#overview">概览</a>
+        <a href="#inputs">入口</a>
+        <a href="#demo">体验</a>
+        <a href="#safety">安全</a>
+        <a href="#faq">FAQ</a>
+      </nav>
+
+      <div class="mobile-header-actions">
+        <a class="mobile-header-link" href="/downloads-checkout/">桌面版</a>
+        <a class="mobile-header-link" href="/daijie/">待结</a>
+        <a class="mobile-header-link" href="/">作品站</a>
+      </div>
+    </header>
+
+    <main id="mobile-main" class="mobile-main">
+      <section id="overview" class="hero reveal">
+        <div class="hero-copy">
+          <p class="section-tag">Mobile-first</p>
+          <h1>把手机里搁着的文件，一张张结掉。</h1>
+          <p class="hero-lead">{pageMeta.pitch}</p>
+          <p class="hero-note">
+            手机版不是把桌面逻辑硬搬过来，而是把“聊天接收、文件 App、最近下载”这些更真实的手机场景，
+            压成一个拇指能处理的减法流程。
+          </p>
+
+          <div class="hero-actions">
+            <a class="hero-btn hero-btn-primary" href="#demo">试手机版原型</a>
+            <a class="hero-btn hero-btn-secondary" href="/downloads-checkout/">回桌面版</a>
+          </div>
+
+          <div class="hero-metrics" aria-label="下载区去留器手机版摘要指标">
+            <article>
+              <strong>不先拿大权限</strong>
+              <span>系统选择器 / 分享入口优先</span>
+            </article>
+            <article>
+              <strong>4 个动作</strong>
+              <span>看一眼 / 收纳 / 稍后 / 待删</span>
+            </article>
+            <article>
+              <strong>拇指优先</strong>
+              <span>底部操作区 + 真实复核区</span>
+            </article>
+          </div>
+        </div>
+
+        <div class="hero-phone">
+          <div class="phone-preview">
+            <div class="phone-status">
+              <span>9:41</span>
+              <span>Mobile beta</span>
+            </div>
+            <div class="phone-copy">
+              <p class="card-kicker">手机版入口</p>
+              <h2>先接住“已经下载、已经收到、但一直没处理”的文件。</h2>
+              <ul class="phone-pills">
+                <li>系统文件选择器</li>
+                <li>聊天分享</li>
+                <li>最近下载回看</li>
+              </ul>
+            </div>
+            <div class="phone-stack">
+              <article>
+                <strong>微信接收</strong>
+                <span>体检报告-2026.pdf</span>
+              </article>
+              <article>
+                <strong>最近下载</strong>
+                <span>发票汇总-final.zip</span>
+              </article>
+              <article>
+                <strong>邮件附件</strong>
+                <span>合同补充条款.docx</span>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Why mobile works</p>
+            <h2>手机上不做“大扫除”，只处理那些已经挤进你手里的文件账。</h2>
+          </div>
+          <p>桌面版更像清杂物堆；手机版更像处理不断新来的账单。它不是要你整理整个手机，而是让最新的一批别继续悬着。</p>
+        </div>
+
+        <div class="pillar-grid">
+          {pillars.map((item) => (
+            <article class="pillar-card">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="inputs" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Input design</p>
+            <h2>手机版先解决“怎么进来”，不是先赌用户愿意给重权限。</h2>
+          </div>
+          <p>浏览器原型先走系统文件选择器；真正的分享扩展和更深的文件能力，放到 App 版再接。产品先把节奏做对。</p>
+        </div>
+
+        <div class="route-grid">
+          {sourceRoutes.map((item) => (
+            <article class="route-card">
+              <p class="card-kicker">入口</p>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="flow-grid">
+          {workflowSteps.map((item, index) => (
+            <article class="flow-card">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="demo" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Mobile MVP</p>
+            <h2>这页不是窄屏官网，而是一个按手机场景重写的原型。</h2>
+          </div>
+          <p>你现在可以直接从系统文件选择器里选几笔文件试，或者先用示例队列感受节奏。浏览器版先验证交互，App 版再接分享能力。</p>
+        </div>
+
+        <div class="mobile-workbench">
+          <aside class="mobile-source-panel">
+            <div class="mobile-source-head">
+              <div>
+                <p class="card-kicker">Source hub</p>
+                <h3>先把手机里的文件账接进来</h3>
+              </div>
+              <div class="mobile-chip-row">
+                <span>浏览器版</span>
+                <span>本地保存</span>
+              </div>
+            </div>
+
+            <div class="mobile-source-actions">
+              <button id="mobile-import-files" class="hero-btn hero-btn-primary" type="button">从文件 App 选择</button>
+              <label class="hero-btn hero-btn-secondary mobile-upload">
+                重新选文件
+                <input id="mobile-file-input" type="file" multiple hidden />
+              </label>
+            </div>
+
+            <p id="mobile-source-status" class="source-status">
+              还没接入真实文件。浏览器版先用系统选择器；以后再接聊天分享。
+            </p>
+
+            <div class="mobile-source-summary">
+              <article>
+                <strong id="mobile-loaded-count">{demoCards.length}</strong>
+                <span>本轮总数</span>
+              </article>
+              <article>
+                <strong id="mobile-source-count">0</strong>
+                <span>已接来源</span>
+              </article>
+            </div>
+
+            <div class="mobile-source-footer">
+              <button id="mobile-load-sample" class="ghost-btn" type="button">载入示例</button>
+              <button id="mobile-clear-session" class="ghost-btn" type="button">清空本轮</button>
+              <button id="mobile-export-drops" class="ghost-btn" type="button" disabled>导出待删清单</button>
+            </div>
+          </aside>
+
+          <div class="phone-shell">
+            <div class="phone-hardware">
+              <div class="phone-notch"></div>
+            </div>
+
+            <div class="phone-screen">
+              <div class="screen-topbar">
+                <div>
+                  <p class="card-kicker">今日收银台</p>
+                  <h3 id="mobile-queue-title">手机文件账单</h3>
+                </div>
+                <div class="queue-counter">
+                  <span id="mobile-index">1</span>
+                  <span>/</span>
+                  <span id="mobile-total">{demoCards.length}</span>
+                </div>
+              </div>
+
+              <div id="mobile-card" class="phone-card">
+                <p id="mobile-kicker" class="phone-card-kicker">微信接收</p>
+                <h3 id="mobile-title">体检报告-2026.pdf</h3>
+                <p id="mobile-meta" class="phone-card-meta">PDF · 11 天没再打开 · 8.6 MB</p>
+                <p id="mobile-message" class="phone-card-message">
+                  这种文件你通常知道它重要，但又不想现在分类。先决定它该留在收纳盒、进稍后区，还是已经可以删掉。
+                </p>
+                <div id="mobile-tags" class="tag-row">
+                  <span>聊天接收</span>
+                  <span>真实文件</span>
+                  <span>先结一笔</span>
+                </div>
+              </div>
+
+              <article class="phone-card reasons-card">
+                <p class="card-kicker">为什么这张先出现</p>
+                <ul id="mobile-reasons" class="reason-list">
+                  <li>文件本身不复杂，但长期悬着</li>
+                  <li>手机上最容易一直拖着</li>
+                  <li>处理完立刻少一笔心事</li>
+                </ul>
+              </article>
+
+              <article class="phone-card summary-card">
+                <div class="summary-grid">
+                  <article>
+                    <strong id="mobile-processed">0</strong>
+                    <span>已处理</span>
+                  </article>
+                  <article>
+                    <strong id="mobile-released">0.0 MB</strong>
+                    <span>待删空间</span>
+                  </article>
+                  <article>
+                    <strong id="mobile-lightness">0</strong>
+                    <span>轻松分</span>
+                  </article>
+                  <article>
+                    <strong id="mobile-remaining">{demoCards.length}</strong>
+                    <span>剩余</span>
+                  </article>
+                </div>
+              </article>
+
+              <article class="phone-card receipt-card">
+                <p class="card-kicker">今日收据</p>
+                <ol id="mobile-receipts" class="receipt-list">
+                  <li>今天的第一笔文件账，还在等你。</li>
+                </ol>
+              </article>
+
+              <div class="phone-action-dock">
+                <div class="action-grid">
+                  <button class="action-pill action-pill-primary" type="button" data-mobile-action="process">看一眼</button>
+                  <button class="action-pill" type="button" data-mobile-action="archive">收纳盒</button>
+                  <button class="action-pill" type="button" data-mobile-action="later">稍后</button>
+                  <button class="action-pill action-pill-danger" type="button" data-mobile-action="drop">待删</button>
+                </div>
+                <div class="feedback-row">
+                  <button id="mobile-undo" class="ghost-btn ghost-btn-small" type="button">撤回</button>
+                  <p id="mobile-feedback">手机版示例队列已经就绪。你也可以直接从文件 App 选一批最近下载。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-stack">
+            <article class="review-card">
+              <div class="review-head">
+                <div>
+                  <p class="card-kicker">Archive box</p>
+                  <h3>收纳盒</h3>
+                </div>
+                <div class="review-stat">
+                  <strong id="mobile-archived-count">0</strong>
+                  <span>已收纳</span>
+                </div>
+              </div>
+              <p class="review-note">浏览器版先做逻辑收纳，不冒充已经帮你移动到了真实目录。App 版再补这一步。</p>
+              <ol id="mobile-archived-list" class="review-list">
+                <li class="mobile-review-empty">收纳盒还是空的。适合留下但不想继续挂着的文件，先放这里。</li>
+              </ol>
+              <div class="review-footer">
+                <button id="mobile-restore-archived" class="ghost-btn" type="button" disabled>全部放回队列</button>
+              </div>
+            </article>
+
+            <article class="review-card">
+              <div class="review-head">
+                <div>
+                  <p class="card-kicker">Later queue</p>
+                  <h3>稍后区</h3>
+                </div>
+                <div class="review-stat">
+                  <strong id="mobile-deferred-count">0</strong>
+                  <span>暂时放下</span>
+                </div>
+              </div>
+              <p class="review-note">拇指一划还不想决定的，就先安全挪开。今天不清空也成立。</p>
+              <ol id="mobile-deferred-list" class="review-list">
+                <li class="mobile-review-empty">还没有文件进入稍后区。现在不想决定的，先放这里。</li>
+              </ol>
+              <div class="review-footer">
+                <button id="mobile-resume-deferred" class="ghost-btn" type="button" disabled>把稍后区放回队列</button>
+              </div>
+            </article>
+
+            <article class="review-card">
+              <div class="review-head">
+                <div>
+                  <p class="card-kicker">Drop review</p>
+                  <h3>待删复核区</h3>
+                </div>
+                <div class="review-stat">
+                  <strong id="mobile-drop-count">0</strong>
+                  <span>待删项目</span>
+                </div>
+              </div>
+              <p class="review-note">真正删之前先复核。删除是减法里最值钱的一步，也最不该做假自动化。</p>
+              <ol id="mobile-drop-list" class="review-list">
+                <li class="mobile-review-empty">待删复核区还是空的。删之前，先让它们在这里待命。</li>
+              </ol>
+              <div class="review-footer review-footer-split">
+                <div class="review-stat">
+                  <strong id="mobile-drop-total">0.0 MB</strong>
+                  <span>待删空间</span>
+                </div>
+                <button id="mobile-restore-dropped" class="ghost-btn" type="button" disabled>全部恢复</button>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="safety" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Safety first</p>
+            <h2>手机版更不能冒充“我已经帮你处理好了”。</h2>
+          </div>
+          <p>手机上的授权更敏感，误删成本也更高。所以第一版先把流程做诚实：不先拿大权限，不冒充目录移动，待删必须复核。</p>
+        </div>
+
+        <div class="trust-grid">
+          {trustRules.map((item) => (
+            <article class="trust-card">
+              <p>{item}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Desktop bridge</p>
+            <h2>桌面版和手机版不是两个产品，是同一套文件账单在不同场景里的入口。</h2>
+          </div>
+          <p>桌面版处理 Downloads 杂物堆，手机版处理聊天接收和最近下载。它们用的是同一个母逻辑：一次一张，先轻一点。</p>
+        </div>
+
+        <div class="bridge-panel">
+          <div>
+            <p class="card-kicker">跨端关系</p>
+            <h3>桌面版负责最硬的减法，手机版把同一刀切到日常接收文件上。</h3>
+            <p>如果桌面版先打穿，手机版就不是新故事，而是把你已经认同的交互节奏带到手里。</p>
+          </div>
+          <div class="bridge-actions">
+            <a class="hero-btn hero-btn-primary" href="/downloads-checkout/">打开桌面版</a>
+            <a class="hero-btn hero-btn-secondary" href="/daijie/">查看待结</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">FAQ</p>
+            <h2>先把手机版最容易被问到的事情答掉。</h2>
+          </div>
+          <p>这不是“响应式也算手机版”的说法，而是一个专门按手机权限、分享入口和触控节奏重写过的版本。</p>
+        </div>
+
+        <div class="faq-list">
+          {faqItems.map((item) => (
+            <details class="faq-item">
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
+      <section class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Roadmap</p>
+            <h2>先把手机入口做顺，再决定哪些能力值得变成原生 App。</h2>
+          </div>
+          <p>浏览器版先证明：手机上也能成立“一次一张”的文件减法。更深的权限能力，后面再补，不在这一步假装已经解决。</p>
+        </div>
+
+        <div class="roadmap-grid">
+          {roadmap.map((item) => (
+            <article class="roadmap-card">
+              <span>{item.phase}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script
+    is:inline
+    id="downloads-mobile-bootstrap"
+    type="application/json"
+    set:html={JSON.stringify({
+      demoCards,
+      storageKey: "downloads-checkout:mobile:v1",
+      copy: {
+        sampleReady: "手机版示例队列已经就绪。你也可以直接从文件 App 选一批最近下载。",
+        sampleReloaded: "已重新载入手机版示例队列。",
+        restored: "已恢复你上一轮手机文件账单。",
+        cleared: "这一轮已经清空。可以重新选文件，或再载入一轮示例。"
+      }
+    })}
+  ></script>
+  <script is:inline defer src="/downloads-mobile.js"></script>
+
+  <script is:inline>
+    const revealItems = document.querySelectorAll(".reveal");
+    const observer = "IntersectionObserver" in window
+      ? new IntersectionObserver((entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) entry.target.classList.add("in-view");
+          });
+        }, { threshold: 0.12, rootMargin: "0px 0px -8% 0px" })
+      : null;
+
+    if (observer) {
+      revealItems.forEach((item) => observer.observe(item));
+    } else {
+      revealItems.forEach((item) => item.classList.add("in-view"));
+    }
+  </script>
+
+  <style>
+    .mobile-page {
+      --paper: #f9f4ec;
+      --paper-strong: #fffdfa;
+      --paper-soft: rgba(255, 251, 246, 0.78);
+      --ink: #1d1510;
+      --muted: #6e6052;
+      --line: rgba(65, 44, 22, 0.12);
+      --accent: #cc6734;
+      --accent-deep: #8f431f;
+      --accent-soft: rgba(204, 103, 52, 0.14);
+      --success: #336556;
+      min-height: 100vh;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at top left, rgba(255, 179, 119, 0.18), transparent 32%),
+        radial-gradient(circle at 80% 12%, rgba(149, 196, 255, 0.14), transparent 28%),
+        linear-gradient(180deg, #fbf5ed 0%, #f3e7d8 52%, #e8d9c8 100%);
+      padding: 18px;
+    }
+
+    .mobile-header {
+      position: sticky;
+      top: 14px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 16px;
+      border-radius: 24px;
+      background: rgba(255, 250, 243, 0.82);
+      border: 1px solid rgba(77, 53, 29, 0.08);
+      backdrop-filter: blur(18px);
+      box-shadow: 0 18px 40px rgba(70, 47, 25, 0.12);
+    }
+
+    .mobile-brand,
+    .mobile-nav a,
+    .mobile-header-link {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .mobile-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .mobile-brand-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: #2c1f17;
+      color: #fff8f0;
+      font-weight: 800;
+      letter-spacing: 0.04em;
+    }
+
+    .mobile-brand-copy {
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+    }
+
+    .mobile-brand-copy strong {
+      font-size: 0.98rem;
+    }
+
+    .mobile-brand-copy small {
+      color: var(--muted);
+    }
+
+    .mobile-nav,
+    .mobile-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .mobile-nav a,
+    .mobile-header-link {
+      color: #5b4d40;
+      font-weight: 600;
+    }
+
+    .mobile-main {
+      display: grid;
+      gap: 18px;
+      padding-top: 22px;
+    }
+
+    .hero,
+    .content-section,
+    .pillar-card,
+    .route-card,
+    .flow-card,
+    .mobile-source-panel,
+    .review-card,
+    .trust-card,
+    .bridge-panel,
+    .roadmap-card,
+    .faq-item {
+      border: 1px solid var(--line);
+      border-radius: 32px;
+      background: rgba(255, 250, 244, 0.92);
+      box-shadow: 0 22px 50px rgba(72, 49, 25, 0.08);
+    }
+
+    .hero,
+    .content-section {
+      padding: 26px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(280px, 0.98fr);
+      gap: 22px;
+      align-items: stretch;
+    }
+
+    .section-tag,
+    .card-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 7px 12px;
+      border-radius: 999px;
+      background: rgba(50, 32, 16, 0.08);
+      color: #664f3b;
+      font-size: 0.74rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      margin: 0 0 14px;
+    }
+
+    .hero h1,
+    .section-head h2 {
+      margin: 0;
+      font-family: "Noto Serif SC", serif;
+      font-size: clamp(2rem, 3.5vw, 4rem);
+      line-height: 1.06;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-lead,
+    .hero-note,
+    .section-head p,
+    .pillar-card p,
+    .route-card p,
+    .flow-card p,
+    .source-status,
+    .review-note,
+    .trust-card p,
+    .bridge-panel p,
+    .roadmap-card p,
+    .faq-item p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    .hero-copy {
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .hero-actions,
+    .bridge-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-btn,
+    .ghost-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+      cursor: pointer;
+    }
+
+    .hero-btn:hover,
+    .ghost-btn:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero-btn-primary {
+      background: linear-gradient(135deg, var(--accent), #eb8d56);
+      color: #fff9f2;
+      box-shadow: 0 18px 32px rgba(204, 103, 52, 0.24);
+    }
+
+    .hero-btn-secondary,
+    .ghost-btn {
+      border-color: rgba(93, 63, 34, 0.14);
+      background: rgba(255, 252, 248, 0.88);
+      color: var(--ink);
+    }
+
+    .ghost-btn[disabled] {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .ghost-btn-small {
+      min-height: 38px;
+      padding-inline: 14px;
+      font-size: 0.92rem;
+    }
+
+    .hero-metrics,
+    .mobile-source-summary,
+    .summary-grid,
+    .review-footer-split {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .hero-metrics article,
+    .mobile-source-summary article,
+    .summary-grid article,
+    .review-stat {
+      display: grid;
+      gap: 4px;
+      padding: 14px;
+      border-radius: 22px;
+      background: rgba(255, 253, 249, 0.92);
+      border: 1px solid rgba(71, 47, 22, 0.08);
+    }
+
+    .hero-metrics strong,
+    .mobile-source-summary strong,
+    .summary-grid strong,
+    .review-stat strong {
+      font-size: 1.02rem;
+    }
+
+    .hero-metrics span,
+    .mobile-source-summary span,
+    .summary-grid span,
+    .review-stat span {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.5;
+    }
+
+    .hero-phone {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .phone-preview {
+      width: min(100%, 380px);
+      min-height: 100%;
+      display: grid;
+      gap: 18px;
+      padding: 20px;
+      border-radius: 40px;
+      border: 1px solid rgba(74, 50, 25, 0.12);
+      background:
+        linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(252, 237, 217, 0.94)),
+        linear-gradient(160deg, rgba(255, 204, 163, 0.18), transparent 50%);
+      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.9), 0 28px 60px rgba(71, 45, 20, 0.14);
+    }
+
+    .phone-status {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.86rem;
+      font-weight: 700;
+    }
+
+    .phone-copy {
+      display: grid;
+      gap: 12px;
+    }
+
+    .phone-copy h2 {
+      margin: 0;
+      font-size: 1.6rem;
+      line-height: 1.16;
+    }
+
+    .phone-pills,
+    .tag-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .phone-pills li,
+    .tag-row span {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(51, 35, 17, 0.08);
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: #5a4635;
+    }
+
+    .phone-stack {
+      display: grid;
+      gap: 10px;
+    }
+
+    .phone-stack article {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 14px 16px;
+      border-radius: 22px;
+      background: rgba(255, 252, 247, 0.94);
+      border: 1px solid rgba(76, 53, 28, 0.08);
+    }
+
+    .phone-stack strong,
+    .review-list strong,
+    .mobile-review-copy strong,
+    .phone-card h3,
+    .pillar-card h3,
+    .route-card h3,
+    .flow-card h3,
+    .roadmap-card h3,
+    .bridge-panel h3 {
+      margin: 0;
+      font-size: 1rem;
+    }
+
+    .phone-stack span,
+    .mobile-review-copy span,
+    .phone-card-meta,
+    .phone-card-message,
+    .feedback-row p {
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.6;
+    }
+
+    .content-section {
+      display: grid;
+      gap: 18px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .section-head > div {
+      display: grid;
+      gap: 10px;
+      max-width: 720px;
+    }
+
+    .section-head > p {
+      max-width: 420px;
+    }
+
+    .pillar-grid,
+    .route-grid,
+    .flow-grid,
+    .trust-grid,
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .pillar-card,
+    .route-card,
+    .flow-card,
+    .roadmap-card,
+    .trust-card {
+      padding: 20px;
+      display: grid;
+      gap: 12px;
+    }
+
+    .flow-card span,
+    .roadmap-card span {
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-deep);
+    }
+
+    .mobile-workbench {
+      display: grid;
+      grid-template-columns: minmax(0, 0.82fr) minmax(320px, 0.92fr) minmax(0, 0.88fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .mobile-source-panel,
+    .review-card,
+    .phone-card,
+    .screen-topbar,
+    .phone-action-dock {
+      background: rgba(255, 251, 246, 0.94);
+      border: 1px solid rgba(79, 54, 29, 0.08);
+      box-shadow: 0 14px 30px rgba(68, 44, 19, 0.08);
+    }
+
+    .mobile-source-panel {
+      display: grid;
+      gap: 16px;
+      padding: 20px;
+      border-radius: 28px;
+    }
+
+    .mobile-source-head,
+    .review-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .mobile-source-head > div:first-child {
+      display: grid;
+      gap: 6px;
+    }
+
+    .mobile-source-head h3 {
+      margin: 0;
+      font-size: 1.24rem;
+    }
+
+    .mobile-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .mobile-chip-row span {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: rgba(39, 24, 12, 0.07);
+      font-size: 0.82rem;
+      font-weight: 700;
+      color: #5c4936;
+    }
+
+    .mobile-source-actions,
+    .mobile-source-footer {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .mobile-upload {
+      position: relative;
+      overflow: hidden;
+    }
+
+    .phone-shell {
+      display: grid;
+      gap: 10px;
+      padding: 12px;
+      border-radius: 42px;
+      background: linear-gradient(180deg, #1b1512 0%, #3b2b21 100%);
+      box-shadow: 0 30px 70px rgba(32, 21, 14, 0.28);
+    }
+
+    .phone-hardware {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 28px;
+    }
+
+    .phone-notch {
+      width: 34%;
+      max-width: 116px;
+      height: 18px;
+      border-radius: 999px;
+      background: rgba(8, 7, 7, 0.82);
+    }
+
+    .phone-screen {
+      display: grid;
+      gap: 14px;
+      min-height: 780px;
+      padding: 16px;
+      border-radius: 32px;
+      background:
+        radial-gradient(circle at top right, rgba(255, 210, 165, 0.2), transparent 28%),
+        linear-gradient(180deg, #fdf7ef 0%, #f4e9db 100%);
+    }
+
+    .screen-topbar,
+    .phone-card,
+    .phone-action-dock {
+      padding: 16px;
+      border-radius: 24px;
+    }
+
+    .screen-topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .screen-topbar h3 {
+      margin: 0;
+      font-size: 1.16rem;
+    }
+
+    .queue-counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(27, 17, 10, 0.08);
+      font-weight: 800;
+    }
+
+    .phone-card {
+      display: grid;
+      gap: 12px;
+    }
+
+    .phone-card-kicker {
+      margin: 0;
+      color: var(--accent-deep);
+      font-size: 0.9rem;
+      font-weight: 800;
+    }
+
+    .phone-card h3 {
+      font-size: 1.34rem;
+    }
+
+    .phone-action-dock {
+      position: sticky;
+      bottom: 10px;
+      display: grid;
+      gap: 12px;
+      background: rgba(255, 251, 246, 0.94);
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .action-pill {
+      min-height: 58px;
+      padding: 0 14px;
+      border: 1px solid rgba(76, 53, 29, 0.12);
+      border-radius: 18px;
+      background: #fffdf9;
+      color: var(--ink);
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+
+    .action-pill:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 14px 28px rgba(64, 44, 22, 0.12);
+    }
+
+    .action-pill:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+      box-shadow: none;
+    }
+
+    .action-pill-primary {
+      background: linear-gradient(135deg, var(--accent), #ef9a62);
+      color: #fffaf4;
+      border-color: transparent;
+    }
+
+    .action-pill-danger {
+      background: #fff5f2;
+      color: #ac4727;
+    }
+
+    .feedback-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .review-stack {
+      display: grid;
+      gap: 14px;
+    }
+
+    .review-card {
+      display: grid;
+      gap: 14px;
+      padding: 20px;
+      border-radius: 28px;
+    }
+
+    .review-list,
+    .reason-list,
+    .receipt-list {
+      display: grid;
+      gap: 10px;
+      padding: 0;
+      margin: 0;
+      list-style: none;
+    }
+
+    .reason-list li,
+    .receipt-list li,
+    .mobile-review-empty {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(47, 31, 16, 0.05);
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .mobile-review-item {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(46, 30, 16, 0.05);
+    }
+
+    .mobile-review-copy,
+    .mobile-review-item-actions {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .mobile-review-copy {
+      display: grid;
+    }
+
+    .mobile-review-action {
+      min-height: 38px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(76, 53, 29, 0.1);
+      background: rgba(255, 252, 247, 0.92);
+      font-weight: 700;
+      color: var(--ink);
+      cursor: pointer;
+    }
+
+    .review-footer {
+      display: flex;
+      align-items: center;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .bridge-panel {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 22px;
+    }
+
+    .bridge-panel > div:first-child {
+      display: grid;
+      gap: 10px;
+      max-width: 680px;
+    }
+
+    .bridge-panel h3 {
+      font-size: 1.32rem;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .faq-item {
+      padding: 18px 20px;
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      font-weight: 800;
+      font-size: 1rem;
+      list-style: none;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-item p {
+      padding-top: 12px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 420ms ease, transform 420ms ease;
+    }
+
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1180px) {
+      .hero,
+      .mobile-workbench,
+      .bridge-panel,
+      .section-head {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .mobile-workbench {
+        grid-template-columns: 1fr;
+      }
+
+      .pillar-grid,
+      .route-grid,
+      .flow-grid,
+      .trust-grid,
+      .roadmap-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 860px) {
+      .mobile-page {
+        padding: 12px;
+      }
+
+      .mobile-header,
+      .hero,
+      .content-section {
+        padding: 18px;
+        border-radius: 24px;
+      }
+
+      .mobile-header {
+        position: static;
+      }
+
+      .mobile-nav {
+        display: none;
+      }
+
+      .hero-metrics,
+      .mobile-source-summary,
+      .summary-grid,
+      .review-footer-split,
+      .pillar-grid,
+      .route-grid,
+      .flow-grid,
+      .trust-grid,
+      .roadmap-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .phone-shell {
+        padding: 10px;
+        border-radius: 32px;
+      }
+
+      .phone-screen {
+        min-height: auto;
+        padding: 12px;
+        border-radius: 24px;
+      }
+
+      .screen-topbar,
+      .review-head,
+      .mobile-source-head,
+      .feedback-row,
+      .bridge-panel,
+      .review-footer {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .action-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .mobile-brand-copy small,
+      .mobile-header-actions {
+        display: none;
+      }
+
+      .hero h1,
+      .section-head h2 {
+        font-size: 1.72rem;
+      }
+
+      .hero-btn,
+      .ghost-btn {
+        width: 100%;
+      }
+
+      .mobile-source-actions,
+      .mobile-source-footer,
+      .bridge-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .action-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .phone-preview,
+      .review-card,
+      .mobile-source-panel {
+        border-radius: 24px;
+      }
+
+      .phone-card,
+      .screen-topbar,
+      .phone-action-dock {
+        padding: 14px;
+        border-radius: 20px;
+      }
+    }
+  </style>
+</BaseLayout>
