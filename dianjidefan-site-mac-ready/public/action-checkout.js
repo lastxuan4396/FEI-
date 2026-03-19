@@ -17,6 +17,11 @@
     status: document.getElementById("action-source-status"),
     sourceCount: document.getElementById("action-source-count"),
     pendingCount: document.getElementById("action-pending-count"),
+    engineBadge: document.getElementById("action-engine-badge"),
+    engineRoute: document.getElementById("action-engine-route"),
+    engineStage: document.getElementById("action-engine-stage"),
+    engineCost: document.getElementById("action-engine-cost"),
+    engineNote: document.getElementById("action-engine-note"),
     queueTitle: document.getElementById("action-queue-title"),
     queueIndex: document.getElementById("action-queue-index"),
     queueTotal: document.getElementById("action-queue-total"),
@@ -92,6 +97,33 @@
 
   const normalizeText = (value) => (value || "").trim().replace(/\s+/g, " ");
 
+  const engineStageProfile = [
+    {
+      label: "规则起手",
+      cost: "低成本",
+      note: "先走规则归类，判断它更像哪种场景，不让系统每次都从零理解。"
+    },
+    {
+      label: "模板重写",
+      cost: "低成本",
+      note: "当前已经进入模板重写层，会在同一类场景里换一张更顺手的动作卡。"
+    },
+    {
+      label: "升级求精",
+      cost: "按需升级",
+      note: "只有继续换刀时才进入更深一层求精。贵推理应该只用在这里，不该每次都烧。"
+    }
+  ];
+
+  const attachEngineMeta = (card, routeLabel, stageNotes) => ({
+    ...card,
+    routeLabel,
+    stageNotes: Array.isArray(stageNotes) && stageNotes.length
+      ? stageNotes
+      : engineStageProfile.map((item) => item.note),
+    variantIndex: Number(card.variantIndex) || 0
+  });
+
   const detectTaskKind = (input) => {
     const value = input.toLowerCase();
     if (/ppt|汇报|演示|slides|deck/.test(value)) return "deck";
@@ -108,6 +140,7 @@
     const subjectMeta = {
       deck: {
         label: "汇报任务",
+        engineRoute: "任务识别 · 汇报 / PPT",
         third: {
           title: "先写封面标题",
           message: "先把标题、对象和日期落下去。封面有了，任务就不再是空气。",
@@ -129,6 +162,7 @@
       },
       resume: {
         label: "简历任务",
+        engineRoute: "任务识别 · 简历",
         third: {
           title: "先改目标岗位标题",
           message: "先把简历最上面的目标岗位改掉，让这份简历真正开始服务一个方向。",
@@ -150,6 +184,7 @@
       },
       email: {
         label: "回复任务",
+        engineRoute: "任务识别 · 邮件 / 回复",
         third: {
           title: "先写主题和称呼",
           message: "回邮件最难的常常不是内容，而是打开草稿。先写主题和开头就够了。",
@@ -171,6 +206,7 @@
       },
       writing: {
         label: "写作任务",
+        engineRoute: "任务识别 · 写作",
         third: {
           title: "先写开头一句",
           message: "不要先想完整结构。先写一句能让你继续下去的开头。"
@@ -178,6 +214,7 @@
       },
       study: {
         label: "学习任务",
+        engineRoute: "任务识别 · 学习 / 资料",
         third: {
           title: "先打开材料并写 1 个问题",
           message: "学习最好的起手不是刷更多资料，而是先让注意力落到一个问题上。"
@@ -185,6 +222,7 @@
       },
       generic: {
         label: "任务破冰",
+        engineRoute: "任务识别 · 泛任务",
         third: {
           title: "先列 3 个最小子步",
           message: "不要规划完整路径，只写 3 个能真的动起来的小动作。"
@@ -277,7 +315,13 @@
         ],
         variantIndex: 0
       }
-    ];
+    ].map((card) =>
+      attachEngineMeta(card, meta.engineRoute, [
+        "先用规则把输入归到当前任务类型，再给一张足够小的起手卡。",
+        "你点了“换一刀”以后，系统会在当前任务类型里换更贴合的模板。",
+        "如果还继续换，这一刀就进入升级求精层。后面更应该靠反馈来缩，而不是每次从零重算。"
+      ])
+    );
   };
 
   const buildResetCards = (input) => {
@@ -287,6 +331,13 @@
     const isRoom = /房|room|床|衣服|地上/.test(lower);
     const isMessage = /消息|微信|回复|邮件|聊天/.test(lower);
     const isMental = /散|乱|脑|焦虑|卡住|心烦/.test(lower);
+    const routeLabel = isMessage
+      ? "状态识别 · 消息拖延"
+      : isMental
+        ? "状态识别 · 脑内过载"
+        : isDesk || isRoom
+          ? "状态识别 · 空间失序"
+          : "状态识别 · 通用复位";
 
     const buildVisualCard = () => ({
       id: makeId("action-reset"),
@@ -385,7 +436,15 @@
       focus: buildFocusCard
     };
 
-    return order.map((key) => builders[key]());
+    return order
+      .map((key) => builders[key]())
+      .map((card) =>
+        attachEngineMeta(card, routeLabel, [
+          "先用规则判断你现在更像消息挂着、脑内过载还是空间太乱，再决定哪张卡该先出来。",
+          "你继续换刀时，系统会在同一条复位轨道里改写动作，不会突然跳成另一类建议。",
+          "只有继续觉得不贴合时，这一刀才升级到更深一层求精。复位产品不该默认每次都重推理。"
+        ])
+      );
   };
 
   const getViewCard = (card) => {
@@ -419,6 +478,31 @@
       item.textContent = reason;
       refs.reasons.appendChild(item);
     });
+  };
+
+  const renderEngine = (card) => {
+    if (!refs.engineBadge || !refs.engineRoute || !refs.engineStage || !refs.engineCost || !refs.engineNote) return;
+
+    if (!card) {
+      refs.engineBadge.textContent = state.done.length > 0 ? "本轮收尾" : "规则起手";
+      refs.engineRoute.textContent = state.done.length > 0 ? "这一轮已完成" : "待识别";
+      refs.engineStage.textContent = state.done.length > 0 ? "已开过一刀" : "规则起手";
+      refs.engineCost.textContent = state.done.length > 0 ? "已结算" : "低成本";
+      refs.engineNote.textContent = state.done.length > 0
+        ? "这一轮已经不需要继续求精了。今天真正值钱的是你已经动过。"
+        : "这一版先走规则归类和模板派发。只有继续点“换一刀”时，才会往更深一层求精。";
+      return;
+    }
+
+    const depth = Math.min(card.variantIndex || 0, engineStageProfile.length - 1);
+    const stage = engineStageProfile[depth];
+    refs.engineBadge.textContent = stage.label;
+    refs.engineRoute.textContent = card.routeLabel || (state.mode === "reset" ? "状态识别" : "任务识别");
+    refs.engineStage.textContent = stage.label;
+    refs.engineCost.textContent = stage.cost;
+    refs.engineNote.textContent = Array.isArray(card.stageNotes) && card.stageNotes[depth]
+      ? card.stageNotes[depth]
+      : stage.note;
   };
 
   const renderReceipts = () => {
@@ -602,6 +686,7 @@
       [refs.start, refs.later, refs.swap].forEach((button) => {
         if (button) button.disabled = true;
       });
+      renderEngine(null);
       return;
     }
 
@@ -614,6 +699,7 @@
     refs.message.textContent = viewCard.message;
     renderTags(viewCard.tags || []);
     renderReasons(viewCard.reasons || []);
+    renderEngine(card);
     [refs.start, refs.later, refs.swap].forEach((button) => {
       if (button) button.disabled = false;
     });
@@ -666,8 +752,8 @@
       sample
         ? copy.sample
         : state.mode === "task"
-          ? `已把“${finalInput || "这件事"}”压成一轮可执行动作。`
-          : `已把“${finalInput || "今天先复位一点点"}”压成一轮今日复位动作。`
+          ? `已把“${finalInput || "这件事"}”先经规则归类，再压成一轮可执行动作。`
+          : `已把“${finalInput || "今天先复位一点点"}”先经状态识别，再压成一轮今日复位动作。`
     );
   };
 
@@ -711,12 +797,22 @@
       return;
     }
 
+    const nextIndex = (current.variantIndex || 0) + 1;
+    if (nextIndex >= current.variants.length) {
+      setFeedback("这一刀已经到当前最深的一层了。与其继续重算，不如先做 3 分钟。");
+      return;
+    }
+
     pushHistory();
-    current.variantIndex = ((current.variantIndex || 0) + 1) % current.variants.length;
+    current.variantIndex = nextIndex;
     const viewCard = getViewCard(current);
     state.receipts.push(`换刀 · ${viewCard.title}`);
     if (state.receipts.length > 24) state.receipts.shift();
-    setFeedback(`已把当前动作换成更顺手的一刀：${viewCard.title}`);
+    setFeedback(
+      current.variantIndex === 1
+        ? `已从规则起手进入模板重写：${viewCard.title}`
+        : `已把这一刀升级到更深一层求精：${viewCard.title}`
+    );
     sync();
   };
 

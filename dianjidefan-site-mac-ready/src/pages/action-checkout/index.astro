@@ -4,10 +4,12 @@ export const prerender = true;
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import {
   demoPresets,
+  engineBlueprint,
   faqItems,
   hardBenefits,
   pageMeta,
   promiseCards,
+  qualityLoop,
   queueFamilies,
   resetPrimer,
   roadmap,
@@ -39,6 +41,7 @@ import {
         <a href="#why">为什么成立</a>
         <a href="#daily-reset">今日复位</a>
         <a href="#workflow">怎么工作</a>
+        <a href="#engine">引擎</a>
         <a href="#demo">体验</a>
         <a href="#faq">FAQ</a>
         <a href="/reset-antechamber/">复位前室</a>
@@ -226,6 +229,49 @@ import {
         </div>
       </section>
 
+      <section id="engine" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Hybrid engine</p>
+            <h2>回答质量不是靠每次都重想一遍，而是靠先收紧，再升级求精。</h2>
+          </div>
+          <p>{engineBlueprint.summary}</p>
+        </div>
+
+        <div class="engine-grid">
+          {engineBlueprint.stages.map((item) => (
+            <article class="engine-card">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="engine-lower">
+          <article class="engine-rail-card">
+            <p class="card-kicker">Cost discipline</p>
+            <h3>先让便宜逻辑做大头，再让更贵的推理只出现在该出现的时候。</h3>
+            <ul class="trust-list">
+              {engineBlueprint.rails.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </article>
+
+          <article class="engine-rail-card">
+            <p class="card-kicker">Quality loop</p>
+            <div class="quality-loop">
+              {qualityLoop.map((item) => (
+                <article class="quality-step">
+                  <h3>{item.title}</h3>
+                  <p>{item.body}</p>
+                </article>
+              ))}
+            </div>
+          </article>
+        </div>
+      </section>
+
       <section id="demo" class="content-section reveal">
         <div class="section-head">
           <div>
@@ -268,6 +314,35 @@ import {
             </div>
 
             <p id="action-source-status" class="source-status">输入一句现在卡住的事，系统会把它压成几张可以立即开工的小动作卡。</p>
+
+            <article class="engine-live-card">
+              <div class="engine-live-head">
+                <div>
+                  <p class="card-kicker">Engine lane</p>
+                  <h3>这一轮现在怎么出卡</h3>
+                </div>
+                <span id="action-engine-badge" class="engine-badge">规则起手</span>
+              </div>
+
+              <div class="engine-live-grid">
+                <article>
+                  <strong id="action-engine-route">待识别</strong>
+                  <span>当前路由</span>
+                </article>
+                <article>
+                  <strong id="action-engine-stage">规则起手</strong>
+                  <span>当前层级</span>
+                </article>
+                <article>
+                  <strong id="action-engine-cost">低成本</strong>
+                  <span>成本策略</span>
+                </article>
+              </div>
+
+              <p id="action-engine-note" class="engine-live-note">
+                这一版先走规则归类和模板派发。只有继续点“换一刀”时，才会往更深一层求精。
+              </p>
+            </article>
 
             <div class="preset-groups">
               <div class="preset-group">
@@ -653,6 +728,10 @@ import {
     .promise-card p,
     .workflow-card p,
     .family-card p,
+    .engine-card p,
+    .engine-rail-card p,
+    .quality-step p,
+    .engine-live-note,
     .source-status,
     .review-note,
     .bridge-panel p,
@@ -755,6 +834,9 @@ import {
     .workflow-card h3,
     .family-card h3,
     .promise-card h3,
+    .engine-card h3,
+    .engine-rail-card h3,
+    .quality-step h3,
     .bridge-panel h3,
     .faq-item summary {
       margin: 0;
@@ -807,9 +889,16 @@ import {
     .promise-grid,
     .workflow-grid,
     .family-grid,
+    .engine-grid,
     .roadmap-grid {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .engine-lower {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
       gap: 14px;
     }
 
@@ -829,6 +918,9 @@ import {
     .promise-card,
     .workflow-card,
     .family-card,
+    .engine-card,
+    .engine-rail-card,
+    .quality-step,
     .roadmap-card {
       display: grid;
       gap: 12px;
@@ -907,7 +999,11 @@ import {
     .board-shell,
     .review-card,
     .action-card,
-    .action-dock {
+    .action-dock,
+    .engine-card,
+    .engine-rail-card,
+    .engine-live-card,
+    .quality-step {
       border: 1px solid rgba(71, 84, 67, 0.08);
       background: rgba(255, 252, 246, 0.96);
       box-shadow: 0 14px 30px rgba(52, 61, 50, 0.08);
@@ -996,6 +1092,75 @@ import {
     .preset-group {
       display: grid;
       gap: 12px;
+    }
+
+    .engine-live-card,
+    .quality-loop {
+      display: grid;
+      gap: 12px;
+    }
+
+    .engine-live-card {
+      padding: 16px;
+      border-radius: 24px;
+      background:
+        radial-gradient(circle at top right, rgba(221, 233, 216, 0.62), transparent 30%),
+        rgba(255, 252, 246, 0.96);
+    }
+
+    .engine-live-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .engine-live-head > div {
+      display: grid;
+      gap: 6px;
+    }
+
+    .engine-live-head h3 {
+      margin: 0;
+      font-size: 1.08rem;
+    }
+
+    .engine-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 38px;
+      padding: 0 14px;
+      border-radius: 999px;
+      background: rgba(38, 64, 50, 0.92);
+      color: #f8f4ed;
+      font-size: 0.82rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .engine-live-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .engine-live-grid article {
+      display: grid;
+      gap: 4px;
+      padding: 12px;
+      border-radius: 18px;
+      background: rgba(43, 58, 43, 0.05);
+    }
+
+    .engine-live-grid strong {
+      font-size: 0.98rem;
+      color: var(--action-accent-deep);
+    }
+
+    .engine-live-grid span {
+      color: var(--action-muted);
+      font-size: 0.84rem;
     }
 
     .board-shell {
@@ -1191,12 +1356,14 @@ import {
       .promise-grid,
       .workflow-grid,
       .family-grid,
+      .engine-grid,
       .roadmap-grid,
       .reset-layer-grid,
       .reset-anti-row {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
 
+      .engine-lower,
       .reset-framing {
         grid-template-columns: 1fr;
       }
@@ -1228,7 +1395,9 @@ import {
       .promise-grid,
       .workflow-grid,
       .family-grid,
+      .engine-grid,
       .roadmap-grid,
+      .engine-live-grid,
       .reset-layer-grid,
       .reset-anti-row {
         grid-template-columns: 1fr;
