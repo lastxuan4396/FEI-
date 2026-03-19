@@ -102,6 +102,141 @@
     sources: 0
   };
 
+  const hasIndexedDb = typeof window !== "undefined" && "indexedDB" in window;
+  const runtimeDbName = "downloads-checkout-mobile-runtime";
+  const runtimeStoreName = "selected-files";
+  const runtimeNamespace = `${storageKey}:runtime:`;
+  let runtimeDbPromise = null;
+
+  const runtimeKeyFor = (id) => `${runtimeNamespace}${id}`;
+
+  const hoistPreviewLayer = () => {
+    if (!refs.previewLayer || refs.previewLayer.parentElement === document.body) return;
+    document.body.appendChild(refs.previewLayer);
+  };
+
+  const requestToPromise = (request) =>
+    new Promise((resolve, reject) => {
+      request.onsuccess = () => resolve(request.result);
+      request.onerror = () => reject(request.error || new Error("IndexedDB request failed"));
+    });
+
+  const transactionToPromise = (transaction) =>
+    new Promise((resolve, reject) => {
+      transaction.oncomplete = () => resolve();
+      transaction.onabort = () => reject(transaction.error || new Error("IndexedDB transaction aborted"));
+      transaction.onerror = () => reject(transaction.error || new Error("IndexedDB transaction failed"));
+    });
+
+  const openRuntimeDb = () => {
+    if (!hasIndexedDb) return Promise.resolve(null);
+    if (runtimeDbPromise) return runtimeDbPromise;
+
+    runtimeDbPromise = new Promise((resolve) => {
+      try {
+        const request = window.indexedDB.open(runtimeDbName, 1);
+        request.onupgradeneeded = () => {
+          const db = request.result;
+          if (!db.objectStoreNames.contains(runtimeStoreName)) {
+            db.createObjectStore(runtimeStoreName, { keyPath: "key" });
+          }
+        };
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => resolve(null);
+        request.onblocked = () => resolve(null);
+      } catch {
+        resolve(null);
+      }
+    });
+
+    return runtimeDbPromise;
+  };
+
+  const clearStoredFiles = async () => {
+    const db = await openRuntimeDb();
+    if (!db) return;
+
+    try {
+      const transaction = db.transaction(runtimeStoreName, "readwrite");
+      const store = transaction.objectStore(runtimeStoreName);
+      const keys = await requestToPromise(store.getAllKeys());
+      keys
+        .filter((key) => typeof key === "string" && key.startsWith(runtimeNamespace))
+        .forEach((key) => store.delete(key));
+      await transactionToPromise(transaction);
+    } catch {
+      // Ignore cache cleanup failures.
+    }
+  };
+
+  const deleteStoredFiles = async (ids) => {
+    if (!ids.length) return;
+
+    const db = await openRuntimeDb();
+    if (!db) return;
+
+    try {
+      const transaction = db.transaction(runtimeStoreName, "readwrite");
+      const store = transaction.objectStore(runtimeStoreName);
+      ids.forEach((id) => store.delete(runtimeKeyFor(id)));
+      await transactionToPromise(transaction);
+    } catch {
+      // Ignore cache cleanup failures.
+    }
+  };
+
+  const storeRuntimeFiles = async (cards, files) => {
+    if (!cards.length || !files.length) return 0;
+
+    const db = await openRuntimeDb();
+    if (!db) return 0;
+
+    try {
+      const transaction = db.transaction(runtimeStoreName, "readwrite");
+      const store = transaction.objectStore(runtimeStoreName);
+
+      cards.forEach((card, index) => {
+        const file = files[index];
+        if (!card?.id || !(file instanceof Blob)) return;
+
+        store.put({
+          key: runtimeKeyFor(card.id),
+          file,
+          updatedAt: Date.now()
+        });
+      });
+
+      await transactionToPromise(transaction);
+      return cards.length;
+    } catch {
+      return 0;
+    }
+  };
+
+  const getStoredFile = async (id) => {
+    if (!id) return null;
+    if (runtimeFiles.has(id)) return runtimeFiles.get(id);
+
+    const db = await openRuntimeDb();
+    if (!db) return null;
+
+    try {
+      const transaction = db.transaction(runtimeStoreName, "readonly");
+      const store = transaction.objectStore(runtimeStoreName);
+      const entry = await requestToPromise(store.get(runtimeKeyFor(id)));
+      await transactionToPromise(transaction);
+
+      if (entry?.file instanceof Blob) {
+        runtimeFiles.set(id, entry.file);
+        return entry.file;
+      }
+
+      return null;
+    } catch {
+      return null;
+    }
+  };
+
   const setInstallUi = ({ enabled = false, label = "安装到主屏幕", note = "PWA 正在准备安装能力。支持的浏览器里会出现安装入口。" } = {}) => {
     if (refs.installApp) {
       refs.installApp.disabled = !enabled;
@@ -611,6 +746,7 @@
   const loadSampleQueue = ({ restored = false } = {}) => {
     closePreview();
     runtimeFiles.clear();
+    void clearStoredFiles();
     state.mode = "sample";
     state.pending = sampleCards.map((card, index) => ({
       id: card.id || makeId("mobile-sample"),
@@ -629,6 +765,7 @@
   const clearAll = () => {
     closePreview();
     runtimeFiles.clear();
+    void clearStoredFiles();
     state.mode = "empty";
     state.pending = [];
     state.sources = 0;
@@ -647,6 +784,8 @@
       return;
     }
 
+    runtimeFiles.clear();
+
     const cards = sortQueue(list.map((file) => {
       const card = toCardFromFile(file);
       runtimeFiles.set(card.id, file);
@@ -659,11 +798,15 @@
     resetProgress();
 
     if (refs.sourceStatus) {
-      refs.sourceStatus.textContent = `已接入 ${cards.length} 个手机文件。现在可以开始一张张结账。`;
+      refs.sourceStatus.textContent = `已接入 ${cards.length} 个手机文件。现在可以开始一张张结账；这一轮会尽量保留在本机里，刷新后也能继续预览。`;
     }
 
-    setFeedback(`已把 ${cards.length} 个文件排进手机版收银台。`);
+    setFeedback(`已把 ${cards.length} 个文件排进手机版收银台，并写入本机缓存。`);
     sync();
+    void (async () => {
+      await clearStoredFiles();
+      await storeRuntimeFiles(cards, list);
+    })();
   };
 
   const removeReceiptEntry = (matcher) => {
@@ -757,7 +900,10 @@
       return;
     }
 
-    const file = runtimeFiles.get(item.id);
+    let file = runtimeFiles.get(item.id);
+    if (!file) {
+      file = await getStoredFile(item.id);
+    }
     if (!file) {
       previewMissingRuntime(item);
       return;
@@ -919,6 +1065,8 @@
       pushHistory();
       const dropItem = state.dropped.find((item) => item.id === id);
       state.dropped = state.dropped.filter((item) => item.id !== id);
+      runtimeFiles.delete(id);
+      void deleteStoredFiles([id]);
       if (dropItem) {
         state.released = Math.max(0, state.released - (Number(dropItem.release) || 0));
         removeReceiptEntry((entry) => entry.includes(`待删 · ${dropItem.title}`));
@@ -1028,6 +1176,7 @@
     });
   }
 
+  hoistPreviewLayer();
   registerServiceWorker();
   window.addEventListener("keydown", (event) => {
     if (event.key === "Escape") closePreview();
