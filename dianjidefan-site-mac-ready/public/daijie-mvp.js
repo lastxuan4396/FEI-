@@ -28,16 +28,19 @@
     dropAction: document.getElementById("mvp-drop-action"),
     actionButtons: document.querySelectorAll("[data-mvp-action]"),
     connectDownloads: document.getElementById("mvp-connect-downloads"),
+    connectArchive: document.getElementById("mvp-connect-archive"),
     downloadsInput: document.getElementById("mvp-downloads-input"),
     bookmarksInput: document.getElementById("mvp-bookmarks-input"),
     downloadsStatus: document.getElementById("mvp-downloads-status"),
     bookmarksStatus: document.getElementById("mvp-bookmarks-status"),
+    archiveStatus: document.getElementById("mvp-archive-status"),
     sessionMode: document.getElementById("mvp-session-mode"),
     privacyNote: document.getElementById("mvp-privacy-note"),
     loadedCount: document.getElementById("mvp-loaded-count"),
     sourceCount: document.getElementById("mvp-source-count"),
     loadSample: document.getElementById("mvp-load-sample"),
-    clearSession: document.getElementById("mvp-clear-session")
+    clearSession: document.getElementById("mvp-clear-session"),
+    exportDropList: document.getElementById("mvp-export-drop-list")
   };
 
   if (!refs.queueTitle || !refs.card) return;
@@ -53,7 +56,8 @@
 
   const defaultStatuses = {
     downloads: refs.downloadsStatus?.textContent || "",
-    bookmarks: refs.bookmarksStatus?.textContent || ""
+    bookmarks: refs.bookmarksStatus?.textContent || "",
+    archive: refs.archiveStatus?.textContent || ""
   };
 
   const state = {
@@ -63,11 +67,16 @@
     released: 0,
     lightness: 0,
     receipts: [],
+    dropped: [],
     history: [],
     sources: {
       downloads: 0,
       bookmarks: 0
     }
+  };
+  const runtime = {
+    archiveHandle: null,
+    archiveName: ""
   };
 
   const makeId = (prefix) => {
@@ -89,6 +98,14 @@
       return false;
     }
   })();
+  const formatTimestamp = (value) => new Date(value).toLocaleString("zh-CN", {
+    hour12: false,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit"
+  });
 
   const getDaysSince = (timestamp) => {
     if (!timestamp) return 0;
@@ -160,7 +177,7 @@
     return {
       process: "打开看",
       archive: "归档",
-      drop: "删除",
+      drop: "待删",
       later: "稍后"
     };
   };
@@ -232,6 +249,7 @@
     if (refs.sourceCount) {
       refs.sourceCount.textContent = String(["downloads", "bookmarks"].filter((key) => state.sources[key] > 0).length);
     }
+    if (refs.exportDropList) refs.exportDropList.disabled = state.dropped.length === 0;
     setSessionMode();
   };
 
@@ -252,6 +270,7 @@
     released: state.released,
     lightness: state.lightness,
     receipts: state.receipts.slice(),
+    dropped: state.dropped.slice(),
     sources: { ...state.sources }
   });
 
@@ -262,10 +281,12 @@
     released: state.released,
     lightness: state.lightness,
     receipts: state.receipts.slice(),
+    dropped: state.dropped.slice(),
     sources: { ...state.sources },
     statuses: {
       downloads: refs.downloadsStatus?.textContent || defaultStatuses.downloads,
-      bookmarks: refs.bookmarksStatus?.textContent || defaultStatuses.bookmarks
+      bookmarks: refs.bookmarksStatus?.textContent || defaultStatuses.bookmarks,
+      archive: refs.archiveStatus?.textContent || defaultStatuses.archive
     }
   });
 
@@ -305,6 +326,7 @@
       state.released = Number(saved.released) || 0;
       state.lightness = Number(saved.lightness) || 0;
       state.receipts = Array.isArray(saved.receipts) ? saved.receipts.slice(0, 24) : [];
+      state.dropped = Array.isArray(saved.dropped) ? saved.dropped.slice(0, 200) : [];
       state.history = [];
       state.sources = {
         downloads: Number(saved.sources?.downloads) || 0,
@@ -321,6 +343,12 @@
         refs.bookmarksStatus.textContent = saved.statuses?.bookmarks || defaultStatuses.bookmarks;
       }
 
+      if (refs.archiveStatus) {
+        refs.archiveStatus.textContent = saved.statuses?.archive?.includes("已连接归档文件夹")
+          ? "上次连接过归档文件夹。刷新后请重新连接，归档动作才会真的写入目录。"
+          : saved.statuses?.archive || defaultStatuses.archive;
+      }
+
       return true;
     } catch {
       clearPersistedState();
@@ -333,6 +361,7 @@
     state.released = 0;
     state.lightness = 0;
     state.receipts = [];
+    state.dropped = [];
     state.history = [];
   };
 
@@ -346,6 +375,9 @@
     if (refs.bookmarksInput) refs.bookmarksInput.value = "";
     if (refs.downloadsStatus) refs.downloadsStatus.textContent = defaultStatuses.downloads;
     if (refs.bookmarksStatus) refs.bookmarksStatus.textContent = defaultStatuses.bookmarks;
+    if (refs.archiveStatus) refs.archiveStatus.textContent = defaultStatuses.archive;
+    runtime.archiveHandle = null;
+    runtime.archiveName = "";
   };
 
   const sortQueue = (items) =>
@@ -370,8 +402,8 @@
       renderTags(state.processed > 0 ? ["今日完成", "可以明天再来", "轻一点"] : ["本地运行", "不上传数据", "先接来源"]);
       renderReasons(
         state.processed > 0
-          ? ["本轮真实队列已完成", "用户获得轻松感而不是压力", "可撤回上一笔，不必怕做错"]
-          : ["先接入真实来源", "Downloads 与收藏夹都支持", "不需要注册，也不需要后端"]
+          ? ["本轮真实队列已完成", "用户获得轻松感而不是压力", "待删项目可导出清单，文件归档可接入归档文件夹"]
+          : ["先接入真实来源", "Downloads 与收藏夹都支持", "待删只会进入清单，不会直接消失"]
       );
 
       refs.actionButtons.forEach((button) => {
@@ -398,36 +430,156 @@
     });
   };
 
+  const ensureDirectory = async (rootHandle, segments) => {
+    let cursor = rootHandle;
+    for (const segment of segments) {
+      cursor = await cursor.getDirectoryHandle(segment, { create: true });
+    }
+    return cursor;
+  };
+
+  const archiveFile = async (item) => {
+    if (item.kind !== "file" || item.sample) {
+      return { mode: "logical" };
+    }
+
+    if (!runtime.archiveHandle) {
+      return { mode: "missing-archive" };
+    }
+
+    const runtimeEntry = runtimeFiles.get(item.id);
+    if (!runtimeEntry) {
+      return { mode: "missing-runtime" };
+    }
+
+    try {
+      const file = runtimeEntry.handle ? await runtimeEntry.handle.getFile() : runtimeEntry.file;
+      if (!file) return { mode: "missing-runtime" };
+
+      const segments = (item.path || item.title).split("/").filter(Boolean);
+      const filename = segments.pop() || item.title;
+      const targetDirectory = await ensureDirectory(runtime.archiveHandle, segments);
+      const fileHandle = await targetDirectory.getFileHandle(filename, { create: true });
+      const writable = await fileHandle.createWritable();
+      await writable.write(file);
+      await writable.close();
+
+      return {
+        mode: "copied",
+        destination: `${runtime.archiveName || "归档目录"}/${[...segments, filename].join("/")}`
+      };
+    } catch {
+      return { mode: "archive-error" };
+    }
+  };
+
+  const runAction = async (action, item) => {
+    if (action === "process") {
+      return { opened: await openItem(item) };
+    }
+
+    if (action === "archive") {
+      return archiveFile(item);
+    }
+
+    return {};
+  };
+
+  const pushDroppedItem = (item) => {
+    state.dropped.push({
+      id: item.id,
+      kind: item.kind,
+      title: item.title,
+      path: item.path || "",
+      url: item.url || "",
+      queue: item.queue,
+      savedAt: new Date().toISOString()
+    });
+  };
+
+  const buildDropListText = () => {
+    const lines = [
+      "待结 - 待删清单",
+      `导出时间：${formatTimestamp(Date.now())}`,
+      "",
+      "这些条目是在待结里被标记为“待删 / 丢弃”的对象。",
+      "MVP 不会直接替你永久删除；这份清单是给你手动复核和执行的。",
+      ""
+    ];
+
+    state.dropped.forEach((item, index) => {
+      lines.push(`${index + 1}. ${item.title}`);
+      lines.push(`   类型：${item.kind === "file" ? "文件" : "链接"}`);
+      lines.push(`   来源：${item.queue}`);
+      if (item.path) lines.push(`   路径：${item.path}`);
+      if (item.url) lines.push(`   URL：${item.url}`);
+      lines.push(`   标记时间：${formatTimestamp(item.savedAt)}`);
+      lines.push("");
+    });
+
+    return lines.join("\n");
+  };
+
+  const exportDropList = () => {
+    if (!state.dropped.length) {
+      setFeedback("待删清单还是空的。先标记几笔，再导出。");
+      return;
+    }
+
+    const blob = new Blob([buildDropListText()], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    const date = new Date().toISOString().slice(0, 10);
+
+    link.href = url;
+    link.download = `daijie-drop-list-${date}.txt`;
+    link.click();
+    window.setTimeout(() => URL.revokeObjectURL(url), 1000);
+    setFeedback(`已导出 ${state.dropped.length} 条待删清单。删除这件事，先安全地做成可复核。`);
+  };
+
   const applyItemAction = async (action) => {
     const item = state.pending[0];
     if (!item) return;
 
     state.history.push(snapshotState());
 
-    let opened = false;
-    if (action === "process") {
-      opened = await openItem(item);
-    }
+    const result = await runAction(action, item);
 
     state.pending = state.pending.slice(1);
     state.processed += 1;
-    state.released += action === "archive" || action === "drop" ? item.release : 0;
+    state.released += action === "drop" ? item.release : 0;
     state.lightness += action === "process" ? 18 : action === "drop" ? 16 : action === "archive" ? 14 : 10;
     state.receipts.push(`${labelForAction(action, item)} · ${item.title}`);
+    if (action === "drop") pushDroppedItem(item);
 
-    const feedbackPrefix = action === "process"
-      ? opened
-        ? "已打开并处理"
-        : item.sample
-          ? "已在示例模式里处理"
-          : item.kind === "file"
-            ? item.restored
-              ? "已先标记处理"
-              : "已标记为看过"
-            : "已标记处理"
-      : labelForAction(action, item);
+    if (action === "archive" && item.kind === "file") {
+      if (result.mode === "copied") {
+        setFeedback(`已把「${item.title}」复制到归档目录。原文件还在原处，等你确认后再清理会更安全。`);
+      } else if (result.mode === "missing-archive") {
+        setFeedback(`已先把「${item.title}」标记为归档。连接归档文件夹后，下一笔就能直接落到归档目录。`);
+      } else if (result.mode === "archive-error") {
+        setFeedback(`已把「${item.title}」记为归档，但这次没能写入归档目录。可以重连归档文件夹再试。`);
+      } else {
+        setFeedback(`已把「${item.title}」记为归档。脑子里又少挂了一件事。`);
+      }
+    } else if (action === "drop") {
+      setFeedback(`已把「${item.title}」加入待删清单。MVP 不会直接删，它会先让你安全复核。`);
+    } else {
+      const feedbackPrefix = action === "process"
+        ? result.opened
+          ? "已打开并处理"
+          : item.sample
+            ? "已在示例模式里处理"
+            : item.kind === "file"
+              ? item.restored
+                ? "已先标记处理"
+                : "已标记为看过"
+              : "已标记处理"
+        : labelForAction(action, item);
 
-    setFeedback(`${feedbackPrefix}了「${item.title}」，脑子里又少挂了一件事。`);
+      setFeedback(`${feedbackPrefix}了「${item.title}」，脑子里又少挂了一件事。`);
+    }
     persistState();
     updateSummary();
     renderReceipts();
@@ -444,6 +596,7 @@
     state.released = previous.released;
     state.lightness = previous.lightness;
     state.receipts = previous.receipts.slice();
+    state.dropped = previous.dropped.slice();
     state.sources = { ...previous.sources };
 
     setFeedback("已撤回上一笔。做决定不该因为怕错而变慢。");
@@ -486,6 +639,7 @@
         queue: card.queue,
         kicker: card.kicker,
         title: card.title,
+        path: card.title,
         meta: card.meta,
         message: card.message,
         tags: card.tags,
@@ -544,6 +698,7 @@
       queue: "文件账单",
       kicker: descriptor.kicker || "Downloads",
       title: file.name,
+      path: descriptor.path || file.name,
       meta,
       message,
       tags: tags.slice(0, 3),
@@ -648,7 +803,10 @@
   const importDownloadsFromFiles = async (files, sourceLabel) => {
     const queueItems = [];
     for (const entry of files.slice(0, 120)) {
-      const item = createFileItem(entry.file, { kicker: sourceLabel });
+      const item = createFileItem(entry.file, {
+        kicker: sourceLabel,
+        path: entry.path || entry.file.name
+      });
       runtimeFiles.set(item.id, entry.handle ? { handle: entry.handle } : { file: entry.file });
       queueItems.push(item);
     }
@@ -671,6 +829,26 @@
     } catch (error) {
       if (error && error.name === "AbortError") return;
       if (refs.downloadsStatus) refs.downloadsStatus.textContent = "连接文件夹失败了，可以试试“选择文件夹”这个回退方式。";
+    }
+  };
+
+  const handleArchivePicker = async () => {
+    if (!window.showDirectoryPicker) {
+      if (refs.archiveStatus) refs.archiveStatus.textContent = "当前浏览器不支持直接连接归档文件夹，建议在 Chrome / Edge 中使用。";
+      return;
+    }
+
+    try {
+      const handle = await window.showDirectoryPicker({ mode: "readwrite" });
+      runtime.archiveHandle = handle;
+      runtime.archiveName = handle.name || "归档目录";
+      if (refs.archiveStatus) {
+        refs.archiveStatus.textContent = `已连接归档文件夹：${runtime.archiveName}。之后“归档”会先复制进去，再由你决定是否清理原文件。`;
+      }
+      persistState();
+    } catch (error) {
+      if (error && error.name === "AbortError") return;
+      if (refs.archiveStatus) refs.archiveStatus.textContent = "连接归档文件夹失败了，请确认浏览器支持并授予写入权限。";
     }
   };
 
@@ -730,12 +908,15 @@
 
   refs.undo?.addEventListener("click", undoLastAction);
   refs.connectDownloads?.addEventListener("click", handleDownloadsPicker);
+  refs.connectArchive?.addEventListener("click", handleArchivePicker);
   refs.downloadsInput?.addEventListener("change", handleDownloadsInput);
   refs.bookmarksInput?.addEventListener("change", handleBookmarksInput);
+  refs.exportDropList?.addEventListener("click", exportDropList);
   refs.loadSample?.addEventListener("click", () => {
     loadSampleQueue("已重新载入示例队列。");
     if (refs.downloadsStatus) refs.downloadsStatus.textContent = defaultStatuses.downloads;
     if (refs.bookmarksStatus) refs.bookmarksStatus.textContent = defaultStatuses.bookmarks;
+    if (refs.archiveStatus) refs.archiveStatus.textContent = defaultStatuses.archive;
   });
   refs.clearSession?.addEventListener("click", () => {
     clearAll();

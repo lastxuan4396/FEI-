@@ -349,6 +349,16 @@ const faqItems = [
                 </div>
                 <p id="mvp-bookmarks-status" class="source-status">还没导入。建议直接用浏览器自带的“导出书签”文件。</p>
               </article>
+
+              <article class="source-card">
+                <p class="card-kicker">Source 03</p>
+                <h3>归档文件夹</h3>
+                <p>如果你在 Chrome / Edge 中连接一个归档目录，待结会在你点“归档”时先把文件复制进去，再留给你手动确认原文件是否清理。</p>
+                <div class="source-actions">
+                  <button id="mvp-connect-archive" class="demo-btn demo-btn-primary" type="button">连接归档文件夹</button>
+                </div>
+                <p id="mvp-archive-status" class="source-status">还没连接。待删不会直接删除，文件归档也默认先走安全路径。</p>
+              </article>
             </div>
 
             <div class="mvp-source-footer">
@@ -361,6 +371,7 @@ const faqItems = [
                 <span>已接来源</span>
               </div>
               <div class="mvp-utility-actions">
+                <button id="mvp-export-drop-list" class="demo-btn" type="button" disabled>导出待删清单</button>
                 <button id="mvp-load-sample" class="demo-btn" type="button">载入示例队列</button>
                 <button id="mvp-clear-session" class="demo-btn" type="button">清空本轮</button>
               </div>
@@ -399,7 +410,7 @@ const faqItems = [
               <button id="mvp-primary-action" class="demo-btn demo-btn-primary" type="button" data-mvp-action="process">打开看</button>
               <button class="demo-btn" type="button" data-mvp-action="later">稍后</button>
               <button id="mvp-archive-action" class="demo-btn" type="button" data-mvp-action="archive">归档</button>
-              <button id="mvp-drop-action" class="demo-btn demo-btn-danger" type="button" data-mvp-action="drop">删除</button>
+              <button id="mvp-drop-action" class="demo-btn demo-btn-danger" type="button" data-mvp-action="drop">待删</button>
             </div>
 
             <div class="demo-feedback-row">
@@ -1419,7 +1430,7 @@ const faqItems = [
     .mvp-source-grid {
       margin-top: 18px;
       display: grid;
-      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-columns: repeat(3, minmax(0, 1fr));
       gap: 16px;
     }
 
