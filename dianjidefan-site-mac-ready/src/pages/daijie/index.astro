@@ -2,12 +2,12 @@
 export const prerender = true;
 
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import { siteConfig } from "../../config/site";
 import {
   bestFirstMoves,
   convergencePath,
   dailyRhythm,
   demoCards,
-  distilledInsights,
   ideaCards,
   ideaFamilies,
   mvpFeatures,
@@ -23,6 +23,74 @@ const familyCounts = ideaFamilies.map((family) => ({
   ...family,
   count: ideaCards.filter((idea) => idea.family === family.key).length
 }));
+
+const promiseCards = [
+  {
+    title: "不是又一个待办工具",
+    body: "待结解决的是“悬而未决的小账”，不是把整个人生重新系统化。"
+  },
+  {
+    title: "先结最容易继续的一笔",
+    body: "排序逻辑不追求最重要，而追求最低启动阻力和最高连续性。"
+  },
+  {
+    title: "每做一笔就轻一点",
+    body: "反馈不是绩效打分，而是今天清掉了多少负担、释放了多少空间。"
+  },
+  {
+    title: "从真实来源切进去",
+    body: "第一版只先接 Downloads 和收藏夹，不做假需求，也不做大全。"
+  }
+] as const;
+
+const workflowSteps = [
+  {
+    title: "收进待结",
+    body: "文件、链接、消息、灵感进入队列，但不会一次性砸到你面前。"
+  },
+  {
+    title: "一张一张结",
+    body: "系统只给当前最容易继续的一笔，你只做一个动作，然后进入下一张。"
+  },
+  {
+    title: "收据告诉你轻了多少",
+    body: "处理数量、释放空间、今天的轻松感，会替代“又建了一个新系统”的空耗。"
+  }
+] as const;
+
+const fitCards = [
+  {
+    title: "下载区永远像临时仓库的人",
+    body: "截图、final-final、没来得及归档的文件堆着不动，不是不会整理，而是不想重新进入那个文件夹。"
+  },
+  {
+    title: "收藏夹和稍后读越存越重的人",
+    body: "真正压着你的不是没时间学，而是每次打开都要重新决定这篇到底还值不值得看。"
+  },
+  {
+    title: "脑子里总有很多小尾巴的人",
+    body: "你不需要更重的管理系统，只需要一个地方，把这些小账单一笔一笔结掉。"
+  }
+] as const;
+
+const faqItems = [
+  {
+    question: "待结和普通待办工具最大的区别是什么？",
+    answer: "待办工具让你管理任务，待结让你处理悬账。它面对的是那些一直挂着、但又不值得你建大系统的小决策。"
+  },
+  {
+    question: "第一版最先会处理什么？",
+    answer: "第一版只先做 Downloads 和收藏夹，把“信息债”和“文件债”这两类最真实、最容易验证的痛点跑顺。"
+  },
+  {
+    question: "会不会自动删东西？",
+    answer: "不会。待结的默认原则是可撤回、低风险。第一版更像“帮你做决定”，不是“替你偷偷执行”。"
+  },
+  {
+    question: "为什么官网现在就上线？",
+    answer: "因为这个产品首先需要一个清楚的外部形状。官网不是包装，它本身就是对产品定位和用户价值的一次收束。"
+  }
+] as const;
 ---
 <BaseLayout
   title={pageMeta.title}
@@ -38,17 +106,17 @@ const familyCounts = ideaFamilies.map((family) => ({
         <span class="daijie-brand-badge">待结</span>
         <span class="daijie-brand-copy">
           <strong>Life Checkout Counter</strong>
-          <small>从一次对话里长出来的产品页面</small>
+          <small>Official product site · Early access</small>
         </span>
       </a>
 
       <nav class="daijie-nav" aria-label="待结页面导航">
         <a href="#overview">概览</a>
-        <a href="#insights">结论</a>
-        <a href="#ideas">创意库</a>
-        <a href="#product">产品化</a>
+        <a href="#why">为什么是它</a>
+        <a href="#workflow">怎么工作</a>
         <a href="#demo">体验</a>
-        <a href="#roadmap">路线</a>
+        <a href="#faq">FAQ</a>
+        <a href="#waitlist">内测</a>
       </nav>
 
       <a class="daijie-home-link" href="/">回作品站</a>
@@ -57,74 +125,77 @@ const familyCounts = ideaFamilies.map((family) => ({
     <main id="daijie-main" class="daijie-main">
       <section id="overview" class="daijie-hero reveal">
         <div class="hero-copy">
-          <p class="section-tag">Conversation to Product</p>
-          <h1>把“我也可以做软件”变成一个真的产品方向。</h1>
+          <p class="section-tag">Official site</p>
+          <h1>让生活里的悬账，有出口。</h1>
           <p class="hero-lead">{pageMeta.pitch}</p>
-          <p class="hero-note">{pageMeta.heroNote}</p>
+          <p class="hero-note">
+            待结不是整理系统，不是待办清单，也不是又一个强迫你自律的工具。
+            它更像一台收银台，把那些一直挂着的小事排好队，让你一张一张结掉。
+          </p>
 
           <div class="hero-actions">
-            <a class="hero-btn hero-btn-primary" href="#demo">先试一笔</a>
-            <a class="hero-btn hero-btn-secondary" href="#ideas">看 12 个方向怎么收敛</a>
+            <a class="hero-btn hero-btn-primary" href="#waitlist">申请早期内测</a>
+            <a class="hero-btn hero-btn-secondary" href="#demo">先试一笔</a>
           </div>
 
           <div class="hero-metrics" aria-label="页面摘要指标">
             <article>
-              <strong>{ideaCards.length}</strong>
-              <span>对话里长出的创意方向</span>
+              <strong>3 分钟</strong>
+              <span>完成一轮轻量结账</span>
             </article>
             <article>
-              <strong>{queueTypes.length}</strong>
-              <span>最终收敛出的悬账队列</span>
+              <strong>{queueTypes.length} 类</strong>
+              <span>真实高频的生活悬账</span>
             </article>
             <article>
-              <strong>2</strong>
-              <span>第一版先接的真实来源</span>
+              <strong>100%</strong>
+              <span>可撤回，先敢快再做准</span>
             </article>
           </div>
         </div>
 
-        <div class="hero-board" aria-label="对话收据板">
+        <div class="hero-board" aria-label="待结产品收据板">
           <article class="board-card board-card-origin">
-            <p class="card-kicker">起点</p>
-            <h2>看见成熟产品后，意识到自己也可以做软件。</h2>
-            <p>不是靠技术炫技，而是靠抓住一种真实的卡点，然后把那个卡点做得顺。</p>
+            <p class="card-kicker">适合先收进来</p>
+            <h2>下载文件、收藏链接、待回消息、零散灵感。</h2>
+            <p>它们不够大，不值得建完整系统；但它们够频繁，足以持续占住你的注意力。</p>
           </article>
 
           <article class="board-card board-card-middle">
-            <p class="card-kicker">共同结构</p>
+            <p class="card-kicker">待结的排序逻辑</p>
             <ul>
-              <li>把复杂判断压缩成小动作</li>
-              <li>让人持续往前，不在起步时就卡住</li>
-              <li>软件价值来自交互节奏和心理推动</li>
+              <li>不是最重要的先来，而是最容易继续的先来</li>
+              <li>每张卡只做一个动作</li>
+              <li>先让人动起来，再慢慢做深</li>
             </ul>
           </article>
 
           <article class="board-card board-card-product">
-            <p class="card-kicker">今天的产品结论</p>
-            <h2>人生待处理收银台</h2>
-            <p>最后继续收敛成一个更像产品名的词：<strong>待结</strong>。</p>
+            <p class="card-kicker">第一版先做什么</p>
+            <h2>先跑顺 Downloads + 收藏夹。</h2>
+            <p>先把文件债和信息债做顺，再决定消息、关系、购物冲动要不要接进来。</p>
             <div class="pill-row">
-              <span>悬账</span>
-              <span>结账</span>
-              <span>轻一点</span>
+              <span>桌面优先</span>
+              <span>轻交互</span>
+              <span>可撤回</span>
             </div>
           </article>
         </div>
       </section>
 
-      <section id="insights" class="content-section reveal">
+      <section id="why" class="content-section reveal">
         <div class="section-head">
           <div>
-            <p class="section-tag">What Actually Matters</p>
-            <h2>这段对话真正沉淀下来的，是一套产品判断。</h2>
+            <p class="section-tag">Why it matters</p>
+            <h2>待结想解决的，不是效率，而是“脑子里一直挂着”。</h2>
           </div>
           <p>
-            它不是“灵感列表”，而是对什么样的软件值得做、该怎么开始做、做成什么形状，形成了一条清晰路径。
+            真正消耗人的不是大任务，而是一堆小账单一直没结清。待结把这类负担做成一个轻量流程，而不是一个更重的系统。
           </p>
         </div>
 
         <div class="insight-grid">
-          {distilledInsights.map((insight) => (
+          {promiseCards.map((insight) => (
             <article class="insight-card">
               <h3>{insight.title}</h3>
               <p>{insight.body}</p>
@@ -139,74 +210,52 @@ const familyCounts = ideaFamilies.map((family) => ({
         </div>
       </section>
 
-      <section id="ideas" class="content-section reveal">
+      <section id="workflow" class="content-section reveal">
         <div class="section-head">
           <div>
-            <p class="section-tag">Idea Bank</p>
-            <h2>创意不是散的，它们都在围着同一个母题打转。</h2>
+            <p class="section-tag">How it works</p>
+            <h2>它不是帮你规划一切，而是帮你结下一笔。</h2>
           </div>
-          <p>筛一下就能看出来：你喜欢的并不是某个单点功能，而是一类“降低决策阻力”的软件。</p>
+          <p>从进队列到做决定，再到看到收据，产品体验应该像一个轻量循环，而不是一个更复杂的控制台。</p>
         </div>
 
-        <div class="idea-toolbar">
-          <div class="family-tabs" role="tablist" aria-label="创意分类筛选">
-            <button class="family-tab active" type="button" data-idea-filter="all" aria-pressed="true">全部</button>
-            {familyCounts.map((family) => (
-              <button class="family-tab" type="button" data-idea-filter={family.key} aria-pressed="false">
-                {family.label} · {family.count}
-              </button>
-            ))}
+        <div class="workflow-grid">
+          {workflowSteps.map((step, index) => (
+            <article class="workflow-card">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">For who</p>
+            <h2>它适合那些不缺方法，只缺一个轻一点入口的人。</h2>
           </div>
-          <p id="idea-count" class="idea-count">当前显示 {ideaCards.length} 个方向</p>
+          <p>待结不是给重度效率玩家做的控制台。它更适合那些明明知道该处理，但总嫌开始太重、太烦、太像一个大工程的人。</p>
         </div>
 
-        <div class="idea-layout">
-          <div class="idea-grid">
-            {ideaCards.map((idea) => (
-              <article class="idea-card" data-idea-family={idea.family}>
-                <p class="card-kicker">{ideaFamilies.find((family) => family.key === idea.family)?.label}</p>
-                <h3>{idea.title}</h3>
-                <p class="idea-one-liner">{idea.oneLiner}</p>
-                <p class="idea-why">{idea.whyItWorks}</p>
-              </article>
-            ))}
-          </div>
-
-          <aside class="idea-sidebar">
-            <article class="sidebar-card">
-              <p class="card-kicker">最适合起步的三个方向</p>
-              <div class="stack-list">
-                {bestFirstMoves.map((move) => (
-                  <article class="stack-item">
-                    <h3>{move.title}</h3>
-                    <p>{move.reason}</p>
-                  </article>
-                ))}
-              </div>
+        <div class="fit-grid">
+          {fitCards.map((card) => (
+            <article class="fit-card">
+              <h3>{card.title}</h3>
+              <p>{card.body}</p>
             </article>
-
-            <article class="sidebar-card">
-              <p class="card-kicker">三大创意家族</p>
-              <div class="family-note-list">
-                {familyCounts.map((family) => (
-                  <article>
-                    <strong>{family.label}</strong>
-                    <p>{family.summary}</p>
-                  </article>
-                ))}
-              </div>
-            </article>
-          </aside>
+          ))}
         </div>
       </section>
 
       <section id="product" class="content-section reveal">
         <div class="section-head">
           <div>
-            <p class="section-tag">Convergence</p>
-            <h2>从很多点子，到“人生待处理收银台”，再到待结。</h2>
+            <p class="section-tag">Why this shape</p>
+            <h2>为什么最后会收敛成“待结”，而不是 12 个分散的小 app。</h2>
           </div>
-          <p>这个页面最核心的价值，不是多讲了一遍，而是把收敛过程变得可回看、可复用、可继续长。</p>
+          <p>因为真正值得积累的是一个母产品：围绕悬账、去留、继续和收据感建立统一体验，而不是把每个场景都拆成孤岛。</p>
         </div>
 
         <div class="product-layout">
@@ -341,6 +390,83 @@ const familyCounts = ideaFamilies.map((family) => ({
         </div>
       </section>
 
+      <section id="waitlist" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Early access</p>
+            <h2>官网先上线，早期内测名单先收起来。</h2>
+          </div>
+          <p>
+            这一版先把产品形状讲清楚。真正的第一版会优先跑顺 Downloads 和收藏夹，所以内测阶段更重视“你最想先清什么债”。
+          </p>
+        </div>
+
+        <div class="waitlist-panel">
+          <div class="waitlist-copy">
+            <p class="card-kicker">当前阶段</p>
+            <h3>产品官网 Beta</h3>
+            <p>
+              当前官网已经能完整展示定位、流程、悬账队列和交互 demo。内测申请先通过邮件收集，后面再接正式等待名单流程。
+            </p>
+            <div class="pill-row">
+              <span>桌面优先</span>
+              <span>从真实来源开始</span>
+              <span>申请内测</span>
+            </div>
+          </div>
+
+          <form
+            id="waitlist-form"
+            class="waitlist-form"
+            data-waitlist-to={siteConfig.email}
+          >
+            <label>
+              <span>你的邮箱</span>
+              <input id="waitlist-email" type="email" name="email" placeholder="you@example.com" required />
+            </label>
+
+            <label>
+              <span>你最想先清什么</span>
+              <select id="waitlist-focus" name="focus">
+                <option value="Downloads 文件债">Downloads 文件债</option>
+                <option value="收藏夹信息债">收藏夹信息债</option>
+                <option value="待回消息">待回消息</option>
+                <option value="灵感和购物冲动">灵感和购物冲动</option>
+              </select>
+            </label>
+
+            <label>
+              <span>一句话说说你的场景</span>
+              <textarea id="waitlist-note" name="note" rows="4" placeholder="例如：我的 Downloads 里总有一堆临时截图和 final-final 文件。"></textarea>
+            </label>
+
+            <button class="hero-btn hero-btn-primary waitlist-submit" type="submit">申请早期内测</button>
+            <p id="waitlist-feedback" class="waitlist-feedback">
+              提交后会直接帮你打开邮件客户端，收件邮箱是 <strong>{siteConfig.email}</strong>。
+            </p>
+          </form>
+        </div>
+      </section>
+
+      <section id="faq" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">FAQ</p>
+            <h2>先把几个最像真产品会被问到的问题答掉。</h2>
+          </div>
+          <p>产品官网不只是好看，还要能回答“它到底是什么、先做什么、为什么值得等”。</p>
+        </div>
+
+        <div class="faq-grid">
+          {faqItems.map((item) => (
+            <details class="faq-item">
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+
       <section id="roadmap" class="content-section reveal">
         <div class="section-head">
           <div>
@@ -390,6 +516,67 @@ const familyCounts = ideaFamilies.map((family) => ({
               </article>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section id="ideas" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Behind the product</p>
+            <h2>这页下面保留了待结是怎么被推出来的。</h2>
+          </div>
+          <p>你前面看到的是产品官网主线。这里开始收起包装，把这次对话里真正有价值的创意库、收敛路径和判断依据完整保留下来。</p>
+        </div>
+
+        <div class="idea-toolbar">
+          <div class="family-tabs" role="tablist" aria-label="创意分类筛选">
+            <button class="family-tab active" type="button" data-idea-filter="all" aria-pressed="true">全部</button>
+            {familyCounts.map((family) => (
+              <button class="family-tab" type="button" data-idea-filter={family.key} aria-pressed="false">
+                {family.label} · {family.count}
+              </button>
+            ))}
+          </div>
+          <p id="idea-count" class="idea-count">当前显示 {ideaCards.length} 个方向</p>
+        </div>
+
+        <div class="idea-layout">
+          <div class="idea-grid">
+            {ideaCards.map((idea) => (
+              <article class="idea-card" data-idea-family={idea.family}>
+                <p class="card-kicker">{ideaFamilies.find((family) => family.key === idea.family)?.label}</p>
+                <h3>{idea.title}</h3>
+                <p class="idea-one-liner">{idea.oneLiner}</p>
+                <p class="idea-why">{idea.whyItWorks}</p>
+              </article>
+            ))}
+          </div>
+
+          <aside class="idea-sidebar">
+            <article class="sidebar-card">
+              <p class="card-kicker">最适合起步的三个方向</p>
+              <div class="stack-list">
+                {bestFirstMoves.map((move) => (
+                  <article class="stack-item">
+                    <h3>{move.title}</h3>
+                    <p>{move.reason}</p>
+                  </article>
+                ))}
+              </div>
+            </article>
+
+            <article class="sidebar-card">
+              <p class="card-kicker">三大创意家族</p>
+              <div class="family-note-list">
+                {familyCounts.map((family) => (
+                  <article>
+                    <strong>{family.label}</strong>
+                    <p>{family.summary}</p>
+                  </article>
+                ))}
+              </div>
+            </article>
+          </aside>
         </div>
       </section>
 
@@ -651,6 +838,38 @@ const familyCounts = ideaFamilies.map((family) => ({
     updateDemoSummary();
     renderDemoReceipts();
     renderDemoCard();
+
+    const waitlistForm = document.getElementById("waitlist-form");
+    const waitlistEmail = document.getElementById("waitlist-email");
+    const waitlistFocus = document.getElementById("waitlist-focus");
+    const waitlistNote = document.getElementById("waitlist-note");
+    const waitlistFeedback = document.getElementById("waitlist-feedback");
+
+    waitlistForm?.addEventListener("submit", (event) => {
+      event.preventDefault();
+
+      const email = waitlistEmail?.value?.trim() || "";
+      const focus = waitlistFocus?.value || "Downloads 文件债";
+      const note = waitlistNote?.value?.trim() || "我想进一步了解待结的内测计划。";
+      const to = waitlistForm.dataset.waitlistTo || "";
+
+      if (!/.+@.+\..+/.test(email)) {
+        if (waitlistFeedback) waitlistFeedback.textContent = "先填一个有效邮箱，再申请内测。";
+        waitlistEmail?.focus();
+        return;
+      }
+
+      const subject = encodeURIComponent(`待结内测申请 | ${focus}`);
+      const body = encodeURIComponent(
+        `邮箱：${email}\n最想先清的债：${focus}\n\n我的场景：\n${note}\n`
+      );
+
+      if (waitlistFeedback) {
+        waitlistFeedback.textContent = `已为你打开邮件客户端，收件邮箱是 ${to}。`;
+      }
+
+      window.location.href = `mailto:${to}?subject=${subject}&body=${body}`;
+    });
   </script>
 
   <style>
@@ -881,6 +1100,7 @@ const familyCounts = ideaFamilies.map((family) => ({
     .hero-metrics article,
     .board-card,
     .insight-card,
+    .fit-card,
     .idea-card,
     .sidebar-card,
     .step-card,
@@ -1011,6 +1231,7 @@ const familyCounts = ideaFamilies.map((family) => ({
     }
 
     .insight-card h3,
+    .fit-card h3,
     .idea-card h3,
     .queue-item h3,
     .step-card h3,
@@ -1024,6 +1245,7 @@ const familyCounts = ideaFamilies.map((family) => ({
     }
 
     .insight-card h3,
+    .fit-card h3,
     .idea-card h3,
     .step-card h3,
     .stack-item h3,
@@ -1036,6 +1258,7 @@ const familyCounts = ideaFamilies.map((family) => ({
     }
 
     .insight-card p,
+    .fit-card p,
     .idea-card p,
     .step-card p,
     .stack-item p,
@@ -1062,6 +1285,58 @@ const familyCounts = ideaFamilies.map((family) => ({
       border: 1px solid var(--line);
       box-shadow: var(--shadow-soft);
       color: #473b31;
+    }
+
+    .workflow-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .workflow-card {
+      padding: 24px;
+      border-radius: 26px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(255, 251, 244, 0.96), rgba(255, 247, 237, 0.86));
+      box-shadow: var(--shadow-soft);
+    }
+
+    .workflow-card span {
+      display: inline-flex;
+      width: 46px;
+      height: 46px;
+      align-items: center;
+      justify-content: center;
+      border-radius: 16px;
+      background: rgba(240, 123, 76, 0.12);
+      color: var(--peach-deep);
+      font-weight: 800;
+      margin-bottom: 14px;
+    }
+
+    .workflow-card h3 {
+      margin: 0;
+      font-size: 1.4rem;
+      line-height: 1.15;
+    }
+
+    .workflow-card p {
+      margin-top: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .fit-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .fit-card {
+      padding: 24px;
+      border-radius: 28px;
+      min-height: 220px;
     }
 
     .idea-toolbar {
@@ -1386,6 +1661,109 @@ const familyCounts = ideaFamilies.map((family) => ({
       line-height: 1.5;
     }
 
+    .waitlist-panel {
+      display: grid;
+      grid-template-columns: minmax(0, 0.86fr) minmax(320px, 0.94fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .waitlist-copy,
+    .waitlist-form {
+      padding: 24px;
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(255, 251, 244, 0.96), rgba(255, 247, 237, 0.86));
+      box-shadow: var(--shadow);
+    }
+
+    .waitlist-copy h3 {
+      margin: 12px 0 0;
+      font-size: 1.6rem;
+      line-height: 1.1;
+    }
+
+    .waitlist-copy p:last-of-type {
+      margin-top: 12px;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .waitlist-form {
+      display: grid;
+      gap: 14px;
+    }
+
+    .waitlist-form label {
+      display: grid;
+      gap: 8px;
+      font-weight: 700;
+      color: #3f342b;
+    }
+
+    .waitlist-form input,
+    .waitlist-form select,
+    .waitlist-form textarea {
+      width: 100%;
+      font: inherit;
+      color: var(--ink);
+      border: 1px solid rgba(66, 46, 24, 0.12);
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.78);
+      padding: 14px 16px;
+      resize: vertical;
+    }
+
+    .waitlist-form input:focus-visible,
+    .waitlist-form select:focus-visible,
+    .waitlist-form textarea:focus-visible {
+      outline: 2px solid rgba(240, 123, 76, 0.38);
+      outline-offset: 1px;
+    }
+
+    .waitlist-submit {
+      width: fit-content;
+      min-width: 220px;
+    }
+
+    .waitlist-feedback {
+      margin: 0;
+      color: #66584c;
+      line-height: 1.6;
+    }
+
+    .faq-grid {
+      display: grid;
+      gap: 14px;
+    }
+
+    .faq-item {
+      padding: 18px 20px;
+      border-radius: 22px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(180deg, rgba(255, 251, 244, 0.96), rgba(255, 247, 237, 0.86));
+      box-shadow: var(--shadow-soft);
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      font-weight: 800;
+      color: #2f261f;
+      list-style: none;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-item p {
+      margin: 12px 0 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
     .roadmap-layout,
     .timeline-layout {
       display: grid;
@@ -1487,6 +1865,7 @@ const familyCounts = ideaFamilies.map((family) => ({
       .idea-layout,
       .product-layout,
       .demo-layout,
+      .waitlist-panel,
       .roadmap-layout,
       .timeline-layout,
       .section-head,
@@ -1503,6 +1882,8 @@ const familyCounts = ideaFamilies.map((family) => ({
       }
 
       .insight-grid,
+      .fit-grid,
+      .workflow-grid,
       .queue-list,
       .rhythm-grid,
       .phase-grid {
@@ -1533,6 +1914,8 @@ const familyCounts = ideaFamilies.map((family) => ({
 
       .hero-metrics,
       .insight-grid,
+      .fit-grid,
+      .workflow-grid,
       .idea-grid,
       .convergence-steps,
       .summary-grid,
