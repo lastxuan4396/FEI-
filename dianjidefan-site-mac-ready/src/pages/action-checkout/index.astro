@@ -1,0 +1,1153 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  demoPresets,
+  faqItems,
+  hardBenefits,
+  pageMeta,
+  promiseCards,
+  queueFamilies,
+  roadmap,
+  trustRules,
+  workflowSteps
+} from "../../data/action-checkout";
+---
+<BaseLayout
+  title={pageMeta.title}
+  description={pageMeta.description}
+  image="/assets/action-checkout-cover.svg"
+  canonical="/action-checkout/"
+  themeColor="#eef4ea"
+>
+  <a class="skip-link" href="#action-main">跳到主要内容</a>
+
+  <div class="action-shell">
+    <header class="action-header">
+      <a class="action-brand" href="/">
+        <span class="action-brand-badge">行动收银台</span>
+        <span class="action-brand-copy">
+          <strong>Action Checkout</strong>
+          <small>Task breaker · Daily reset</small>
+        </span>
+      </a>
+
+      <nav class="action-nav" aria-label="行动收银台页面导航">
+        <a href="#overview">概览</a>
+        <a href="#why">为什么成立</a>
+        <a href="#workflow">怎么工作</a>
+        <a href="#demo">体验</a>
+        <a href="#faq">FAQ</a>
+        <a href="/downloads-checkout/">下载区去留器</a>
+      </nav>
+
+      <div class="action-header-actions">
+        <a class="action-header-link" href="/downloads-checkout/">文件收银台</a>
+        <a class="action-header-link" href="/daijie/">待结概念页</a>
+        <a class="action-header-link" href="/">回作品站</a>
+      </div>
+    </header>
+
+    <main id="action-main" class="action-main">
+      <section id="overview" class="hero reveal">
+        <div class="hero-copy">
+          <p class="section-tag">Action product</p>
+          <h1>把大任务，压成下一刀。</h1>
+          <p class="hero-lead">{pageMeta.pitch}</p>
+          <p class="hero-note">
+            这不是另一个待办清单，也不是要你重新设计人生。它只做一件事：
+            把“我知道该做，但就是起不来”的那一下，压成一张你愿意先点下去的小动作卡。
+          </p>
+
+          <div class="hero-actions">
+            <a class="hero-btn hero-btn-primary" href="#demo">试行动原型</a>
+            <a class="hero-btn hero-btn-secondary" href="/downloads-checkout/">看文件收银台</a>
+            <a class="hero-btn hero-btn-secondary" href="/daijie/">回待结母产品</a>
+          </div>
+
+          <div class="hero-metrics" aria-label="行动收银台摘要指标">
+            <article>
+              <strong>1 张卡</strong>
+              <span>只做一刀，不先做完整计划</span>
+            </article>
+            <article>
+              <strong>3 个动作</strong>
+              <span>先做 3 分钟 / 稍后 / 换一刀</span>
+            </article>
+            <article>
+              <strong>双入口</strong>
+              <span>任务破冰 + 今日复位</span>
+            </article>
+          </div>
+        </div>
+
+        <div class="hero-board" aria-label="行动收银台主张板">
+          <article class="board-card board-card-problem">
+            <p class="card-kicker">这页抓的问题</p>
+            <h2>很多人不是没有任务系统，而是根本没有开始。</h2>
+            <p>行动收银台解决的不是“记不住要做什么”，而是“每次都卡在第一刀从哪下”。</p>
+          </article>
+
+          <article class="board-card board-card-rules">
+            <p class="card-kicker">产品规则</p>
+            <ul>
+              <li>不许先做复杂规划</li>
+              <li>动作必须足够小</li>
+              <li>换一刀比硬扛更重要</li>
+            </ul>
+          </article>
+
+          <article class="board-card board-card-fit">
+            <p class="card-kicker">它放在哪</p>
+            <h2>和下载区去留器并列，组成待结的双主线。</h2>
+            <p>文件收银台负责减法，行动收银台负责开工。一个结对象，一个结阻力。</p>
+            <div class="pill-row">
+              <span>任务破冰</span>
+              <span>今日复位</span>
+              <span>浏览器原型</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="why" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Why it works</p>
+            <h2>它的正向性，不是“更会规划”，而是“我真的开始了”。</h2>
+          </div>
+          <p>行动类产品很容易陷入鸡汤或系统过重。行动收银台成立的前提，是让“已经开了一刀”这件事本身变成清晰回报。</p>
+        </div>
+
+        <div class="benefit-grid">
+          {hardBenefits.map((item) => (
+            <article class="benefit-card">
+              <strong>{item.value}</strong>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="promise-grid">
+          {promiseCards.map((item) => (
+            <article class="promise-card">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="workflow" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">How it works</p>
+            <h2>不是完整任务管理，而是一轮今天就能开始的动作账单。</h2>
+          </div>
+          <p>输入一句卡住的事，产品先给你一轮小刀。你不需要当场想好全部，只要先做眼前这一笔。</p>
+        </div>
+
+        <div class="workflow-grid">
+          {workflowSteps.map((step, index) => (
+            <article class="workflow-card">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{step.title}</h3>
+              <p>{step.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="family-grid">
+          {queueFamilies.map((item) => (
+            <article class="family-card">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="demo" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Action beta</p>
+            <h2>这页不是概念说明，而是一个能把“下一刀”真的排出来的原型。</h2>
+          </div>
+          <p>先支持两类动作：任务破冰和今日复位。浏览器版先证明交互节奏，不先背上复杂账号体系。</p>
+        </div>
+
+        <div class="action-layout">
+          <article class="source-panel">
+            <div class="source-head">
+              <div>
+                <p class="card-kicker">Source hub</p>
+                <h3>先把卡住的事写进来</h3>
+              </div>
+              <div class="source-chip-row">
+                <span id="action-source-count">本轮 0</span>
+                <span id="action-pending-count">待排 0</span>
+              </div>
+            </div>
+
+            <div class="mode-switch" role="tablist" aria-label="行动模式">
+              <button type="button" class="mode-pill is-active" data-action-mode="task" aria-pressed="true">任务破冰</button>
+              <button type="button" class="mode-pill" data-action-mode="reset" aria-pressed="false">今日复位</button>
+            </div>
+
+            <label class="field-label" for="action-input">输入一句现在最卡的事</label>
+            <textarea
+              id="action-input"
+              class="source-textarea"
+              rows="5"
+              placeholder="比如：做一份给导师看的汇报 PPT"
+            ></textarea>
+
+            <div class="source-actions">
+              <button id="action-generate" class="demo-btn demo-btn-primary" type="button">生成这一轮</button>
+              <button id="action-load-sample" class="demo-btn" type="button">载入示例</button>
+              <button id="action-clear-session" class="demo-btn" type="button">清空本轮</button>
+            </div>
+
+            <p id="action-source-status" class="source-status">输入一句现在卡住的事，系统会把它压成几张可以立即开工的小动作卡。</p>
+
+            <div class="preset-groups">
+              <div class="preset-group">
+                <p class="card-kicker">任务示例</p>
+                <div class="preset-row">
+                  {demoPresets.task.map((item) => (
+                    <button class="preset-chip" type="button" data-action-mode="task" data-action-preset={item}>
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              <div class="preset-group">
+                <p class="card-kicker">复位示例</p>
+                <div class="preset-row">
+                  {demoPresets.reset.map((item) => (
+                    <button class="preset-chip" type="button" data-action-mode="reset" data-action-preset={item}>
+                      {item}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </article>
+
+          <div class="board-shell">
+            <div class="board-topbar">
+              <div>
+                <p class="card-kicker">Today&apos;s cut</p>
+                <h3 id="action-queue-title">行动账单</h3>
+              </div>
+              <div class="queue-counter">
+                <span id="action-queue-index">1</span>
+                <span>/</span>
+                <span id="action-queue-total">1</span>
+              </div>
+            </div>
+
+            <article class="action-card action-card-main">
+              <p id="action-kicker" class="action-card-kicker">任务破冰</p>
+              <h3 id="action-title">先输入一句卡住的事</h3>
+              <p id="action-meta" class="action-card-meta">行动收银台 · 第一刀</p>
+              <p id="action-message" class="action-card-message">
+                这不是待办列表，只是今天的一刀。先把动作压到足够小，再决定要不要继续。
+              </p>
+              <div id="action-tags" class="tag-row">
+                <span>先开工</span>
+                <span>只做一刀</span>
+                <span>不先规划</span>
+              </div>
+            </article>
+
+            <article class="action-card reasons-card">
+              <p class="card-kicker">为什么这张先出现</p>
+              <ul id="action-reasons" class="reason-list">
+                <li>动作足够小，不需要额外组织意志力</li>
+                <li>开始本身会减少卡住感</li>
+                <li>今天只要求推进，不要求完美</li>
+              </ul>
+            </article>
+
+            <article class="action-card summary-card">
+              <div class="summary-grid">
+                <article>
+                  <strong id="action-done-count">0</strong>
+                  <span>已推进</span>
+                </article>
+                <article>
+                  <strong id="action-momentum">0</strong>
+                  <span>动量分</span>
+                </article>
+                <article>
+                  <strong id="action-deferred-count">0</strong>
+                  <span>稍后区</span>
+                </article>
+                <article>
+                  <strong id="action-remaining">0</strong>
+                  <span>剩余</span>
+                </article>
+              </div>
+            </article>
+
+            <article class="action-card receipt-card">
+              <p class="card-kicker">今日收据</p>
+              <ol id="action-receipts" class="receipt-list">
+                <li>今天的第一刀还没落下。</li>
+              </ol>
+            </article>
+
+            <div class="action-dock">
+              <div class="action-grid">
+                <button id="action-start" class="action-pill action-pill-primary" type="button">先做 3 分钟</button>
+                <button id="action-later" class="action-pill" type="button">稍后</button>
+                <button id="action-swap" class="action-pill action-pill-secondary" type="button">换一刀</button>
+              </div>
+              <div class="feedback-row">
+                <button id="action-undo" class="ghost-btn ghost-btn-small" type="button">撤回</button>
+                <p id="action-feedback">行动收银台已经就绪。输入一句任务，或直接载入一轮示例。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-stack">
+            <article class="review-card">
+              <div class="review-head">
+                <div>
+                  <p class="card-kicker">Momentum</p>
+                  <h3>已推进</h3>
+                </div>
+                <div class="review-stat">
+                  <strong id="action-done-count-mirror">0</strong>
+                  <span>今天已经动过的刀</span>
+                </div>
+              </div>
+              <p class="review-note">这里留下的不是任务墓地，而是今天已经发生过的推进。</p>
+              <ol id="action-done-list" class="review-list">
+                <li class="action-review-empty">还没有动作进入“已推进”。先做一刀，收据就会开始长出来。</li>
+              </ol>
+            </article>
+
+            <article class="review-card">
+              <div class="review-head">
+                <div>
+                  <p class="card-kicker">Later queue</p>
+                  <h3>稍后区</h3>
+                </div>
+                <div class="review-stat">
+                  <strong id="action-deferred-count-mirror">0</strong>
+                  <span>今天先挪开的动作</span>
+                </div>
+              </div>
+              <p class="review-note">今天不做也成立。真正好的行动产品，不会把“稍后”当成失败。</p>
+              <ol id="action-deferred-list" class="review-list">
+                <li class="action-review-empty">稍后区还是空的。今天不想现在做的动作，可以先安全挪开。</li>
+              </ol>
+              <div class="review-footer">
+                <button id="action-restore-deferred" class="ghost-btn" type="button" disabled>把稍后区放回队列</button>
+              </div>
+            </article>
+
+            <article class="review-card review-card-trust">
+              <p class="card-kicker">Trust rules</p>
+              <h3>行动收银台不是在替你装忙，而是在保护开始这件事。</h3>
+              <ul class="trust-list">
+                {trustRules.map((item) => (
+                  <li>{item}</li>
+                ))}
+              </ul>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Sibling product</p>
+            <h2>它不是取代下载区去留器，而是和它并列。</h2>
+          </div>
+          <p>文件收银台解决“留还是不留”，行动收银台解决“做还是不做、从哪开始”。两个方向都属于待结，但心智不能混。</p>
+        </div>
+
+        <div class="bridge-panel">
+          <div>
+            <p class="card-kicker">双主线</p>
+            <h3>一个负责减对象，一个负责减阻力。</h3>
+            <p>如果下载区去留器是“把文件杂物堆结掉”，那行动收银台就是“把启动阻力结掉”。它们后面可以并到同一个母产品里，但现在拆开更容易做顺。</p>
+          </div>
+          <div class="bridge-actions">
+            <a class="hero-btn hero-btn-primary" href="/downloads-checkout/">打开下载区去留器</a>
+            <a class="hero-btn hero-btn-secondary" href="/downloads-checkout/mobile/">看手机版下载区去留器</a>
+            <a class="hero-btn hero-btn-secondary" href="/daijie/">回待结概念页</a>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">FAQ</p>
+            <h2>先把这条线最容易被问到的事答掉。</h2>
+          </div>
+          <p>这条产品线最容易跑偏成待办系统、鸡汤工具或复杂规划页。所以界限要先说清。</p>
+        </div>
+
+        <div class="faq-list">
+          {faqItems.map((item) => (
+            <details class="faq-item">
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
+
+        <div class="roadmap-grid">
+          {roadmap.map((item) => (
+            <article class="roadmap-card">
+              <span>{item.phase}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script is:inline id="action-checkout-bootstrap" type="application/json" set:html={JSON.stringify({
+    presets: demoPresets,
+    storageKey: "action-checkout:v1"
+  })}></script>
+  <script is:inline src="/action-checkout.js" defer></script>
+  <script is:inline>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add("in-view");
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((node) => observer.observe(node));
+  </script>
+
+  <style>
+    :root {
+      --action-bg: #eef4ea;
+      --action-paper: rgba(251, 248, 241, 0.94);
+      --action-paper-strong: rgba(255, 252, 246, 0.97);
+      --action-line: rgba(55, 71, 56, 0.12);
+      --action-ink: #1f231f;
+      --action-muted: #5e685e;
+      --action-accent: #c86a3a;
+      --action-accent-deep: #8b4a2b;
+      --action-moss: #264032;
+      --action-chip: rgba(39, 57, 44, 0.08);
+    }
+
+    :global(body) {
+      background:
+        radial-gradient(circle at top left, rgba(201, 223, 195, 0.7), transparent 28%),
+        linear-gradient(180deg, #f7f3ea 0%, var(--action-bg) 100%);
+      color: var(--action-ink);
+    }
+
+    .action-shell {
+      width: min(1380px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 24px 0 56px;
+    }
+
+    .action-header,
+    .hero,
+    .content-section,
+    .bridge-panel,
+    .faq-item,
+    .roadmap-card {
+      border: 1px solid var(--action-line);
+      border-radius: 32px;
+      background: var(--action-paper);
+      box-shadow: 0 24px 48px rgba(39, 48, 36, 0.08);
+      backdrop-filter: blur(18px);
+    }
+
+    .action-header {
+      position: sticky;
+      top: 14px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 24px;
+      margin-bottom: 18px;
+    }
+
+    .action-brand,
+    .action-nav a,
+    .action-header-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .action-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      min-width: fit-content;
+    }
+
+    .action-brand-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: var(--action-moss);
+      color: #f6f0e8;
+      font-weight: 800;
+    }
+
+    .action-brand-copy {
+      display: grid;
+      gap: 2px;
+    }
+
+    .action-brand-copy strong {
+      font-size: 1rem;
+    }
+
+    .action-brand-copy small {
+      color: var(--action-muted);
+      font-size: 0.88rem;
+    }
+
+    .action-nav,
+    .action-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+    }
+
+    .action-nav a,
+    .action-header-link {
+      color: #384337;
+      font-weight: 700;
+      font-size: 0.94rem;
+    }
+
+    .action-main {
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero,
+    .content-section {
+      padding: 28px;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.02fr) minmax(340px, 0.98fr);
+      gap: 18px;
+      align-items: stretch;
+    }
+
+    .hero-copy,
+    .section-head > div {
+      display: grid;
+      gap: 12px;
+    }
+
+    .section-tag,
+    .card-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--action-chip);
+      color: #5b6b59;
+      font-size: 0.74rem;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      margin: 0;
+      width: fit-content;
+    }
+
+    .hero h1,
+    .section-head h2 {
+      margin: 0;
+      font-family: "Noto Serif SC", serif;
+      font-size: clamp(2.3rem, 4vw, 4.2rem);
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+
+    .hero-lead,
+    .hero-note,
+    .section-head > p,
+    .benefit-card p,
+    .promise-card p,
+    .workflow-card p,
+    .family-card p,
+    .source-status,
+    .review-note,
+    .bridge-panel p,
+    .faq-item p,
+    .roadmap-card p {
+      margin: 0;
+      color: var(--action-muted);
+      line-height: 1.7;
+      font-size: 1rem;
+    }
+
+    .hero-actions,
+    .bridge-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hero-btn,
+    .ghost-btn,
+    .demo-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 0 18px;
+      border-radius: 999px;
+      border: 1px solid transparent;
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease;
+    }
+
+    .hero-btn:hover,
+    .ghost-btn:hover,
+    .demo-btn:hover,
+    .action-pill:hover,
+    .mode-pill:hover,
+    .preset-chip:hover,
+    .action-review-button:hover {
+      transform: translateY(-1px);
+    }
+
+    .hero-btn-primary,
+    .demo-btn-primary,
+    .action-pill-primary {
+      background: linear-gradient(135deg, var(--action-accent), #d98951);
+      color: #fffaf2;
+      box-shadow: 0 18px 32px rgba(200, 106, 58, 0.22);
+    }
+
+    .hero-btn-secondary,
+    .ghost-btn,
+    .demo-btn,
+    .mode-pill,
+    .preset-chip,
+    .action-pill,
+    .action-review-button {
+      background: var(--action-paper-strong);
+      color: var(--action-ink);
+      border-color: rgba(73, 87, 69, 0.12);
+    }
+
+    .hero-metrics,
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .hero-metrics article,
+    .summary-grid article,
+    .review-stat {
+      display: grid;
+      gap: 4px;
+      padding: 14px;
+      border-radius: 20px;
+      background: rgba(255, 252, 246, 0.98);
+      border: 1px solid rgba(71, 84, 67, 0.08);
+    }
+
+    .hero-board {
+      display: grid;
+      gap: 14px;
+      align-content: stretch;
+    }
+
+    .board-card {
+      display: grid;
+      gap: 12px;
+      padding: 22px;
+      border-radius: 28px;
+      border: 1px solid rgba(71, 84, 67, 0.08);
+      background: rgba(255, 252, 246, 0.98);
+    }
+
+    .board-card h2,
+    .board-card h3,
+    .workflow-card h3,
+    .family-card h3,
+    .promise-card h3,
+    .bridge-panel h3,
+    .faq-item summary {
+      margin: 0;
+    }
+
+    .board-card ul,
+    .trust-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding-left: 18px;
+      color: var(--action-muted);
+    }
+
+    .pill-row,
+    .tag-row,
+    .preset-row,
+    .source-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill-row span,
+    .tag-row span,
+    .source-chip-row span,
+    .preset-chip {
+      display: inline-flex;
+      align-items: center;
+      padding: 8px 12px;
+      border-radius: 999px;
+      background: var(--action-chip);
+      color: #5a6858;
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .section-head > p {
+      max-width: 460px;
+    }
+
+    .benefit-grid,
+    .promise-grid,
+    .workflow-grid,
+    .family-grid,
+    .roadmap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .benefit-card,
+    .promise-card,
+    .workflow-card,
+    .family-card,
+    .roadmap-card {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+    }
+
+    .benefit-card strong {
+      font-size: 1.12rem;
+      color: var(--action-accent-deep);
+    }
+
+    .workflow-card span,
+    .roadmap-card span {
+      color: var(--action-accent-deep);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .action-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.82fr) minmax(360px, 0.94fr) minmax(280px, 0.86fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .source-panel,
+    .board-shell,
+    .review-card,
+    .action-card,
+    .action-dock {
+      border: 1px solid rgba(71, 84, 67, 0.08);
+      background: rgba(255, 252, 246, 0.96);
+      box-shadow: 0 14px 30px rgba(52, 61, 50, 0.08);
+    }
+
+    .source-panel,
+    .review-card {
+      display: grid;
+      gap: 16px;
+      padding: 20px;
+      border-radius: 28px;
+    }
+
+    .source-head,
+    .review-head,
+    .board-topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .source-head > div:first-child,
+    .review-head > div:first-child {
+      display: grid;
+      gap: 6px;
+    }
+
+    .source-head h3,
+    .review-head h3,
+    .board-topbar h3 {
+      margin: 0;
+      font-size: 1.24rem;
+    }
+
+    .mode-switch {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .mode-pill,
+    .preset-chip,
+    .action-pill,
+    .action-review-button {
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 16px;
+      font-size: 0.94rem;
+      font-weight: 800;
+      cursor: pointer;
+    }
+
+    .mode-pill.is-active {
+      background: rgba(38, 64, 50, 0.96);
+      color: #f8f4ed;
+      border-color: transparent;
+    }
+
+    .field-label {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #465345;
+    }
+
+    .source-textarea {
+      width: 100%;
+      padding: 16px;
+      border-radius: 22px;
+      border: 1px solid rgba(71, 84, 67, 0.12);
+      background: #fffdfa;
+      color: var(--action-ink);
+      font: inherit;
+      line-height: 1.7;
+      resize: vertical;
+      min-height: 148px;
+    }
+
+    .source-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .preset-groups,
+    .preset-group {
+      display: grid;
+      gap: 12px;
+    }
+
+    .board-shell {
+      display: grid;
+      gap: 14px;
+      padding: 12px;
+      border-radius: 34px;
+      background:
+        radial-gradient(circle at top right, rgba(210, 229, 202, 0.28), transparent 28%),
+        linear-gradient(180deg, #1a1815 0%, #344334 100%);
+      box-shadow: 0 30px 70px rgba(34, 38, 31, 0.22);
+    }
+
+    .board-topbar,
+    .action-card,
+    .action-dock {
+      padding: 16px;
+      border-radius: 24px;
+    }
+
+    .queue-counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(36, 57, 43, 0.08);
+      font-weight: 800;
+    }
+
+    .action-card {
+      display: grid;
+      gap: 12px;
+    }
+
+    .action-card-kicker {
+      margin: 0;
+      color: var(--action-accent-deep);
+      font-size: 0.92rem;
+      font-weight: 800;
+    }
+
+    .action-card h3 {
+      margin: 0;
+      font-family: "Noto Serif SC", serif;
+      font-size: 2rem;
+      line-height: 1.12;
+    }
+
+    .action-card-meta,
+    .action-card-message,
+    .feedback-row p,
+    .action-review-copy span {
+      margin: 0;
+      color: var(--action-muted);
+      line-height: 1.7;
+      font-size: 0.96rem;
+    }
+
+    .reason-list,
+    .receipt-list,
+    .review-list,
+    .trust-list {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .reason-list li,
+    .receipt-list li,
+    .action-review-empty,
+    .trust-list li {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(49, 62, 46, 0.05);
+      color: var(--action-muted);
+      line-height: 1.6;
+    }
+
+    .action-dock {
+      display: grid;
+      gap: 12px;
+      position: sticky;
+      bottom: 10px;
+      background: rgba(255, 251, 246, 0.96);
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .action-pill {
+      min-height: 58px;
+    }
+
+    .action-pill-secondary {
+      color: var(--action-accent-deep);
+      background: #fff4ec;
+    }
+
+    .feedback-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .review-stat strong {
+      font-size: 0.98rem;
+    }
+
+    .action-review-item {
+      display: grid;
+      gap: 10px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(47, 60, 46, 0.05);
+    }
+
+    .action-review-copy {
+      display: grid;
+      gap: 6px;
+    }
+
+    .review-footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .bridge-panel {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+      padding: 24px;
+    }
+
+    .bridge-panel > div:first-child {
+      display: grid;
+      gap: 10px;
+      max-width: 720px;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .faq-item {
+      padding: 18px 20px;
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 800;
+      list-style: none;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-item p {
+      padding-top: 12px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 420ms ease, transform 420ms ease;
+    }
+
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1220px) {
+      .hero,
+      .action-layout,
+      .bridge-panel,
+      .section-head {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .benefit-grid,
+      .promise-grid,
+      .workflow-grid,
+      .family-grid,
+      .roadmap-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 900px) {
+      .action-shell {
+        width: min(100vw - 20px, 100%);
+      }
+
+      .action-header,
+      .hero,
+      .content-section {
+        padding: 18px;
+        border-radius: 24px;
+      }
+
+      .action-header {
+        position: static;
+      }
+
+      .action-nav {
+        display: none;
+      }
+
+      .hero-metrics,
+      .summary-grid,
+      .benefit-grid,
+      .promise-grid,
+      .workflow-grid,
+      .family-grid,
+      .roadmap-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .source-head,
+      .review-head,
+      .board-topbar,
+      .feedback-row,
+      .bridge-panel {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .action-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .action-brand-copy small,
+      .action-header-actions {
+        display: none;
+      }
+
+      .hero h1,
+      .section-head h2 {
+        font-size: 1.92rem;
+      }
+
+      .hero-actions,
+      .source-actions,
+      .bridge-actions {
+        display: grid;
+        grid-template-columns: 1fr;
+      }
+
+      .hero-btn,
+      .ghost-btn,
+      .demo-btn,
+      .preset-chip {
+        width: 100%;
+      }
+    }
+  </style>
+</BaseLayout>

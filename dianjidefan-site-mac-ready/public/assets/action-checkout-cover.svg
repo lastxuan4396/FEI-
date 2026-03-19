@@ -1,0 +1,48 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="900" rx="48" fill="#EEF4EA"/>
+  <rect x="44" y="44" width="1512" height="812" rx="40" fill="url(#bg)"/>
+  <circle cx="1312" cy="176" r="168" fill="#DDE7D5"/>
+  <circle cx="1220" cy="248" r="116" fill="#F2D6B6" fill-opacity="0.75"/>
+  <rect x="104" y="112" width="232" height="58" rx="29" fill="#1E3325"/>
+  <text x="134" y="149" fill="#F5F2EA" font-family="Noto Sans SC, sans-serif" font-size="28" font-weight="700">行动收银台</text>
+  <text x="112" y="264" fill="#1F1E1A" font-family="Noto Serif SC, serif" font-size="104" font-weight="700">把大任务</text>
+  <text x="112" y="378" fill="#1F1E1A" font-family="Noto Serif SC, serif" font-size="104" font-weight="700">压成下一刀。</text>
+  <text x="116" y="456" fill="#556457" font-family="Noto Sans SC, sans-serif" font-size="34" font-weight="500">Action Checkout · task breaker + daily reset</text>
+
+  <g filter="url(#shadow)">
+    <rect x="872" y="154" width="544" height="592" rx="38" fill="#FBF8F1"/>
+  </g>
+  <rect x="908" y="190" width="154" height="36" rx="18" fill="#E8ECE2"/>
+  <text x="938" y="214" fill="#617160" font-family="Outfit, sans-serif" font-size="18" font-weight="700">TODAY'S CUT</text>
+
+  <rect x="908" y="252" width="472" height="188" rx="30" fill="#FFFDFC" stroke="#E8E0D4"/>
+  <text x="940" y="302" fill="#596B5D" font-family="Noto Sans SC, sans-serif" font-size="20" font-weight="700">任务破冰</text>
+  <text x="940" y="356" fill="#22201A" font-family="Noto Serif SC, serif" font-size="42" font-weight="700">先写封面标题</text>
+  <text x="940" y="404" fill="#6C675D" font-family="Noto Sans SC, sans-serif" font-size="24" font-weight="500">汇报 PPT · 第一刀 · 不许先做完整规划</text>
+
+  <rect x="908" y="472" width="222" height="92" rx="26" fill="#C86A3A"/>
+  <text x="962" y="528" fill="#FFF8F2" font-family="Noto Sans SC, sans-serif" font-size="32" font-weight="700">先做 3 分钟</text>
+
+  <rect x="1156" y="472" width="224" height="92" rx="26" fill="#F7F1E8" stroke="#E4D6C3"/>
+  <text x="1232" y="528" fill="#2B2A24" font-family="Noto Sans SC, sans-serif" font-size="32" font-weight="700">稍后</text>
+
+  <rect x="908" y="590" width="472" height="108" rx="28" fill="#F2F5EE"/>
+  <text x="940" y="636" fill="#647267" font-family="Outfit, sans-serif" font-size="20" font-weight="800">RECEIPT</text>
+  <text x="940" y="676" fill="#22201A" font-family="Noto Sans SC, sans-serif" font-size="26" font-weight="700">今天不是没动，你已经开了第一刀。</text>
+
+  <defs>
+    <linearGradient id="bg" x1="112" y1="84" x2="1450" y2="820" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FAF4EA"/>
+      <stop offset="1" stop-color="#E9F0E2"/>
+    </linearGradient>
+    <filter id="shadow" x="836" y="126" width="616" height="664" filterUnits="userSpaceOnUse" color-interpolation-filters="sRGB">
+      <feFlood flood-opacity="0" result="BackgroundImageFix"/>
+      <feColorMatrix in="SourceAlpha" type="matrix" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 127 0" result="hardAlpha"/>
+      <feOffset dy="8"/>
+      <feGaussianBlur stdDeviation="18"/>
+      <feColorMatrix type="matrix" values="0 0 0 0 0.235294 0 0 0 0 0.192157 0 0 0 0 0.121569 0 0 0 0.16 0"/>
+      <feBlend mode="normal" in2="BackgroundImageFix" result="effect1_dropShadow_1_2"/>
+      <feBlend mode="normal" in="SourceGraphic" in2="effect1_dropShadow_1_2" result="shape"/>
+    </filter>
+  </defs>
+</svg>

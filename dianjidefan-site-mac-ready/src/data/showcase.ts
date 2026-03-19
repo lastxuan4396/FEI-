@@ -236,6 +236,22 @@ const directWorksSeed: ShowcaseWork[] = [
     tone: "lagoon"
   },
   {
+    slug: "action-checkout",
+    title: "行动收银台",
+    eyebrow: "Action product page",
+    summary: "把大任务、今日复位和启动阻力压成一张张行动卡：不许先做完整计划，只先做下一刀。",
+    category: "tool",
+    categoryLabel: "工具",
+    stack: "Astro / JavaScript / Local-first interaction",
+    origin: "action-checkout/",
+    href: "/action-checkout/",
+    coverImage: "/assets/action-checkout-cover.svg",
+    coverAlt: "行动收银台产品页面封面图",
+    ...withTimeline("2026-03-19", "2026-03-19"),
+    badges: ["任务破冰", "今日复位", "MVP live"],
+    tone: "citrus"
+  },
+  {
     slug: "daijie",
     title: "待结 / 人生待处理收银台",
     eyebrow: "Product concept page",
