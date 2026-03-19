@@ -252,6 +252,22 @@ const directWorksSeed: ShowcaseWork[] = [
     tone: "citrus"
   },
   {
+    slug: "reset-antechamber",
+    title: "复位前室",
+    eyebrow: "Emotional pre-room",
+    summary: "不是执行工具，而是行动前的缓冲页：先安抚身体和情绪，再把人轻轻送进今日复位。",
+    category: "tool",
+    categoryLabel: "工具",
+    stack: "Astro / JavaScript / Local-first interaction",
+    origin: "reset-antechamber/",
+    href: "/reset-antechamber/",
+    coverImage: "/assets/reset-antechamber-cover.svg",
+    coverAlt: "复位前室产品页面封面图",
+    ...withTimeline("2026-03-19", "2026-03-19"),
+    badges: ["情绪前室", "先安抚", "再复位"],
+    tone: "graphite"
+  },
+  {
     slug: "daijie",
     title: "待结 / 人生待处理收银台",
     eyebrow: "Product concept page",

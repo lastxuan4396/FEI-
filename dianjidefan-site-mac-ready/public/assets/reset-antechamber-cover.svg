@@ -1,0 +1,32 @@
+<svg width="1600" height="900" viewBox="0 0 1600 900" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="900" rx="48" fill="#F7EFE6"/>
+  <circle cx="1290" cy="170" r="210" fill="#E9D2BF" fill-opacity="0.72"/>
+  <circle cx="260" cy="760" r="250" fill="#D8E4D2" fill-opacity="0.68"/>
+  <path d="M160 176C160 122.981 202.981 80 256 80H1344C1397.02 80 1440 122.981 1440 176V724C1440 777.019 1397.02 820 1344 820H256C202.981 820 160 777.019 160 724V176Z" fill="#FFF9F2" stroke="#D9C0AE" stroke-width="2"/>
+  <rect x="228" y="146" width="196" height="70" rx="35" fill="#A05B38"/>
+  <text x="278" y="191" fill="#FFF8F0" font-family="Arial, sans-serif" font-size="34" font-weight="700">复位前室</text>
+  <text x="228" y="304" fill="#261F1C" font-family="Arial, sans-serif" font-size="104" font-weight="700">先把自己接住，</text>
+  <text x="228" y="404" fill="#261F1C" font-family="Arial, sans-serif" font-size="104" font-weight="700">再谈复位。</text>
+  <text x="232" y="482" fill="#6C5A50" font-family="Arial, sans-serif" font-size="34">Soft landing before reset</text>
+
+  <rect x="230" y="560" width="320" height="160" rx="32" fill="#FFFDF9" stroke="#E6D6C9"/>
+  <text x="264" y="610" fill="#955132" font-family="Arial, sans-serif" font-size="24" font-weight="700">01 先安抚</text>
+  <text x="264" y="654" fill="#6C5A50" font-family="Arial, sans-serif" font-size="28">放松肩膀</text>
+  <text x="264" y="690" fill="#6C5A50" font-family="Arial, sans-serif" font-size="28">慢呼气 3 次</text>
+
+  <rect x="602" y="560" width="320" height="160" rx="32" fill="#FFFDF9" stroke="#E6D6C9"/>
+  <text x="636" y="610" fill="#955132" font-family="Arial, sans-serif" font-size="24" font-weight="700">02 先命名</text>
+  <text x="636" y="654" fill="#6C5A50" font-family="Arial, sans-serif" font-size="28">承认现在很绷</text>
+  <text x="636" y="690" fill="#6C5A50" font-family="Arial, sans-serif" font-size="28">写下最吵的 3 件事</text>
+
+  <rect x="974" y="560" width="320" height="160" rx="32" fill="#FFFDF9" stroke="#E6D6C9"/>
+  <text x="1008" y="610" fill="#955132" font-family="Arial, sans-serif" font-size="24" font-weight="700">03 去复位</text>
+  <text x="1008" y="654" fill="#6C5A50" font-family="Arial, sans-serif" font-size="28">回 1 条最容易的消息</text>
+  <text x="1008" y="690" fill="#6C5A50" font-family="Arial, sans-serif" font-size="28">清 3 个显眼对象</text>
+
+  <circle cx="1220" cy="326" r="92" fill="#FFF8F0" stroke="#D9C0AE" stroke-width="2"/>
+  <path d="M1176 320C1180 351 1201 372 1220 372C1239 372 1260 351 1264 320" stroke="#7D9477" stroke-width="12" stroke-linecap="round"/>
+  <path d="M1186 292C1195 278 1210 270 1220 270C1230 270 1245 278 1254 292" stroke="#CB7448" stroke-width="12" stroke-linecap="round"/>
+  <circle cx="1196" cy="316" r="8" fill="#261F1C"/>
+  <circle cx="1244" cy="316" r="8" fill="#261F1C"/>
+</svg>

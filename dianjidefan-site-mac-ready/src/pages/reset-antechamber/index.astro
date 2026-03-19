@@ -1,0 +1,1081 @@
+---
+export const prerender = true;
+
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import {
+  antiGoals,
+  demoPresets,
+  faqItems,
+  framingCards,
+  hardBenefits,
+  pageMeta,
+  principles,
+  scenarioFamilies,
+  successSignals,
+  transitionSteps
+} from "../../data/reset-antechamber";
+---
+<BaseLayout
+  title={pageMeta.title}
+  description={pageMeta.description}
+  image="/assets/reset-antechamber-cover.svg"
+  canonical="/reset-antechamber/"
+  themeColor="#f7efe6"
+>
+  <a class="skip-link" href="#reset-main">跳到主要内容</a>
+
+  <div class="antechamber-shell">
+    <header class="antechamber-header">
+      <a class="antechamber-brand" href="/">
+        <span class="antechamber-brand-badge">复位前室</span>
+        <span class="antechamber-brand-copy">
+          <strong>Reset Antechamber</strong>
+          <small>Soft landing before reset</small>
+        </span>
+      </a>
+
+      <nav class="antechamber-nav" aria-label="复位前室页面导航">
+        <a href="#overview">概览</a>
+        <a href="#why">为什么成立</a>
+        <a href="#demo">体验</a>
+        <a href="#faq">FAQ</a>
+        <a href="/action-checkout/">行动收银台</a>
+      </nav>
+
+      <div class="antechamber-header-actions">
+        <a class="antechamber-header-link" href="/action-checkout/">行动收银台</a>
+        <a class="antechamber-header-link" href="/downloads-checkout/">下载区去留器</a>
+        <a class="antechamber-header-link" href="/">回作品站</a>
+      </div>
+    </header>
+
+    <main id="reset-main" class="antechamber-main">
+      <section id="overview" class="hero reveal">
+        <div class="hero-copy">
+          <p class="section-tag">Emotional pre-room</p>
+          <h1>先把自己接住，再谈复位。</h1>
+          <p class="hero-lead">{pageMeta.pitch}</p>
+          <p class="hero-note">
+            它做的不是“教你振作”，而是先把你从紧绷、烦躁、心乱和轻度失控里拉回一点点。
+            人先回场，后面的今日复位才接得住。
+          </p>
+
+          <div class="hero-actions">
+            <a class="hero-btn hero-btn-primary" href="#demo">试前室原型</a>
+            <a class="hero-btn hero-btn-secondary" href="/action-checkout/">去行动收银台</a>
+            <a class="hero-btn hero-btn-secondary" href="/daijie/">回待结概念页</a>
+          </div>
+
+          <div class="hero-metrics" aria-label="复位前室摘要指标">
+            <article>
+              <strong>先松一下</strong>
+              <span>先安抚，不先做事</span>
+            </article>
+            <article>
+              <strong>3 步过渡</strong>
+              <span>安抚身体 / 收回注意力 / 进入复位</span>
+            </article>
+            <article>
+              <strong>前室定位</strong>
+              <span>接在行动收银台前面，不和它同构</span>
+            </article>
+          </div>
+        </div>
+
+        <div class="hero-board" aria-label="复位前室主张板">
+          <article class="board-card board-card-problem">
+            <p class="card-kicker">这页抓的问题</p>
+            <h2>有时候人不是不会做，而是整个人根本不在能做的状态里。</h2>
+            <p>这时候再讲执行、拆分、习惯，只会更像压力。前室先做“接住”，再做“过渡”。</p>
+          </article>
+
+          <article class="board-card board-card-rules">
+            <p class="card-kicker">前室原则</p>
+            <ul>
+              <li>不催，不训，不灌鸡汤</li>
+              <li>先让身体和注意力回来一点</li>
+              <li>不是停在疗愈，而是轻轻送去复位</li>
+            </ul>
+          </article>
+
+          <article class="board-card board-card-fit">
+            <p class="card-kicker">它放在哪</p>
+            <h2>它是行动收银台前的一层缓冲，不是另一套执行系统。</h2>
+            <p>滚雪球打“开始执行”，行动收银台打“第一刀”，复位前室则打更前面的那一下: 先把人接住。</p>
+            <div class="pill-row">
+              <span>先安抚</span>
+              <span>再复位</span>
+              <span>错峰竞争</span>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <section id="why" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Why it works</p>
+            <h2>它的正向性，不是“我变强了”，而是“我先回来了”。</h2>
+          </div>
+          <p>
+            朋友给你的判断是对的：状态差的时候，从最简单的生活琐事开始，更容易唤醒“我在好好对待自己、我在踏实过日子”的感觉。
+            这个感觉一回来，心就会静一点，人才可能往复位走。
+          </p>
+        </div>
+
+        <div class="benefit-grid">
+          {hardBenefits.map((item) => (
+            <article class="benefit-card">
+              <strong>{item.value}</strong>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="principle-grid">
+          {principles.map((item) => (
+            <article class="principle-card">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Framing</p>
+            <h2>这不是疗愈停靠站，而是一个轻量前室。</h2>
+          </div>
+          <p>它只允许你先慢一点，不允许你在里面一直躺着不出来。前室的价值，在于把你送回生活和今日复位。</p>
+        </div>
+
+        <div class="framing-grid">
+          {framingCards.map((item) => (
+            <article class="framing-card">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="signal-panel">
+          <article class="signal-card">
+            <p class="card-kicker">前室完成信号</p>
+            <ul class="signal-list">
+              {successSignals.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </article>
+
+          <article class="signal-card">
+            <p class="card-kicker">它不会做的事</p>
+            <ul class="signal-list">
+              {antiGoals.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Transition</p>
+            <h2>前室真正的价值，是把人温柔地送到复位门口。</h2>
+          </div>
+          <p>流程不长，动作也不大。先安抚身体，再给当前状态一个名字，最后只接一笔轻量复位。</p>
+        </div>
+
+        <div class="step-grid">
+          {transitionSteps.map((item, index) => (
+            <article class="step-card">
+              <span>{String(index + 1).padStart(2, "0")}</span>
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <div class="scenario-grid">
+          {scenarioFamilies.map((item) => (
+            <article class="scenario-card">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <section id="demo" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Antechamber beta</p>
+            <h2>这页不是只讲概念，而是会先给你一轮“先安抚，再过渡”的动作卡。</h2>
+          </div>
+          <p>浏览器版先证明节奏：先接住，再命名，再把人轻轻送进今日复位，不急着上复杂账号和疗愈内容体系。</p>
+        </div>
+
+        <div class="demo-layout">
+          <article class="source-panel">
+            <div class="source-head">
+              <div>
+                <p class="card-kicker">Source hub</p>
+                <h3>先写你现在绷在哪里</h3>
+              </div>
+              <div class="source-chip-row">
+                <span id="reset-source-count">本轮 0</span>
+                <span id="reset-pending-count">待排 0</span>
+              </div>
+            </div>
+
+            <label class="field-label" for="reset-input">输入一句你现在最绷的地方</label>
+            <textarea
+              id="reset-input"
+              class="source-textarea"
+              rows="5"
+              placeholder="比如：刷手机刷太久，停不下来"
+            ></textarea>
+
+            <div class="source-actions">
+              <button id="reset-generate" class="demo-btn demo-btn-primary" type="button">生成前室动作</button>
+              <button id="reset-load-sample" class="demo-btn" type="button">载入示例</button>
+              <button id="reset-clear-session" class="demo-btn" type="button">清空本轮</button>
+            </div>
+
+            <p id="reset-source-status" class="source-status">输入现在最绷的地方，系统先给你一轮安抚卡，再把你送去今日复位。</p>
+
+            <div class="preset-group">
+              <p class="card-kicker">前室示例</p>
+              <div class="preset-row">
+                {demoPresets.map((item) => (
+                  <button class="preset-chip" type="button" data-reset-preset={item}>
+                    {item}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </article>
+
+          <div class="board-shell">
+            <div class="board-topbar">
+              <div>
+                <p class="card-kicker">Soft landing</p>
+                <h3>前室动作账单</h3>
+              </div>
+              <div class="queue-counter">
+                <span id="reset-queue-index">0</span>
+                <span>/</span>
+                <span id="reset-queue-total">1</span>
+              </div>
+            </div>
+
+            <article class="action-card action-card-main">
+              <p id="reset-kicker" class="action-card-kicker">复位前室</p>
+              <h3 id="reset-title">先输入一句你现在乱在哪里。</h3>
+              <p id="reset-meta" class="action-card-meta">先安抚，再进入今日复位。</p>
+              <p id="reset-message" class="action-card-message">
+                你现在不需要立刻进入高效模式。先让自己回到“能接住一件小事”的状态。
+              </p>
+              <div id="reset-tags" class="tag-row">
+                <span>先接住</span>
+                <span>不催</span>
+                <span>再复位</span>
+              </div>
+            </article>
+
+            <article class="action-card reasons-card">
+              <p class="card-kicker">为什么这张先出现</p>
+              <ul id="reset-reasons" class="reason-list">
+                <li>状态太绷的时候，执行只会更像压力</li>
+                <li>先回场，后面的复位才接得住</li>
+                <li>今天先照顾自己也成立</li>
+              </ul>
+            </article>
+
+            <article class="action-card summary-card">
+              <div class="summary-grid">
+                <article>
+                  <strong id="reset-followed-count">0</strong>
+                  <span>已跟做</span>
+                </article>
+                <article>
+                  <strong id="reset-calm-score">0</strong>
+                  <span>回场分</span>
+                </article>
+                <article>
+                  <strong id="reset-later-count">0</strong>
+                  <span>稍后区</span>
+                </article>
+                <article>
+                  <strong id="reset-remaining">0</strong>
+                  <span>剩余</span>
+                </article>
+              </div>
+            </article>
+
+            <article class="action-card receipt-card">
+              <p class="card-kicker">前室收据</p>
+              <ol id="reset-receipts" class="receipt-list">
+                <li>先把自己接住，今天的前室收据就会开始长出来。</li>
+              </ol>
+            </article>
+
+            <div class="action-dock">
+              <div class="action-grid">
+                <button id="reset-follow" class="action-pill action-pill-primary" type="button">跟一下 30 秒</button>
+                <button id="reset-lighter" class="action-pill" type="button">更轻一点</button>
+                <button id="reset-later" class="action-pill action-pill-secondary" type="button">先跳过</button>
+              </div>
+              <div class="feedback-row">
+                <button id="reset-undo" class="ghost-btn ghost-btn-small" type="button">撤回</button>
+                <p id="reset-feedback">复位前室已经就绪。先把自己接住，再谈后面的事。</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="review-stack">
+            <article class="review-card">
+              <div class="review-head">
+                <div>
+                  <p class="card-kicker">Followed</p>
+                  <h3>已跟做</h3>
+                </div>
+                <div class="review-stat">
+                  <strong id="reset-followed-count-mirror">0</strong>
+                  <span>今天已经跟过的卡</span>
+                </div>
+              </div>
+              <p class="review-note">这里记录的不是自律成绩，而是你今天有在好好接住自己。</p>
+              <ol id="reset-done-list" class="review-list">
+                <li class="action-review-empty">还没有动作进入“已跟做”。先跟第一张卡，身体和注意力会先松一点。</li>
+              </ol>
+            </article>
+
+            <article class="review-card">
+              <div class="review-head">
+                <div>
+                  <p class="card-kicker">Later queue</p>
+                  <h3>稍后区</h3>
+                </div>
+                <div class="review-stat">
+                  <strong id="reset-later-count-mirror">0</strong>
+                  <span>现在先不跟的卡</span>
+                </div>
+              </div>
+              <p class="review-note">前室不应该逼人。现在跟不了的卡，先安全挪开也成立。</p>
+              <ol id="reset-later-list" class="review-list">
+                <li class="action-review-empty">稍后区还是空的。现在不想跟的卡，可以先安全挪开。</li>
+              </ol>
+              <div class="review-footer">
+                <button id="reset-restore-later" class="ghost-btn" type="button" disabled>把稍后区放回队列</button>
+              </div>
+            </article>
+
+            <article class="review-card review-card-bridge">
+              <p class="card-kicker">Bridge</p>
+              <h3>前室做完以后，不是结束，而是去今日复位。</h3>
+              <p class="review-note">
+                如果你已经松一点、静一点，就别再停在这页了。下一步应该去行动收银台，把今天最轻的一笔复位真正做掉。
+              </p>
+              <div class="bridge-actions">
+                <a class="hero-btn hero-btn-primary" href="/action-checkout/#demo">现在去今日复位</a>
+                <a class="hero-btn hero-btn-secondary" href="/action-checkout/">看行动收银台</a>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section id="faq" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">FAQ</p>
+            <h2>先把最容易混淆的边界讲清楚。</h2>
+          </div>
+          <p>这页最容易被误会成疗愈内容页或者偷换成情绪鸡汤，所以边界必须先讲清。</p>
+        </div>
+
+        <div class="faq-list">
+          {faqItems.map((item) => (
+            <details class="faq-item">
+              <summary>{item.question}</summary>
+              <p>{item.answer}</p>
+            </details>
+          ))}
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script is:inline id="reset-antechamber-bootstrap" type="application/json" set:html={JSON.stringify({
+    presets: demoPresets,
+    storageKey: "reset-antechamber:v1"
+  })}></script>
+  <script is:inline src="/reset-antechamber.js" defer></script>
+  <script is:inline>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) entry.target.classList.add("in-view");
+      });
+    }, { threshold: 0.12 });
+    document.querySelectorAll(".reveal").forEach((node) => observer.observe(node));
+  </script>
+
+  <style>
+    :root {
+      --ante-bg: #f7efe6;
+      --ante-paper: rgba(255, 250, 244, 0.95);
+      --ante-line: rgba(100, 77, 64, 0.12);
+      --ante-ink: #261f1c;
+      --ante-muted: #6c5a50;
+      --ante-accent: #cb7448;
+      --ante-accent-deep: #955132;
+      --ante-calm: #7d9477;
+      --ante-plum: #6f5a76;
+    }
+
+    :global(body) {
+      background:
+        radial-gradient(circle at top left, rgba(242, 215, 190, 0.76), transparent 26%),
+        radial-gradient(circle at right 12%, rgba(210, 227, 205, 0.66), transparent 24%),
+        linear-gradient(180deg, #fff7ef 0%, var(--ante-bg) 100%);
+      color: var(--ante-ink);
+    }
+
+    .antechamber-shell {
+      width: min(1380px, calc(100vw - 32px));
+      margin: 0 auto;
+      padding: 24px 0 56px;
+    }
+
+    .antechamber-header,
+    .hero,
+    .content-section,
+    .faq-item {
+      border: 1px solid var(--ante-line);
+      border-radius: 32px;
+      background: var(--ante-paper);
+      box-shadow: 0 24px 48px rgba(73, 52, 41, 0.08);
+      backdrop-filter: blur(16px);
+    }
+
+    .antechamber-header {
+      position: sticky;
+      top: 14px;
+      z-index: 40;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 18px 24px;
+      margin-bottom: 18px;
+    }
+
+    .antechamber-brand,
+    .antechamber-nav a,
+    .antechamber-header-link {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    .antechamber-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      min-width: fit-content;
+    }
+
+    .antechamber-brand-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 44px;
+      padding: 0 16px;
+      border-radius: 999px;
+      background: linear-gradient(135deg, var(--ante-accent-deep), var(--ante-plum));
+      color: #fff6ee;
+      font-weight: 800;
+    }
+
+    .antechamber-brand-copy {
+      display: grid;
+      gap: 2px;
+    }
+
+    .antechamber-brand-copy strong {
+      font-size: 1rem;
+    }
+
+    .antechamber-brand-copy small {
+      color: var(--ante-muted);
+      font-size: 0.82rem;
+    }
+
+    .antechamber-nav,
+    .antechamber-header-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+
+    .antechamber-nav a,
+    .antechamber-header-link {
+      padding: 10px 14px;
+      border-radius: 999px;
+      transition: background 160ms ease, color 160ms ease, transform 160ms ease;
+    }
+
+    .antechamber-nav a:hover,
+    .antechamber-header-link:hover {
+      background: rgba(108, 90, 80, 0.08);
+      transform: translateY(-1px);
+    }
+
+    .antechamber-main {
+      display: grid;
+      gap: 18px;
+    }
+
+    .hero,
+    .content-section {
+      display: grid;
+      gap: 18px;
+      padding: 24px;
+    }
+
+    .hero {
+      grid-template-columns: minmax(0, 1.04fr) minmax(340px, 0.96fr);
+      align-items: stretch;
+    }
+
+    .hero-copy,
+    .hero-board,
+    .benefit-grid,
+    .principle-grid,
+    .framing-grid,
+    .signal-panel,
+    .step-grid,
+    .scenario-grid,
+    .faq-list {
+      display: grid;
+      gap: 14px;
+    }
+
+    .section-tag,
+    .card-kicker {
+      margin: 0;
+      color: var(--ante-accent-deep);
+      font-size: 0.82rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .hero h1,
+    .section-head h2,
+    .board-card h2 {
+      margin: 0;
+      font-family: "Noto Serif SC", serif;
+      line-height: 1.08;
+    }
+
+    .hero h1 {
+      font-size: clamp(3rem, 5vw, 4.86rem);
+      max-width: 12ch;
+    }
+
+    .hero-lead,
+    .hero-note,
+    .section-head > p,
+    .benefit-card p,
+    .principle-card p,
+    .framing-card p,
+    .signal-list li,
+    .step-card p,
+    .scenario-card p,
+    .review-note,
+    .action-card-meta,
+    .action-card-message,
+    .reason-list li,
+    .receipt-list li,
+    .source-status,
+    .feedback-row p,
+    .faq-item p {
+      margin: 0;
+      color: var(--ante-muted);
+      line-height: 1.72;
+      font-size: 0.98rem;
+    }
+
+    .hero-actions,
+    .bridge-actions,
+    .source-actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .hero-btn,
+    .demo-btn,
+    .ghost-btn,
+    .action-pill,
+    .preset-chip,
+    .action-review-button {
+      border: 1px solid rgba(108, 90, 80, 0.12);
+      border-radius: 18px;
+      text-decoration: none;
+      font: inherit;
+      cursor: pointer;
+      transition: transform 160ms ease, box-shadow 160ms ease, border-color 160ms ease, background 160ms ease;
+    }
+
+    .hero-btn:hover,
+    .demo-btn:hover,
+    .ghost-btn:hover,
+    .action-pill:hover,
+    .preset-chip:hover,
+    .action-review-button:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 10px 24px rgba(82, 56, 42, 0.08);
+    }
+
+    .hero-btn-primary,
+    .demo-btn-primary,
+    .action-pill-primary {
+      background: linear-gradient(135deg, var(--ante-accent), var(--ante-accent-deep));
+      border-color: transparent;
+      color: #fff8f1;
+    }
+
+    .hero-btn-secondary,
+    .demo-btn,
+    .ghost-btn,
+    .action-pill,
+    .preset-chip,
+    .action-review-button {
+      background: rgba(255, 252, 248, 0.94);
+      color: inherit;
+    }
+
+    .hero-btn,
+    .demo-btn,
+    .ghost-btn,
+    .action-pill {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 46px;
+      padding: 0 18px;
+      font-weight: 800;
+    }
+
+    .hero-metrics,
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .hero-metrics article,
+    .summary-grid article {
+      display: grid;
+      gap: 6px;
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255, 253, 249, 0.8);
+      border: 1px solid rgba(108, 90, 80, 0.08);
+    }
+
+    .hero-metrics strong,
+    .summary-grid strong {
+      font-size: 1.02rem;
+    }
+
+    .hero-board {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      align-content: start;
+    }
+
+    .board-card,
+    .benefit-card,
+    .principle-card,
+    .framing-card,
+    .signal-card,
+    .step-card,
+    .scenario-card,
+    .source-panel,
+    .review-card,
+    .action-card,
+    .action-dock {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+      border-radius: 26px;
+      border: 1px solid rgba(108, 90, 80, 0.08);
+      background: rgba(255, 252, 246, 0.94);
+      box-shadow: 0 14px 28px rgba(72, 52, 42, 0.06);
+    }
+
+    .board-card-fit {
+      grid-column: span 2;
+      background:
+        radial-gradient(circle at top right, rgba(214, 229, 205, 0.32), transparent 22%),
+        rgba(255, 252, 246, 0.96);
+    }
+
+    .benefit-grid,
+    .principle-grid,
+    .framing-grid,
+    .scenario-grid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    .step-grid {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .signal-panel {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .signal-list,
+    .reason-list,
+    .receipt-list,
+    .review-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      display: grid;
+      gap: 10px;
+    }
+
+    .signal-list li,
+    .reason-list li,
+    .receipt-list li,
+    .action-review-empty {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(109, 91, 80, 0.05);
+      color: var(--ante-muted);
+      line-height: 1.6;
+    }
+
+    .pill-row,
+    .tag-row,
+    .source-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .pill-row span,
+    .tag-row span,
+    .source-chip-row span {
+      display: inline-flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0 12px;
+      border-radius: 999px;
+      background: rgba(109, 91, 80, 0.08);
+      color: var(--ante-muted);
+      font-size: 0.88rem;
+      font-weight: 700;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-end;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .section-head > p {
+      max-width: 480px;
+    }
+
+    .demo-layout {
+      display: grid;
+      grid-template-columns: minmax(280px, 0.84fr) minmax(360px, 0.94fr) minmax(280px, 0.82fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .source-head,
+    .review-head,
+    .board-topbar {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .source-head > div:first-child,
+    .review-head > div:first-child {
+      display: grid;
+      gap: 6px;
+    }
+
+    .source-head h3,
+    .review-head h3,
+    .board-topbar h3 {
+      margin: 0;
+      font-size: 1.24rem;
+    }
+
+    .field-label {
+      font-size: 0.92rem;
+      font-weight: 700;
+      color: #6c5a50;
+    }
+
+    .source-textarea {
+      width: 100%;
+      min-height: 148px;
+      resize: vertical;
+      padding: 16px;
+      border-radius: 22px;
+      border: 1px solid rgba(108, 90, 80, 0.12);
+      background: #fffdfa;
+      color: var(--ante-ink);
+      font: inherit;
+      line-height: 1.7;
+    }
+
+    .preset-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .preset-chip {
+      min-height: 44px;
+      padding: 0 16px;
+      font-size: 0.94rem;
+      font-weight: 800;
+    }
+
+    .board-shell {
+      display: grid;
+      gap: 14px;
+      padding: 12px;
+      border-radius: 34px;
+      background:
+        radial-gradient(circle at top right, rgba(232, 209, 191, 0.35), transparent 28%),
+        linear-gradient(180deg, #211915 0%, #57463f 100%);
+      box-shadow: 0 30px 70px rgba(50, 34, 28, 0.24);
+    }
+
+    .board-topbar,
+    .action-card,
+    .action-dock {
+      padding: 16px;
+      border-radius: 24px;
+    }
+
+    .queue-counter {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-radius: 999px;
+      background: rgba(109, 91, 80, 0.08);
+      font-weight: 800;
+    }
+
+    .action-card h3 {
+      margin: 0;
+      font-family: "Noto Serif SC", serif;
+      font-size: 2rem;
+      line-height: 1.12;
+    }
+
+    .action-card-kicker {
+      margin: 0;
+      color: var(--ante-accent-deep);
+      font-size: 0.92rem;
+      font-weight: 800;
+    }
+
+    .action-dock {
+      display: grid;
+      gap: 12px;
+      position: sticky;
+      bottom: 10px;
+      background: rgba(255, 251, 246, 0.96);
+    }
+
+    .action-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .action-pill {
+      min-height: 58px;
+      font-weight: 800;
+    }
+
+    .action-pill-secondary {
+      color: var(--ante-plum);
+      background: #fff4fb;
+    }
+
+    .feedback-row {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 10px;
+      align-items: start;
+    }
+
+    .review-stat strong {
+      font-size: 0.98rem;
+    }
+
+    .action-review-item {
+      display: grid;
+      gap: 8px;
+      padding: 14px;
+      border-radius: 18px;
+      background: rgba(109, 91, 80, 0.05);
+    }
+
+    .review-footer {
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    .faq-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .faq-item {
+      padding: 18px 20px;
+    }
+
+    .faq-item summary {
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 800;
+      list-style: none;
+    }
+
+    .faq-item summary::-webkit-details-marker {
+      display: none;
+    }
+
+    .faq-item p {
+      padding-top: 12px;
+    }
+
+    .reveal {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 420ms ease, transform 420ms ease;
+    }
+
+    .reveal.in-view {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    @media (max-width: 1220px) {
+      .hero,
+      .demo-layout,
+      .section-head {
+        grid-template-columns: 1fr;
+        display: grid;
+      }
+
+      .benefit-grid,
+      .principle-grid,
+      .framing-grid,
+      .scenario-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .step-grid,
+      .signal-panel {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      .antechamber-shell {
+        width: min(100vw - 20px, 100%);
+      }
+
+      .antechamber-header,
+      .hero,
+      .content-section {
+        padding: 18px;
+        border-radius: 24px;
+      }
+
+      .antechamber-header {
+        position: static;
+      }
+
+      .antechamber-nav {
+        display: none;
+      }
+
+      .hero-metrics,
+      .benefit-grid,
+      .principle-grid,
+      .framing-grid,
+      .scenario-grid,
+      .summary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .hero-board {
+        grid-template-columns: 1fr;
+      }
+
+      .board-card-fit {
+        grid-column: span 1;
+      }
+
+      .source-head,
+      .review-head,
+      .board-topbar,
+      .feedback-row,
+      .bridge-actions,
+      .hero-actions,
+      .source-actions {
+        display: flex;
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .action-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 620px) {
+      .antechamber-brand-copy small,
+      .antechamber-header-actions {
+        display: none;
+      }
+
+      .hero h1,
+      .section-head h2 {
+        font-size: 1.92rem;
+      }
+
+      .hero-btn,
+      .ghost-btn,
+      .demo-btn,
+      .preset-chip {
+        width: 100%;
+      }
+    }
+  </style>
+</BaseLayout>
