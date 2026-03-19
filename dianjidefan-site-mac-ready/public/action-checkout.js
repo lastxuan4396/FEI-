@@ -71,9 +71,9 @@
 
   const copy = {
     taskPlaceholder: "比如：做一份给导师看的汇报 PPT",
-    resetPlaceholder: "比如：桌面堆满了东西，今天只想先复位一点点",
+    resetPlaceholder: "比如：微信里有几条消息一直不想回，今天只想先复位一点点",
     taskStatus: "输入一句现在卡住的事，系统会把它压成几张可以立即开工的小动作卡。",
-    resetStatus: "输入当前乱点，或者直接载入一轮今日复位示例，只做今天最小的几笔。",
+    resetStatus: "输入你现在乱在哪里。今日复位不会让你大扫除，只会先把你拉回可开始区。",
     ready: "行动收银台已经就绪。输入一句任务，或直接载入一轮示例。",
     restored: "已恢复你上一轮行动账单。",
     cleared: "这一轮已经清空。你可以重新输入一件事，或先载入一轮示例。",
@@ -288,74 +288,104 @@
     const isMessage = /消息|微信|回复|邮件|聊天/.test(lower);
     const isMental = /散|乱|脑|焦虑|卡住|心烦/.test(lower);
 
-    const cards = [
-      {
-        id: makeId("action-reset"),
-        queue: "今日复位",
-        kicker: "复位动作",
-        title: isDesk ? "先把桌面上 3 个最显眼的东西挪走" : "先清掉眼前 3 个最显眼的东西",
-        meta: `${context} · 视觉复位 · 先见效`,
-        message: "复位的第一刀不是重构系统，而是先把最碍眼的 3 个对象移开。",
-        tags: ["先见效", "视觉减负", "马上能做"],
-        reasons: [
-          "眼前一轻，后面才容易继续",
-          "3 个对象的范围足够小，不容易逃避",
-          "复位先做减法，再谈整理"
-        ],
-        variants: [
-          { title: isDesk ? "先把桌面上 3 个最显眼的东西挪走" : "先清掉眼前 3 个最显眼的东西", message: "复位的第一刀不是重构系统，而是先把最碍眼的 3 个对象移开。" },
-          { title: "先把“明显不该在这”的东西归位", message: "不用整理全部，只处理那些一眼就知道放错地方的东西。" },
-          { title: "先清出一小块空白面", message: "先做出一块可以呼吸的空白，比整间都动更容易开始。" }
-        ],
-        variantIndex: 0
-      },
-      {
-        id: makeId("action-reset"),
-        queue: "今日复位",
-        kicker: isMessage ? "关系轻推" : "复位动作",
-        title: isMessage ? "先回 1 条最容易的消息" : "先处理 1 条最容易完成的小尾巴",
-        meta: `${context} · 轻推进 · 不做大清算`,
-        message: isMessage
-          ? "不是把所有未回消息都清空，只先回掉那条最容易结束的。"
-          : "你不需要把所有小尾巴都结完，只先让一笔离开脑子。",
-        tags: ["轻推进", "结束一笔", "不求清空"],
-        reasons: [
-          "先结束一笔，比同时惦记十笔更有用",
-          "最容易的那笔通常最适合重新启动节奏",
-          "复位不是清空，而是少挂一点"
-        ],
-        variants: [
-          { title: isMessage ? "先回 1 条最容易的消息" : "先处理 1 条最容易完成的小尾巴", message: isMessage ? "不是把所有未回消息都清空，只先回掉那条最容易结束的。" : "你不需要把所有小尾巴都结完，只先让一笔离开脑子。" },
-          { title: "先做一个 10 秒决定", message: "找一件可以 10 秒内做决定的事，让推进重新发生。" },
-          { title: "先把 1 个悬着的对象归位", message: "不用整理系统，只让一个具体对象回到它该去的地方。" }
-        ],
-        variantIndex: 0
-      },
-      {
-        id: makeId("action-reset"),
-        queue: "今日复位",
-        kicker: isMental ? "脑内复位" : "复位动作",
-        title: isMental ? "先写下脑子里最吵的 3 件事" : isRoom ? "先收一小块，不收整间" : "先关掉 3 个无关窗口 / 页面",
-        meta: `${context} · 收束注意力 · 只缩一圈`,
-        message: isMental
-          ? "脑子很吵时先别追求解决，先把最吵的 3 件事写出来，注意力就会有边界。"
-          : "目标不是大扫除，而是把范围缩成你现在能接住的一小圈。",
-        tags: ["缩范围", "降噪", "先收束"],
-        reasons: [
-          "注意力先有边界，行动才会回来",
-          "范围缩小以后，开始的门槛就会下降",
-          "复位不是奋起，是收束"
-        ],
-        variants: [
-          { title: isMental ? "先写下脑子里最吵的 3 件事" : isRoom ? "先收一小块，不收整间" : "先关掉 3 个无关窗口 / 页面", message: isMental ? "脑子很吵时先别追求解决，先把最吵的 3 件事写出来，注意力就会有边界。" : "目标不是大扫除，而是把范围缩成你现在能接住的一小圈。" },
-          { title: "先把现在不做的事划出去", message: "把今天不做的内容明确掉，复位感会来得更快。" },
-          { title: "先只保留一个工作面", message: "不让自己同时面对太多对象，先留一个能开始的面。" }
-        ],
-        variantIndex: 0
-      }
-    ];
+    const buildVisualCard = () => ({
+      id: makeId("action-reset"),
+      queue: "今日复位",
+      kicker: "视觉复位",
+      title: isDesk
+        ? "先清出键盘前这一小块空白"
+        : isRoom
+          ? "先只收床边 / 桌边这一小块"
+          : "先清掉眼前 3 个最显眼的东西",
+      meta: `${context} · 视觉复位 · 先见效`,
+      message: "复位的第一刀不是重构系统，而是先让眼前一轻，身体才更容易回来。",
+      tags: ["先见效", "视觉减负", "马上能做"],
+      reasons: [
+        "眼前一轻，后面才容易继续",
+        "范围小到不需要重新调动意志力",
+        "复位先做减法，再谈整理"
+      ],
+      variants: [
+        {
+          title: isDesk
+            ? "先清出键盘前这一小块空白"
+            : isRoom
+              ? "先只收床边 / 桌边这一小块"
+              : "先清掉眼前 3 个最显眼的东西",
+          message: "复位的第一刀不是重构系统，而是先让眼前一轻，身体才更容易回来。"
+        },
+        { title: "先把“明显不该在这”的东西归位", message: "不用整理全部，只处理那些一眼就知道放错地方的东西。" },
+        { title: "先清出一小块空白面", message: "先做出一块可以呼吸的空白，比整间都动更容易开始。" }
+      ],
+      variantIndex: 0
+    });
 
-    return cards;
+    const buildTailCard = () => ({
+      id: makeId("action-reset"),
+      queue: "今日复位",
+      kicker: isMessage ? "关系轻推" : "悬账复位",
+      title: isMessage ? "先回 1 条最容易结束的消息" : "先结掉 1 条最容易的小尾巴",
+      meta: `${context} · 轻推进 · 不做大清算`,
+      message: isMessage
+        ? "不是把所有未回消息都清空，只先回掉那条最容易结束的。"
+        : "你不需要把所有小尾巴都结完，只先让一笔离开脑子。",
+      tags: ["轻推进", "结束一笔", "不求清空"],
+      reasons: [
+        "先结束一笔，比同时惦记十笔更有用",
+        "最容易的那笔通常最适合重新启动节奏",
+        "复位不是清空，而是少挂一点"
+      ],
+      variants: [
+        {
+          title: isMessage ? "先回 1 条最容易结束的消息" : "先结掉 1 条最容易的小尾巴",
+          message: isMessage ? "不是把所有未回消息都清空，只先回掉那条最容易结束的。" : "你不需要把所有小尾巴都结完，只先让一笔离开脑子。"
+        },
+        { title: "先做一个 10 秒决定", message: "找一件可以 10 秒内做决定的事，让推进重新发生。" },
+        { title: "先把 1 个悬着的对象归位", message: "不用整理系统，只让一个具体对象回到它该去的地方。" }
+      ],
+      variantIndex: 0
+    });
+
+    const buildFocusCard = () => ({
+      id: makeId("action-reset"),
+      queue: "今日复位",
+      kicker: isMental ? "脑内复位" : "收束注意力",
+      title: isMental ? "先写下脑子里最吵的 3 件事" : isRoom ? "先只收一小块，不收整间" : "先关掉 3 个无关窗口 / 页面",
+      meta: `${context} · 收束注意力 · 只缩一圈`,
+      message: isMental
+        ? "脑子很吵时先别追求解决，先把最吵的 3 件事写出来，注意力就会有边界。"
+        : "目标不是大扫除，而是把范围缩成你现在能接住的一小圈。",
+      tags: ["缩范围", "降噪", "先收束"],
+      reasons: [
+        "注意力先有边界，行动才会回来",
+        "范围缩小以后，开始的门槛就会下降",
+        "复位不是奋起，是收束"
+      ],
+      variants: [
+        {
+          title: isMental ? "先写下脑子里最吵的 3 件事" : isRoom ? "先只收一小块，不收整间" : "先关掉 3 个无关窗口 / 页面",
+          message: isMental ? "脑子很吵时先别追求解决，先把最吵的 3 件事写出来，注意力就会有边界。" : "目标不是大扫除，而是把范围缩成你现在能接住的一小圈。"
+        },
+        { title: "先把现在不做的事划出去", message: "把今天不做的内容明确掉，复位感会来得更快。" },
+        { title: "先只保留一个工作面", message: "不让自己同时面对太多对象，先留一个能开始的面。" }
+      ],
+      variantIndex: 0
+    });
+
+    const order = (() => {
+      if (isMental && !isDesk && !isRoom && !isMessage) return ["focus", "tail", "visual"];
+      if (isMessage && !isDesk && !isRoom) return ["tail", "focus", "visual"];
+      if (isDesk || isRoom) return ["visual", "focus", "tail"];
+      return ["visual", "tail", "focus"];
+    })();
+
+    const builders = {
+      visual: buildVisualCard,
+      tail: buildTailCard,
+      focus: buildFocusCard
+    };
+
+    return order.map((key) => builders[key]());
   };
 
   const getViewCard = (card) => {

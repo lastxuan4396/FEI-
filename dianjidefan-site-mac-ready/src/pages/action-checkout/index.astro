@@ -9,6 +9,7 @@ import {
   pageMeta,
   promiseCards,
   queueFamilies,
+  resetPrimer,
   roadmap,
   trustRules,
   workflowSteps
@@ -36,6 +37,7 @@ import {
       <nav class="action-nav" aria-label="行动收银台页面导航">
         <a href="#overview">概览</a>
         <a href="#why">为什么成立</a>
+        <a href="#daily-reset">今日复位</a>
         <a href="#workflow">怎么工作</a>
         <a href="#demo">体验</a>
         <a href="#faq">FAQ</a>
@@ -137,6 +139,51 @@ import {
             </article>
           ))}
         </div>
+      </section>
+
+      <section id="daily-reset" class="content-section reveal">
+        <div class="section-head">
+          <div>
+            <p class="section-tag">Daily reset</p>
+            <h2>今日复位不是大扫除，而是把自己拉回可开始区。</h2>
+          </div>
+          <p>{resetPrimer.summary}</p>
+        </div>
+
+        <div class="reset-framing">
+          <article class="reset-framing-card reset-framing-card-main">
+            <p class="card-kicker">它在解决什么</p>
+            <h3>不是任务太多，而是你当前的状态已经不太能接住任务了。</h3>
+            <p>{resetPrimer.framing}</p>
+          </article>
+
+          <article class="reset-framing-card">
+            <p class="card-kicker">复位成功长什么样</p>
+            <ul class="reset-list">
+              {resetPrimer.successSigns.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          </article>
+        </div>
+
+        <div class="reset-layer-grid">
+          {resetPrimer.layers.map((item) => (
+            <article class="reset-layer-card">
+              <h3>{item.title}</h3>
+              <p>{item.body}</p>
+            </article>
+          ))}
+        </div>
+
+        <article class="reset-anti-card">
+          <p class="card-kicker">它不是什么</p>
+          <div class="reset-anti-row">
+            {resetPrimer.antiGoals.map((item) => (
+              <span>{item}</span>
+            ))}
+          </div>
+        </article>
       </section>
 
       <section id="workflow" class="content-section reveal">
@@ -755,6 +802,18 @@ import {
       gap: 14px;
     }
 
+    .reset-framing {
+      display: grid;
+      grid-template-columns: minmax(0, 1.2fr) minmax(0, 0.8fr);
+      gap: 14px;
+    }
+
+    .reset-layer-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
     .benefit-card,
     .promise-card,
     .workflow-card,
@@ -763,6 +822,53 @@ import {
       display: grid;
       gap: 12px;
       padding: 20px;
+    }
+
+    .reset-framing-card,
+    .reset-layer-card,
+    .reset-anti-card {
+      display: grid;
+      gap: 12px;
+      padding: 20px;
+      border: 1px solid rgba(71, 84, 67, 0.08);
+      border-radius: 26px;
+      background: rgba(255, 252, 246, 0.92);
+      box-shadow: 0 14px 30px rgba(52, 61, 50, 0.06);
+    }
+
+    .reset-framing-card-main {
+      background:
+        radial-gradient(circle at top right, rgba(210, 229, 202, 0.28), transparent 24%),
+        rgba(255, 252, 246, 0.96);
+    }
+
+    .reset-framing-card h3,
+    .reset-layer-card h3,
+    .reset-anti-card h3 {
+      margin: 0;
+      font-size: 1.22rem;
+    }
+
+    .reset-list,
+    .reset-anti-row {
+      display: grid;
+      gap: 10px;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .reset-list li,
+    .reset-anti-row span {
+      padding: 12px 14px;
+      border-radius: 18px;
+      background: rgba(49, 62, 46, 0.05);
+      color: var(--action-muted);
+      line-height: 1.6;
+    }
+
+    .reset-anti-row {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
     }
 
     .benefit-card strong {
@@ -1074,8 +1180,14 @@ import {
       .promise-grid,
       .workflow-grid,
       .family-grid,
-      .roadmap-grid {
+      .roadmap-grid,
+      .reset-layer-grid,
+      .reset-anti-row {
         grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .reset-framing {
+        grid-template-columns: 1fr;
       }
     }
 
@@ -1105,7 +1217,9 @@ import {
       .promise-grid,
       .workflow-grid,
       .family-grid,
-      .roadmap-grid {
+      .roadmap-grid,
+      .reset-layer-grid,
+      .reset-anti-row {
         grid-template-columns: 1fr;
       }
 
