@@ -52,13 +52,26 @@
     restoreDropped: document.getElementById("mobile-restore-dropped"),
     exportDrops: document.getElementById("mobile-export-drops"),
     installApp: document.getElementById("mobile-install-app"),
-    installNote: document.getElementById("mobile-install-note")
+    installNote: document.getElementById("mobile-install-note"),
+    previewLayer: document.getElementById("mobile-preview-layer"),
+    previewBackdrop: document.getElementById("mobile-preview-backdrop"),
+    previewClose: document.getElementById("mobile-preview-close"),
+    previewTitle: document.getElementById("mobile-preview-title"),
+    previewMeta: document.getElementById("mobile-preview-meta"),
+    previewStatus: document.getElementById("mobile-preview-status"),
+    previewImage: document.getElementById("mobile-preview-image"),
+    previewFrame: document.getElementById("mobile-preview-frame"),
+    previewVideo: document.getElementById("mobile-preview-video"),
+    previewAudio: document.getElementById("mobile-preview-audio"),
+    previewText: document.getElementById("mobile-preview-text"),
+    previewEmpty: document.getElementById("mobile-preview-empty")
   };
 
   if (!refs.queueTitle || !refs.title) return;
 
   const runtimeFiles = new Map();
   let deferredInstallPrompt = null;
+  let previewUrl = "";
   const cardBackgrounds = [
     "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(254,242,224,0.96))",
     "linear-gradient(180deg, rgba(255,255,255,0.98), rgba(239,246,255,0.96))",
@@ -183,6 +196,11 @@
     return extension ? extension.toUpperCase() : "文件";
   };
 
+  const isPreviewableText = (extension, mimeType) => {
+    if (mimeType?.startsWith("text/")) return true;
+    return ["txt", "md", "json", "csv", "log", "xml", "html", "css", "js", "ts"].includes(extension);
+  };
+
   const inferPriority = (name, extension, sizeMb) => {
     const lowerName = name.toLowerCase();
     let score = 20;
@@ -253,6 +271,65 @@
       node.textContent = reason;
       refs.reasons.appendChild(node);
     });
+  };
+
+  const revokePreviewUrl = () => {
+    if (previewUrl) {
+      URL.revokeObjectURL(previewUrl);
+      previewUrl = "";
+    }
+  };
+
+  const clearPreviewNodes = () => {
+    revokePreviewUrl();
+
+    [
+      refs.previewImage,
+      refs.previewFrame,
+      refs.previewVideo,
+      refs.previewAudio,
+      refs.previewText,
+      refs.previewEmpty
+    ].forEach((node) => {
+      if (!node) return;
+      node.hidden = true;
+    });
+
+    if (refs.previewImage) {
+      refs.previewImage.removeAttribute("src");
+      refs.previewImage.alt = "";
+    }
+    if (refs.previewFrame) refs.previewFrame.removeAttribute("src");
+    if (refs.previewVideo) {
+      refs.previewVideo.pause();
+      refs.previewVideo.removeAttribute("src");
+      refs.previewVideo.load();
+    }
+    if (refs.previewAudio) {
+      refs.previewAudio.pause();
+      refs.previewAudio.removeAttribute("src");
+      refs.previewAudio.load();
+    }
+    if (refs.previewText) refs.previewText.textContent = "";
+  };
+
+  const closePreview = () => {
+    if (!refs.previewLayer || refs.previewLayer.hidden) return;
+    refs.previewLayer.hidden = true;
+    document.body.classList.remove("preview-open");
+    clearPreviewNodes();
+  };
+
+  const openPreviewLayer = () => {
+    if (!refs.previewLayer) return;
+    refs.previewLayer.hidden = false;
+    document.body.classList.add("preview-open");
+  };
+
+  const setPreviewHeader = (item, status) => {
+    if (refs.previewTitle) refs.previewTitle.textContent = item?.title || "文件预览";
+    if (refs.previewMeta) refs.previewMeta.textContent = item?.meta || "";
+    if (refs.previewStatus) refs.previewStatus.textContent = status;
   };
 
   const renderReceipts = () => {
@@ -532,6 +609,7 @@
   };
 
   const loadSampleQueue = ({ restored = false } = {}) => {
+    closePreview();
     runtimeFiles.clear();
     state.mode = "sample";
     state.pending = sampleCards.map((card, index) => ({
@@ -549,6 +627,7 @@
   };
 
   const clearAll = () => {
+    closePreview();
     runtimeFiles.clear();
     state.mode = "empty";
     state.pending = [];
@@ -561,6 +640,7 @@
   };
 
   const loadFiles = (files) => {
+    closePreview();
     const list = Array.from(files || []).filter((file) => file && typeof file.name === "string");
     if (!list.length) {
       setFeedback("这次没有选到文件。");
@@ -643,41 +723,119 @@
     setFeedback(`已导出 ${state.dropped.length} 笔待删清单。`);
   };
 
-  const openFile = (item) => {
+  const previewSampleCard = (item) => {
+    clearPreviewNodes();
+    setPreviewHeader(item, "这是一张示例卡，所以只演示预览层，不会打开真实文件。");
+    if (refs.previewEmpty) {
+      refs.previewEmpty.hidden = false;
+      refs.previewEmpty.textContent = `${item.message} 真实文件接入后，这里会直接在页内预览，而不是再下载一遍。`;
+    }
+    openPreviewLayer();
+    setFeedback("示例卡已经在页内预览层打开。");
+  };
+
+  const previewMissingRuntime = (item) => {
+    clearPreviewNodes();
+    setPreviewHeader(item, "这笔文件来自上次保存的队列，浏览器手里已经没有原文件了。");
+    if (refs.previewEmpty) {
+      refs.previewEmpty.hidden = false;
+      refs.previewEmpty.textContent = "如果你想真实预览它，请重新从文件 App 里选一次这批文件。这样预览就不会再走“重新下载”那条路。";
+    }
+    openPreviewLayer();
+    setFeedback("这笔文件需要重新选择后才能真实预览。");
+  };
+
+  const openFile = async (item) => {
     if (!item) return;
 
-    if (item.kind !== "file" || item.sample) {
-      setFeedback("示例卡不会打开真实文件，但你已经感受到手机版的处理节奏。");
+    if (item.kind !== "file") {
+      return;
+    }
+
+    if (item.sample) {
+      previewSampleCard(item);
       return;
     }
 
     const file = runtimeFiles.get(item.id);
     if (!file) {
-      setFeedback("这笔文件来自上次保存的队列。如需真实预览，请重新从手机里选择它。");
+      previewMissingRuntime(item);
       return;
     }
 
-    const url = URL.createObjectURL(file);
-    window.open(url, "_blank", "noopener,noreferrer");
-    window.setTimeout(() => URL.revokeObjectURL(url), 60_000);
-    setFeedback(`已在新标签打开 ${item.title}。如果看完想继续处理，回来继续刷下一张。`);
+    clearPreviewNodes();
+    setPreviewHeader(item, "现在直接在当前页面里预览，不再额外下载一遍。");
+    openPreviewLayer();
+
+    const extension = getExtension(file.name);
+    const mimeType = file.type || "";
+
+    try {
+      if (mimeType.startsWith("image/") && refs.previewImage) {
+        previewUrl = URL.createObjectURL(file);
+        refs.previewImage.src = previewUrl;
+        refs.previewImage.alt = item.title;
+        refs.previewImage.hidden = false;
+        setFeedback(`已在页内预览 ${item.title}。`);
+        return;
+      }
+
+      if (mimeType === "application/pdf" && refs.previewFrame) {
+        previewUrl = URL.createObjectURL(file);
+        refs.previewFrame.src = previewUrl;
+        refs.previewFrame.hidden = false;
+        setFeedback(`已在页内预览 ${item.title}。`);
+        return;
+      }
+
+      if (mimeType.startsWith("video/") && refs.previewVideo) {
+        previewUrl = URL.createObjectURL(file);
+        refs.previewVideo.src = previewUrl;
+        refs.previewVideo.hidden = false;
+        setFeedback(`已在页内预览 ${item.title}。`);
+        return;
+      }
+
+      if (mimeType.startsWith("audio/") && refs.previewAudio) {
+        previewUrl = URL.createObjectURL(file);
+        refs.previewAudio.src = previewUrl;
+        refs.previewAudio.hidden = false;
+        setFeedback(`已在页内预览 ${item.title}。`);
+        return;
+      }
+
+      if (isPreviewableText(extension, mimeType) && refs.previewText) {
+        refs.previewText.textContent = await file.text();
+        refs.previewText.hidden = false;
+        setFeedback(`已在页内预览 ${item.title}。`);
+        return;
+      }
+
+      if (refs.previewEmpty) {
+        refs.previewEmpty.hidden = false;
+        refs.previewEmpty.textContent = "这个格式暂时还不能在页内直接预览。好消息是，这张卡还留在原位；你看完之后，再决定收纳、稍后还是待删。";
+      }
+      setFeedback(`这个格式暂时还不能页内预览，但已经避免了自动重新下载。`);
+    } catch {
+      if (refs.previewEmpty) {
+        refs.previewEmpty.hidden = false;
+        refs.previewEmpty.textContent = "这次预览没有成功。文件没有丢，也没有被重复下载；你可以重新试一次，或者直接做后续决定。";
+      }
+      setFeedback("这次预览没有成功，但已经留在当前页里了。");
+    }
   };
 
   const applyAction = (action) => {
     const item = state.pending[0];
     if (!item) return;
 
-    pushHistory();
-    state.pending.shift();
-
     if (action === "process") {
-      state.processed += 1;
-      state.lightness += 6;
-      state.receipts.push(`看过 · ${item.title}`);
       openFile(item);
-      sync();
       return;
     }
+
+    pushHistory();
+    state.pending.shift();
 
     if (action === "archive") {
       state.processed += 1;
@@ -795,6 +953,8 @@
   refs.archivedList?.addEventListener("click", handleReviewAction);
   refs.deferredList?.addEventListener("click", handleReviewAction);
   refs.dropList?.addEventListener("click", handleReviewAction);
+  refs.previewBackdrop?.addEventListener("click", closePreview);
+  refs.previewClose?.addEventListener("click", closePreview);
   refs.installApp?.addEventListener("click", async () => {
     if (isStandalone()) {
       setInstallUi({
@@ -869,6 +1029,9 @@
   }
 
   registerServiceWorker();
+  window.addEventListener("keydown", (event) => {
+    if (event.key === "Escape") closePreview();
+  });
 
   const restored = restorePersistedState();
   if (restored && (state.pending.length || state.archived.length || state.deferred.length || state.dropped.length)) {

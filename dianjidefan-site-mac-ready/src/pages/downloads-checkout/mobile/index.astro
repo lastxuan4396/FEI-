@@ -75,7 +75,7 @@ import {
             </article>
             <article>
               <strong>4 个动作</strong>
-              <span>看一眼 / 收纳 / 稍后 / 待删</span>
+              <span>预览 / 收纳 / 稍后 / 待删</span>
             </article>
             <article>
               <strong>拇指优先</strong>
@@ -289,7 +289,7 @@ import {
 
               <div class="phone-action-dock">
                 <div class="action-grid">
-                  <button class="action-pill action-pill-primary" type="button" data-mobile-action="process">看一眼</button>
+                  <button class="action-pill action-pill-primary" type="button" data-mobile-action="process">预览</button>
                   <button class="action-pill" type="button" data-mobile-action="archive">收纳盒</button>
                   <button class="action-pill" type="button" data-mobile-action="later">稍后</button>
                   <button class="action-pill action-pill-danger" type="button" data-mobile-action="drop">待删</button>
@@ -366,6 +366,33 @@ import {
                 <button id="mobile-restore-dropped" class="ghost-btn" type="button" disabled>全部恢复</button>
               </div>
             </article>
+          </div>
+
+          <div id="mobile-preview-layer" class="preview-layer" hidden>
+            <button id="mobile-preview-backdrop" class="preview-backdrop" type="button" aria-label="关闭预览"></button>
+            <div class="preview-sheet" role="dialog" aria-modal="true" aria-labelledby="mobile-preview-title">
+              <div class="preview-head">
+                <div>
+                  <p class="card-kicker">Preview</p>
+                  <h3 id="mobile-preview-title">文件预览</h3>
+                  <p id="mobile-preview-meta" class="preview-meta">预览会直接在当前页面里打开，不再额外下载一遍。</p>
+                </div>
+                <button id="mobile-preview-close" class="ghost-btn ghost-btn-small" type="button">关闭</button>
+              </div>
+
+              <p id="mobile-preview-status" class="preview-status">正在准备预览…</p>
+
+              <div class="preview-body">
+                <img id="mobile-preview-image" class="preview-media" alt="" hidden />
+                <iframe id="mobile-preview-frame" class="preview-frame" title="文件预览" hidden></iframe>
+                <video id="mobile-preview-video" class="preview-media" controls playsinline hidden></video>
+                <audio id="mobile-preview-audio" class="preview-audio" controls hidden></audio>
+                <pre id="mobile-preview-text" class="preview-text" hidden></pre>
+                <div id="mobile-preview-empty" class="preview-empty" hidden>
+                  这个格式暂时还不能在页内直接预览，但这张卡会留在队列里，你看完后再决定收纳、稍后还是待删。
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -1116,6 +1143,111 @@ import {
       align-items: start;
     }
 
+    .preview-layer {
+      position: fixed;
+      inset: 0;
+      z-index: 90;
+      display: grid;
+      align-items: end;
+    }
+
+    .preview-layer[hidden] {
+      display: none;
+    }
+
+    .preview-backdrop {
+      position: absolute;
+      inset: 0;
+      border: 0;
+      background: rgba(18, 13, 10, 0.54);
+      cursor: pointer;
+    }
+
+    .preview-sheet {
+      position: relative;
+      display: grid;
+      gap: 14px;
+      max-height: min(86vh, 860px);
+      padding: 18px 18px 24px;
+      border-radius: 28px 28px 0 0;
+      background: rgba(255, 250, 244, 0.98);
+      box-shadow: 0 -24px 70px rgba(36, 25, 16, 0.24);
+      overflow: hidden;
+    }
+
+    .preview-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .preview-head > div {
+      display: grid;
+      gap: 8px;
+    }
+
+    .preview-head h3 {
+      margin: 0;
+      font-size: 1.18rem;
+    }
+
+    .preview-meta,
+    .preview-status {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .preview-body {
+      display: grid;
+      gap: 12px;
+      min-height: 220px;
+      max-height: calc(86vh - 170px);
+      overflow: auto;
+      padding-bottom: 4px;
+    }
+
+    .preview-media,
+    .preview-frame,
+    .preview-text,
+    .preview-empty,
+    .preview-audio {
+      width: 100%;
+      border-radius: 18px;
+      border: 1px solid rgba(76, 53, 29, 0.12);
+      background: #fffdfa;
+    }
+
+    .preview-media,
+    .preview-frame {
+      min-height: 320px;
+      max-height: 56vh;
+      object-fit: contain;
+    }
+
+    .preview-frame {
+      background: #f8f4ee;
+    }
+
+    .preview-audio {
+      min-height: 64px;
+      padding: 8px;
+    }
+
+    .preview-text,
+    .preview-empty {
+      padding: 16px;
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.6;
+      color: var(--ink);
+    }
+
+    .preview-empty {
+      color: var(--muted);
+    }
+
     .review-stack {
       display: grid;
       gap: 14px;
@@ -1240,6 +1372,10 @@ import {
       transform: translateY(0);
     }
 
+    :global(body.preview-open) {
+      overflow: hidden;
+    }
+
     @media (max-width: 1180px) {
       .hero,
       .mobile-workbench,
@@ -1310,6 +1446,7 @@ import {
       .mobile-source-head,
       .feedback-row,
       .bridge-panel,
+      .preview-head,
       .review-footer {
         display: flex;
         flex-direction: column;
@@ -1350,7 +1487,8 @@ import {
 
       .phone-preview,
       .review-card,
-      .mobile-source-panel {
+      .mobile-source-panel,
+      .preview-sheet {
         border-radius: 24px;
       }
 
