@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="550" viewBox="0 0 900 550">
+<rect width="900" height="550" fill="#e7dcc9"/><path d="M0 420H900V550H0Z" fill="#b3987a"/>
+<rect x="55" y="55" width="180" height="200" rx="10" fill="#97c1cd" stroke="#fbf5e6" stroke-width="15"/>
+<path d="M145 55V255M55 155H235" stroke="#fbf5e6" stroke-width="10"/><text x="145" y="145" text-anchor="middle" font-size="42" fill="#34535b">3</text>
+<rect x="350" y="75" width="160" height="135" fill="#b77964" stroke="#765449" stroke-width="12"/><text x="430" y="164" text-anchor="middle" font-size="55" fill="#f7e8cf">1</text>
+<path d="M655 55H770L796 150H630Z" fill="#d29c51"/><path d="M713 150V350" stroke="#594b40" stroke-width="9"/><text x="713" y="127" text-anchor="middle" font-size="45" fill="#493c31">4</text>
+<rect x="135" y="350" width="330" height="35" rx="8" fill="#765449"/><path d="M160 380V505M435 380V505" stroke="#765449" stroke-width="20"/>
+<circle cx="305" cy="340" r="12" fill="none" stroke="#ddb75b" stroke-width="6"/><path d="M315 345L344 356M334 352L331 362" stroke="#ddb75b" stroke-width="6"/>
+<rect x="565" y="325" width="130" height="80" rx="12" fill="#845f46"/><path d="M565 352H695" stroke="#ccaa7a" stroke-width="7"/><rect x="621" y="346" width="17" height="24" rx="5" fill="#d4bd72"/>
+<rect x="785" y="200" width="93" height="230" rx="8" fill="#77978a" stroke="#557268" stroke-width="8"/><circle cx="853" cy="325" r="6" fill="#e6c075"/>
+<text x="32" y="527" font-size="20" fill="#493c31">找到钥匙，解开密码，带着地图出发。</text></svg>

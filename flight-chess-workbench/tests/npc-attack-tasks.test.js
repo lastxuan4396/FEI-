@@ -1,0 +1,32 @@
+import test from 'node:test';import assert from 'node:assert/strict';
+import {createAdventure,adventureTransition as go,BATTLE_CARDS,adventureView} from '../src/core/adventure.js';import {npcAttackTasks,previewNPCAction} from '../src/core/npc.js';import {taskParameters} from '../src/core/taskParameters.js';
+const act=(s,a,p=s.pending?.actor??s.turn)=>go(s,{...a,epoch:s.epoch},p);
+function fight(settings={},extra={}){let s=createAdventure({variant:'spire',players:['甲','乙'],pool:['观察30秒','念3句','记录2张'],settings:{floors:3,rounds:12,...settings},seed:1,...extra});return act(s,{type:'PATH',path:'normal'});}
+const attack=s=>act(act(s,{type:'END_TURN'},0),{type:'END_TURN'},1);
+const settle=(s,done=true)=>{while(s.pending?.kind==='npc')s=act(s,{type:'COMPLETE',done,taskId:s.pending.id});return s;};
+test('Default NPC hits create targeted tasks before damage; pending tasks block further cards/turns and reject the wrong player or stale task',()=>{
+ let s=fight();assert.equal(s.config.settings.enemyTasks,'on-hit');const hp=s.battle.hp,round=s.battle.round,preview=previewNPCAction(s.battle);s=attack(s);assert.equal(s.pending.kind,'npc');assert.equal(s.pending.actor,0);assert.equal(s.battle.hp,hp);assert.equal(s.battle.round,round);assert.equal(s.battle.assault.total,1);assert.throws(()=>act(s,{type:'COMPLETE',done:true}));assert.throws(()=>act(s,{type:'END_TURN'}));assert.throws(()=>act(s,{type:'PLAY',index:0}));assert.throws(()=>act(s,{type:'COMPLETE',done:true},1));assert.throws(()=>act(s,{type:'COMPLETE',done:true,taskId:'old'}));const taskId=s.pending.id;s=settle(s);assert.equal(s.battle.hp,hp-Math.floor(preview.incoming/2));assert.equal(s.battle.round,round+1);assert.equal(s.pending,undefined);assert.equal(s.battle.assault,undefined);assert.throws(()=>act(s,{type:'COMPLETE',done:true,taskId}));assert.deepEqual(s.energy,[3,3]);assert.deepEqual(s.hands.map(h=>h.length),[5,5]);assert.match(s.log.join('；'),/完成攻击任务.*格挡/);
+ s=settle(attack(s));assert.equal(s.battle.round,3);
+});
+test('Block and suppression prevent on-hit tasks; always mode and legacy/off modes retain their distinct behavior',()=>{
+ let s=fight();s.battle.block=100;s=attack(s);assert.equal(s.pending,undefined);assert.equal(s.battle.hp,30);assert.equal(s.battle.round,2);
+ s=fight();s.battle.weakened=8;s=attack(s);assert.equal(s.pending,undefined);
+ s=fight({enemyTasks:'always'});s.battle.block=100;s=attack(s);assert.equal(s.pending.guardGain,0);s=settle(s);assert.equal(s.battle.hp,30);
+ for(const legacy of [false,true]){s=fight({enemyTasks:'off'});if(legacy)delete s.config.settings.enemyTasks;s=attack(s);assert.equal(s.pending,undefined);assert.equal(s.battle.hp,26);}
+ assert.throws(()=>fight({enemyTasks:'invalid'}));
+});
+test('Multi-hit NPC attacks address both players; all tasks must resolve before a single damage settlement',()=>{
+ let s=fight({floors:1}),p=previewNPCAction(s.battle);assert.deepEqual(npcAttackTasks(s.battle,'on-hit').map(v=>v.actor),[0,1]);s=attack(s);assert.equal(s.battle.assault.total,2);const first=s.pending.id,second=s.battle.assault.remaining[0].id,hp=s.battle.hp;assert.notEqual(first,second);const target=s.pending.text;s=act(s,{type:'COMPLETE',done:true,taskId:first});assert.equal(s.pending.actor,1);assert.notEqual(s.pending.text,target);assert.equal(s.battle.hp,hp);assert.equal(s.battle.round,1);assert.equal(s.battle.assault.completed,1);assert.throws(()=>act(s,{type:'COMPLETE',done:true,taskId:first},0));s=settle(JSON.parse(JSON.stringify(s)));assert.equal(s.battle.hp,hp-Math.floor(p.incoming/2));assert.equal(s.battle.round,2);assert.equal(s.effectTurns,3);
+ s=fight({floors:1});p=previewNPCAction(s.battle);s=settle(attack(s),false);assert.equal(s.battle.hp,30-p.damage);assert.match(s.log.join('；'),/跳过攻击任务/);
+});
+test('Teammate assistance costs one energy once, keeps the task/clock and transfers authorization; zero energy cannot assist',()=>{
+ let s=attack(fight()),id=s.pending.id;s=act(s,{type:'TIMER',now:1000,taskId:id});const ends=s.pending.endsAt;s=act(s,{type:'ASSIST',taskId:id},1);assert.equal(s.energy[1],2);assert.equal(s.pending.actor,1);assert.equal(s.pending.targetActor,0);assert.equal(s.pending.id,id);assert.equal(s.pending.endsAt,ends);assert.throws(()=>act(s,{type:'ASSIST',taskId:id},0));assert.throws(()=>act(s,{type:'COMPLETE',done:true,taskId:id},0));assert.throws(()=>act(s,{type:'TIMER',now:2000,taskId:id},0));s=act(JSON.parse(JSON.stringify(s)),{type:'TIMER',now:2000,timerMode:'pause',taskId:id},1);assert(s.pending.pausedRemaining>0);s=settle(s);assert.equal(s.battle.hp,28);assert.match(s.log.join('；'),/乙消耗1能量.*替甲/);
+ s=attack(fight());s.energy[1]=0;assert.throws(()=>act(s,{type:'ASSIST',taskId:s.pending.id},1));
+});
+test('Enemy missions use the chosen pool and parameter snapshot, while independent clocks/counts and role snapshots remain stable',()=>{
+ const raw='观察30秒',parameters={[taskParameters(raw).key]:[7]};let s=attack(fight({}, {pool:[raw],parameters}));assert.equal(s.pending.text,'观察7秒');assert.equal(s.pending.original,raw);assert.equal(s.pending.duration,7);const id=s.pending.id;s=act(s,{type:'EFFECT_ADD',now:1000,effect:{text:'念5句',unit:'count',amount:5,countUnit:'句',targets:['0','1']}},1);const hp=s.battle.hp;s=act(s,{type:'EFFECT_COUNT',effectId:s.effects[0].id,countDelta:1},1);assert.equal(s.pending.id,id);assert.equal(s.battle.hp,hp);assert.equal(s.battle.round,1);for(const role of [0,1]){const v=adventureView(JSON.parse(JSON.stringify(s)),role);assert.equal(v.pending.id,id);assert.equal(v.effects[0].progress,1);}s=settle(s);assert.equal(s.effects[0].progress,1);
+});
+test('Defeat/round limits are evaluated after all enemy tasks; retry resets the assault and full victories keep rewards playable',()=>{
+ let s=attack(fight({rounds:1}));assert.equal(s.phase,'battle');s=settle(s,false);assert.equal(s.phase,'defeat');assert.equal(s.pending,undefined);s=act(s,{type:'RETRY'});assert.equal(s.battle.hp,30);assert.equal(s.battle.round,1);assert.equal(s.battle.assault,undefined);
+ s=fight({floors:1,hp:100,rounds:30});for(let n=0;n<100&&s.phase==='battle';n++){if(s.pending?.kind==='npc'){s=settle(s);continue;}const actor=s.turn,i=s.hands[actor].findIndex(id=>{const card=BATTLE_CARDS.find(c=>c.id===id);return card.attack>0&&card.cost<=s.energy[actor]});s=i<0?act(s,{type:'END_TURN'},actor):act(act(s,{type:'PLAY',index:i},actor),{type:'COMPLETE',done:true},actor);}assert.equal(s.phase,'reward');s=act(s,{type:'REWARD',index:0},0);s=act(s,{type:'REWARD',index:1},1);assert.equal(s.phase,'finished');
+});

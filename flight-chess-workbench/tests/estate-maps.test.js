@@ -1,0 +1,29 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createArcade,arcadeTransition,validateArcade,parseArcade,LOTS} from '../src/core/arcade.js';
+import {estateMap,ESTATE_MAP_SIZES} from '../src/core/estateMaps.js';
+import {estateGroup,estateRent} from '../src/core/estate.js';
+const people=[{name:'A',color:'#678a78'},{name:'B',color:'#b77a65'}];
+const fresh=(mapSize,taskMode='linked',seed=1)=>createArcade('estate',people,{seed,pool:['分享今天的开心事','一起哼一首歌'],estate:{mapSize,taskMode,target:1000,rounds:32}});
+const act=(w,a)=>arcadeTransition(w,{...a,expectedRevision:w.state.revision});
+const at=(n,i)=>{const w=fresh(n);w.state.seed=1;w.state.players[0].position=i-1;return act(w,{type:'ROLL'});};
+
+test('three estate maps form adjacent closed rings with paired groups and unchanged original layout',()=>{
+ assert.deepEqual(estateMap().tiles.map(t=>t.name),LOTS);
+ assert.deepEqual(estateMap().groups.map(g=>g.lots),[[1,3],[4,5],[7,8],[9,11]]);
+ for(const n of ESTATE_MAP_SIZES){const m=estateMap({estate:{mapSize:n}}),w=fresh(n);assert.equal(m.positions.length,n);assert.equal(new Set(m.positions.map(p=>p.join(','))).size,n);m.positions.forEach(([x,y],i)=>{const next=m.positions[(i+1)%n];assert.equal(Math.abs(x-next[0])+Math.abs(y-next[1]),1);});assert.equal(w.state.owners.length,n);assert.equal(w.state.estate.boundTasks.length,n);assert.equal(m.groups.flatMap(g=>g.lots).length,m.tiles.filter(t=>t.kind==='property').length);m.tiles.forEach((t,i)=>assert.equal(!!estateGroup(i,w.config),t.kind==='property'));assert.deepEqual(parseArcade(JSON.stringify(w)),w);}
+});
+test('expanded event locations have the same penalty, reward and contract settlement, plus start income and undo',()=>{
+ for(const n of [20,28]){const m=estateMap({estate:{mapSize:n}});for(let i=12;i<n;i++){const kind=m.tiles[i].kind;if(kind==='property')continue;let w=at(n,i);assert.equal(w.state.players[0].position,i);assert.equal(w.state.phase,kind==='penalty'?'task':kind==='reward'?'reward':'contract');if(kind==='penalty'){w=act(w,{type:'RESOLVE',done:false});assert.equal(w.state.players[0].cash,110);}if(kind==='reward'){w=act(w,{type:'CLAIM_REWARD'});assert.equal(w.state.phase,'ready');}if(kind==='contract'){w=act(w,{type:'CONTRACT',method:'cash'});w=act(w,{type:'RESOLVE',done:true});assert.equal(w.state.players[0].cash,135);}assert.deepEqual(parseArcade(JSON.stringify(w)),w);}
+ const w=fresh(n);w.state.players[0].position=n-1;w.state.seed=1;const moved=act(w,{type:'ROLL'});assert.equal(moved.state.players[0].position,0);assert.equal(moved.state.players[0].cash,150);assert.deepEqual(act(moved,{type:'UNDO'}).state.players,w.state.players);}
+});
+test('last extended group supports auction, uniform building, task binding, rent, sale and consent trade',()=>{
+ for(const n of [20,28]){const original=fresh(n),g=estateMap(original.config).groups.at(-1),[a,b]=g.lots;let w=at(n,b);w=act(w,{type:'BUY',yes:false});w=act(w,{type:'BID',target:0,price:10});w=act(w,{type:'PASS_BID',target:1});assert.equal(w.state.owners[b],0);w.state.turn=0;w.state.owners[a]=0;w.state.players[0].cash=250;assert.equal(estateRent(w,b),20);w=act(w,{type:'BUILD',lot:b});assert.throws(()=>act(w,{type:'BUILD',lot:b}));w=act(w,{type:'BUILD',lot:a});w=act(w,{type:'BIND_TASK',lot:b,index:1});assert.equal(w.state.estate.boundTasks[b],w.config.pool[1]);
+ w.state.turn=1;w.state.players[1].position=b-1;w.state.seed=1;w=act(w,{type:'ROLL'});assert.equal(w.state.phase,'rent');assert.equal(w.state.estate.rent.amount,25);w=act(w,{type:'RENT',method:'task'});const before=w.state.players.map(p=>p.cash);w=act(w,{type:'RESOLVE',done:true});assert.equal(w.state.players[1].cash,before[1]-13);assert.equal(w.state.players[0].cash,before[0]+13);w.state.turn=0;w=act(w,{type:'SELL_BUILDING',lot:a});w=act(w,{type:'SELL_BUILDING',lot:b});w=act(w,{type:'TRADE',lot:b,target:1,price:50});w=act(w,{type:'ACCEPT',yes:true});assert.equal(w.state.owners[b],1);assert.equal(w.state.estate.boundTasks[b],w.config.pool[1]);w.state.turn=1;w=act(w,{type:'SELL_LOT',lot:b});assert.equal(w.state.owners[b],-1);assert.deepEqual(parseArcade(JSON.stringify(w)),w);}
+});
+test('invalid map sizes, arrays, public-lot owners and out-of-map undo snapshots are rejected; no-size old saves stay at twelve',()=>{
+ for(const n of [0,16,24,32])assert.throws(()=>fresh(n));let w=fresh(28);w.state.owners[26]=0;assert.throws(()=>validateArcade(w));w=fresh(28);w.state.estate.boundTasks.pop();assert.throws(()=>validateArcade(w));w=act(fresh(20),{type:'ROLL'});w.state.undo[0].players[0].position=20;assert.throws(()=>validateArcade(w));const old=createArcade('estate',people,{pool:['test'],estate:{taskMode:'off',target:1000,rounds:32}});assert.equal(old.config.estate.mapSize,undefined);assert.equal(parseArcade(JSON.stringify(old)).state.owners.length,12);
+});
+test('27 full estate games across three maps and three task modes finish with legal persistent economy',()=>{
+ for(const n of ESTATE_MAP_SIZES)for(const mode of ['linked','events','off'])for(const seed of [4,45,71]){let w=fresh(n,mode,seed),moves=0;while(w.state.phase!=='finished'&&moves++<1200){const s=w.state,p=s.players[s.turn];const action=s.phase==='ready'?{type:'ROLL'}:s.phase==='offer'?{type:'BUY',yes:s.owners[p.position]===s.turn?false:p.cash>=40+(p.position%3)*20}:s.phase==='auction'?{type:'PASS_BID',target:s.estate.auction.activeBidderOrder[s.estate.auction.activeBidderIndex]}:s.phase==='task'?{type:'RESOLVE',done:true}:s.phase==='reward'?{type:'CLAIM_REWARD'}:s.phase==='contract'?{type:'CONTRACT',method:'cash'}:s.phase==='rent'?p.cash>=s.estate.rent.amount?{type:'RENT',method:'pay'}:{type:'BANKRUPT'}:null;assert(action,s.phase);w=act(w,action);assert(w.state.players.every(p=>p.position<n));if(moves%17===0)parseArcade(JSON.stringify(w));}assert.equal(w.state.phase,'finished',`${n}/${mode}/${seed}`);parseArcade(JSON.stringify(w));}
+});

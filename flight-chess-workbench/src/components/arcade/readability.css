@@ -1,0 +1,191 @@
+/* Reading content follows the page. Only an actual map gets a pan/zoom viewport. */
+.arc-shell:has(.readable-surface){max-width:1180px}
+.readable-surface{--reading-size:16px;margin:16px 0;min-width:0}
+.readable-surface.large-reading{--reading-size:19px}
+.reading-controls{display:flex;align-items:center;justify-content:flex-end;gap:8px;margin-bottom:12px}
+.reading-controls>span{font-size:13px;color:#5a6d5b;margin-right:4px}
+.reading-controls button{font-size:14px;min-height:44px}
+.readable-surface .arc-play{border:1px solid #dbe2d1;border-radius:22px;padding:28px;background:#fffef9}
+.readable-surface .arc-play p,.readable-surface .arc-card p{font-size:var(--reading-size);line-height:1.8;overflow-wrap:anywhere;white-space:pre-wrap}
+.readable-surface small{font-size:13px;color:#54684f;line-height:1.65}
+.readable-surface .arc-play button{font-size:15px;min-height:44px}
+.readable-surface .creative-game-heading h2{font-size:26px}
+.readable-surface .creative-game-heading{align-items:start}
+.readable-surface .arc-kicker{font-size:13px;color:#52674d;letter-spacing:.4px}
+.readable-surface .creative-options{gap:10px;margin:18px 0}
+.readable-surface .creative-options button{padding:16px;gap:7px;min-width:0}
+.readable-surface .creative-options small{font-size:13px}
+.readable-surface .creative-note{font-size:14px;color:#52664b}
+.readable-surface .arc-hand{grid-template-columns:repeat(3,minmax(0,1fr));align-items:stretch}
+.readable-surface .arc-card{min-height:260px;padding:22px;gap:12px}
+.readable-surface .arc-card p{padding:8px 0;margin:0;max-height:none;overflow:visible}
+.readable-surface .creative-card-recycle{font-size:13px!important}
+.readable-surface .arc-reading-badge{font-size:12px}
+.readable-surface .creative-spinner{display:grid;grid-template-columns:minmax(280px,360px) minmax(0,1fr);gap:12px 36px;text-align:left;align-items:center}
+.readable-surface .creative-spinner>.creative-game-heading{grid-column:1/-1}
+.readable-surface .creative-spinner>.arc-wheel-wrap{grid-column:1;grid-row:2/5;width:100%;max-width:340px;margin:22px auto}
+.readable-surface .creative-spinner>.creative-options{grid-column:2;grid-row:2;grid-template-columns:1fr;margin:0}
+.readable-surface .creative-spinner>.arc-primary{grid-column:2;grid-row:3}
+.readable-surface .creative-spinner>small{grid-column:2;grid-row:4}
+.readable-surface .creative-spinner>.creative-picks{grid-column:2;grid-row:2/5;grid-template-columns:1fr}
+.readable-surface .arc-wheel-wrap{max-width:340px}
+.readable-surface .creative-bingo .arc-bingo{gap:10px;margin:18px 0}
+.readable-surface .arc-bingo button{min-height:150px;padding:14px;overflow:visible;gap:8px}
+.readable-surface .arc-bingo button p{font-size:15px;line-height:1.6;margin:0;max-height:none;overflow:hidden;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical}
+.readable-surface .arc-bingo button span{font-size:14px;color:#596f4d}
+.readable-surface .creative-selected-task{padding:20px;background:#edf3e6;border-color:#a8bd98;margin:12px 0}
+.readable-surface .creative-selected-task>p{max-height:none;overflow:visible;font-size:var(--reading-size)}
+.readable-surface .creative-selected-task .arc-row button{font-size:14px}
+.readable-surface .arc-story{max-width:760px;margin:0 auto}
+.readable-surface .arc-story-art{font-size:54px;padding:0 0 12px}
+.readable-surface .arc-story-options{margin:20px 0;gap:10px}
+.readable-surface .arc-story-options button{padding:16px;min-height:56px;font-size:var(--reading-size)}
+.readable-surface .creative-detour{padding:18px}
+.readable-surface .creative-detour p{font-size:14px}
+.readable-surface .creative-collection{padding:16px;margin:16px 0}
+.readable-surface .creative-journal{font-size:14px}
+.journey-current{font-size:15px;color:#496342;padding:14px 18px;border:1px solid #d9e4cf;border-radius:13px;background:#edf3e6;margin-bottom:12px}
+.journey-details{margin:20px 0;border:1px solid #dce3d3;border-radius:16px;background:#f5f7ee;overflow:hidden}
+.journey-details>summary{padding:16px 20px;font-size:15px;cursor:pointer;color:#425d40}
+.journey-details .map-viewport{padding:16px}
+.journey-details .map-fullscreen{padding:22px}
+.journey-details .map-scroll{border:0}
+.journey-details .map-size-fit:not(.map-fullscreen) .map-scroll{max-height:none;overflow:visible}
+.journey-details .journey-caption span,.journey-details .journey-story>p{font-size:13px;color:#586d4f}
+.journey-details .journey-coop small{font-size:13px;color:#5c6e51}
+.journey-rounds{padding:14px;border-radius:16px;margin-bottom:14px;gap:10px}
+.journey-rounds>div{padding:12px 6px;gap:6px}
+.journey-rounds b{font-size:14px}.journey-rounds small{font-size:12px;color:#5b704f}
+.readable-surface .arc-ballot button{font-size:var(--reading-size);min-height:60px;padding:18px}
+.readable-surface .arc-handoff{max-width:620px;padding:22px}
+.readable-surface .arc-scene{max-width:760px;margin:18px auto}
+.readable-surface .arc-clue{font-size:var(--reading-size)}
+.readable-surface .arc-mystery form{max-width:760px;margin:0 auto}
+.readable-surface .arc-mystery input{font-size:16px}
+/* Estate: an unclipped whole-ring overview first; optional large map for close reading. */
+.arc-shell:has(.arc-estate){max-width:1380px}
+.estate-layout{grid-template-columns:minmax(0,1.35fr) minmax(300px,.85fr)}
+.estate-map-panel{min-width:0}
+.estate-selected-summary{background:#edf3e6;border:1px solid #ceddc2;border-radius:14px;padding:16px 18px;margin-bottom:16px}
+.estate-selected-summary>span{font-size:13px;color:#4f6748}.estate-selected-summary h3{font-size:20px;margin:5px 0}
+.estate-selected-summary>p{font-size:15px;line-height:1.7;margin:4px 0}.estate-selected-summary label{margin-top:12px}
+.estate-selected-summary select{font-size:15px}
+.estate-map-panel .map-scroll{border:1px solid #dbe3d1;background:#f5f7ef;padding:6px}
+.estate-map-panel .map-size-fit:not(.map-fullscreen) .map-scroll{max-height:none;overflow:visible}
+.estate-map-panel .map-canvas>.arc-estate-board{aspect-ratio:1;min-height:0;grid-template-rows:none;gap:5px;margin:0}
+.estate-map-panel .arcade button.arc-lot,.estate-map-panel button.arc-lot{padding:9px 6px;gap:3px;min-height:0;overflow:hidden;justify-content:center}
+.estate-map-panel .arc-lot>small{font-size:12px;color:#52674d}
+.estate-map-panel .arc-lot b{font-size:14px;line-height:1.3}
+.estate-map-panel .arc-lot>span:not(.estate-group-stripe){font-size:12px;line-height:1.4}
+.estate-map-panel .arc-lot>div{margin-top:2px;flex-wrap:nowrap}
+.estate-map-panel .arc-lot i{font-size:11px;width:20px;height:20px;flex-shrink:0}
+.estate-map-panel .arc-estate-center{gap:10px;padding:10px;min-width:0;overflow:hidden}
+.estate-map-panel .arc-estate-center>span{font-size:12px;letter-spacing:0;color:#586e50}
+.estate-map-panel .arc-estate-center h2{font-size:24px}.estate-map-panel .arc-estate-center small{font-size:13px;color:#4e6548}
+.estate-map-panel .map-size-fit .arc-lot>span:not(.estate-group-stripe){display:none}
+.estate-map-panel .map-size-fit .arc-lot b{font-size:12px}
+.estate-map-panel .map-size-fit .arc-lot>small:not(:first-of-type){display:none}
+.estate-map-panel .map-size-fit .arc-lot i{width:17px;height:17px;font-size:10px}
+.estate-map-panel .map-size-fit .arc-lot{padding:6px 3px}
+.estate-map-panel .map-scroll-hint{font-size:13px;color:#516b49;margin-bottom:20px}
+.estate-groups{font-size:12px;color:#526c49;margin-top:14px;gap:10px 14px}
+.estate-sidebar p,.estate-bound-task p{font-size:16px;line-height:1.8}
+.estate-sidebar small{font-size:13px;color:#556c4d}
+.estate-sidebar button,.estate-management>button,.estate-sidebar .arc-row button{font-size:14px;min-height:44px}
+.estate-rent-list{font-size:14px}.estate-bound-task>b{font-size:14px}
+.estate-bound-task p,.estate-management .estate-task-preview{max-height:none;overflow:visible;white-space:pre-wrap}
+.estate-map-reading p{max-height:none;overflow:visible;font-size:16px}.estate-map-reading small{font-size:13px;color:#52674d}
+.estate-overview{font-size:13px;color:#52674d}
+.arcade .map-display-controls button{font-size:13px;min-height:44px}
+.arcade .arc-task-source,.arcade .arc-task-source small{font-size:13px;color:#54634d}
+.arcade .arc-task-text{line-height:1.8}
+@media(max-width:850px){
+ .estate-layout{display:flex;flex-direction:column}.estate-sidebar{display:contents}
+ .estate-turn{order:0;width:100%}.estate-event-card,.estate-sidebar>.arc-offer{order:1;width:100%}
+ .estate-map-panel{order:2;width:100%}.estate-property{order:3;width:100%}.arc-trade-form,.estate-assets{order:4;width:100%}
+ .readable-surface .arc-hand{grid-template-columns:1fr}
+ .readable-surface .creative-spinner{grid-template-columns:1fr;text-align:center;gap:12px}
+ .readable-surface .creative-spinner>:is(.arc-wheel-wrap,.creative-options,.arc-primary,small,.creative-picks){grid-column:1;grid-row:auto}
+ .readable-surface .creative-spinner>.arc-wheel-wrap{max-width:280px;margin:12px auto}
+ .readable-surface .creative-spinner>.creative-options{grid-template-columns:repeat(3,minmax(0,1fr));text-align:left}
+ .readable-surface .creative-spinner .creative-options button{padding:12px 8px;font-size:14px}
+}
+@media(max-width:600px){
+ .arc-shell{padding:14px 16px 32px}.arc-top{padding-bottom:12px;gap:8px}.arc-top button{padding:8px 10px}
+ .arc-game-heading{margin-top:18px}.arc-game-heading h1{font-size:24px}.arc-game-heading .arc-kicker{font-size:12px}
+ .arc-tools{margin:12px 0 8px}.arc-tools button{font-size:13px;min-height:44px}.arc-rules{font-size:14px;margin:8px 0}
+ .arc-players{margin:12px 0;gap:10px}.arc-players>div{min-width:0;padding:10px 12px;font-size:14px}
+ .arc-players strong,.arc-players small{font-size:12px}
+ .reading-controls{justify-content:flex-start;margin-bottom:10px}
+ .readable-surface .arc-play{padding:20px 16px;border-radius:18px}
+ .readable-surface .creative-game-heading h2{font-size:22px}
+ .readable-surface .creative-game-heading{flex-direction:column;gap:8px}
+ .readable-surface .creative-options.two{grid-template-columns:1fr 1fr}
+ .readable-surface .arc-card{min-height:0;padding:20px}
+ .readable-surface .arc-hand{gap:18px;margin:18px 0}
+ .readable-surface .arc-bingo{gap:7px}
+ .readable-surface .arc-bingo button{min-height:125px;padding:10px 8px}
+ .readable-surface .arc-bingo button p{font-size:14px;-webkit-line-clamp:3}
+ .readable-surface .creative-bingo{display:flex;flex-direction:column}
+ .readable-surface .creative-bingo>.creative-game-heading{order:0}
+ .readable-surface .creative-bingo>.creative-bingo-status{order:1}
+ .readable-surface .creative-bingo>.creative-selected-task{order:2;margin:0;padding:16px}
+ .readable-surface .creative-bingo>.arc-bingo{order:3}
+ .readable-surface .creative-bingo>small{order:4}
+ .readable-surface .creative-detour{flex-direction:column;align-items:stretch}
+ .readable-surface .creative-spinner>.arc-wheel-wrap{max-width:240px}
+ .readable-surface .creative-spinner>.creative-options{grid-template-columns:1fr}
+ .readable-surface .creative-spinner .creative-options button{display:grid;grid-template-columns:90px 1fr;align-items:center;padding:12px}
+ .readable-surface .creative-options small{font-size:13px}
+ .journey-details .journey-caption{padding:16px;flex-direction:column;align-items:start}
+ .journey-details .journey-coop ol{grid-template-columns:1fr 1fr;gap:12px;padding:12px 16px 20px}
+ .journey-details .journey-coop li:nth-child(n){grid-column:auto;grid-row:auto;padding:15px 8px;gap:8px}
+ .journey-details .journey-coop li:after{display:none}.journey-details .journey-coop b{font-size:15px}
+ .journey-rounds{gap:4px;padding:8px}.journey-rounds>div{padding:10px 2px;gap:6px}
+ .journey-rounds span{width:28px;height:28px;font-size:15px}.journey-rounds b{font-size:12px}.journey-rounds small{display:none}
+ .journey-details .map-viewport{padding:12px}.journey-details .map-fullscreen{padding:14px}
+ .game-surface-story .map-size-fit .map-canvas{width:100%!important}
+ .estate-layout{gap:16px}.arc-estate{padding:18px 12px}.estate-overview{font-size:13px;gap:8px;padding-bottom:14px}
+ .estate-map-panel .arc-estate-center{gap:7px;padding:8px}
+ .estate-map-panel .arc-estate-center h2{font-size:20px}.estate-map-panel .arc-estate-center>span:first-child{display:none}
+ .estate-map-panel .map-size-fit .arc-estate-board{gap:3px}
+ .estate-map-panel .map-size-fit .arc-lot{gap:1px;border-radius:6px;padding:4px 2px}
+ .estate-map-panel .map-size-fit .arc-lot>small:first-of-type{font-size:14px;font-weight:700}
+ .estate-map-panel .map-size-fit .arc-lot b{font-size:12px}
+ .estate-map-panel .map-size-fit [data-map-size='20'] .arc-lot b,.estate-map-panel .map-size-fit [data-map-size='28'] .arc-lot b{display:none}
+ .estate-selected-summary{padding:14px;margin-bottom:14px}.estate-selected-summary h3{font-size:20px}
+ .estate-selected-summary select{font-size:16px}
+ .estate-sidebar p{font-size:16px}
+}
+/* Keep the next story choice ahead of optional collections and side quests. */
+.readable-surface .creative-story{display:flex;flex-direction:column}
+.creative-story>.arc-story-art{order:0}.creative-story>.arc-kicker{order:1}
+.creative-story>h2{order:2}.creative-story>p:not(.arc-kicker){order:3}
+.creative-story>.arc-story-options{order:4}.creative-story>.creative-collection{order:5}
+.creative-story>.creative-detour{order:6}.creative-story>.creative-journal{order:7}
+.readable-surface .arc-wheel canvas{max-width:100%;max-height:100%}
+@media(max-width:600px){
+ .estate-map-panel .map-size-fit [data-map-size='12'] .arc-estate-center{gap:6px}
+ .estate-map-panel .map-size-fit [data-map-size='12'] .arc-estate-center>svg,
+ .estate-map-panel .map-size-fit [data-map-size='12'] .arc-estate-center>span{display:none}
+ .estate-map-panel .map-size-fit [data-map-size='12'] .arc-estate-center h2{font-size:18px}
+}
+/* Configurable grids: fit is a legible overview; selected task retains full text. */
+.bingo-setup{padding:18px;border:1px solid #d6dfce;border-radius:14px;margin:18px 0;background:#f4f7ed;display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}.bingo-setup label{display:grid;gap:8px}.bingo-setup>small{grid-column:1/-1;line-height:1.8}.bingo-setup select{width:100%;min-width:0}.bingo-tile-status{display:none}
+.game-surface-bingo .map-size-fit .arc-bingo button{min-height:96px;padding:12px 6px;justify-content:center;text-align:center;align-items:center}
+.game-surface-bingo .map-size-fit .arc-bingo button p{display:none}
+.game-surface-bingo .map-size-fit .bingo-tile-status{display:block;font-size:12px}
+.game-surface-bingo .map-size-fit .arc-bingo button span{font-size:18px}
+.journey-details .journey-coop ol{grid-template-columns:repeat(var(--journey-columns,4),minmax(0,1fr));gap:28px 20px}
+.journey-details .journey-coop li:nth-child(n){grid-column:var(--journey-column);grid-row:var(--journey-row)}
+.journey-details .journey-coop li:nth-child(n):after{content:attr(data-arrow);display:block;top:45%;bottom:auto;right:-20px;left:auto;font-size:18px}
+.journey-details .journey-coop li[data-arrow='←']:after{left:-20px;right:auto}
+.journey-details .journey-coop li[data-arrow='↓']:after{top:auto;bottom:-28px;left:45%;right:auto}
+.journey-details .journey-coop li[data-arrow='none']:after{display:none}
+.journey-rounds{grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
+@media(max-width:650px){.bingo-setup{grid-template-columns:1fr}.game-surface-bingo .map-size-fit .arc-bingo{gap:5px}.game-surface-bingo .map-size-fit .arc-bingo button{min-height:78px;padding:8px 3px}.game-surface-bingo .map-size-fit .bingo-tile-status{font-size:11px}.journey-details .journey-coop ol{grid-template-columns:repeat(var(--journey-mobile-columns,2),minmax(0,1fr));gap:26px 16px}.journey-details .journey-coop li:nth-child(n){grid-column:var(--journey-mobile-column);grid-row:var(--journey-mobile-row)}.journey-details .journey-coop li:nth-child(n):after{content:attr(data-mobile-arrow);top:45%;bottom:auto;right:-16px;left:auto}.journey-details .journey-coop li[data-mobile-arrow='←']:after{left:-16px;right:auto}.journey-details .journey-coop li[data-mobile-arrow='↓']:after{top:auto;bottom:-26px;left:45%;right:auto}.journey-details .journey-coop li[data-mobile-arrow='none']:after{display:none}.journey-rounds{grid-template-columns:repeat(auto-fit,minmax(90px,1fr))}.journey-rounds small{display:block}}
+.journey-details .map-size-fit:has(.journey-coop[data-long-route]) .map-scroll{max-height:68dvh;overflow:auto}
+
+/* Chapter maps keep branch labels readable rather than shrinking a long SVG. */
+.chapter-journey{background:#eef3e5}.chapter-journey ol{list-style:none;margin:0;padding:8px 22px 20px;display:grid;gap:18px}.chapter-journey li{border:1px solid #d4dfc8;background:#fffef8;border-radius:18px;padding:20px}.chapter-journey li>header{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-bottom:14px}.chapter-journey li>header b{font-size:18px}.chapter-journey li>header span{font-size:13px;color:#52684c}.chapter-journey .here{border-color:#688952;background:#f5f0d9;box-shadow:inset 0 0 0 1px #688952}.chapter-journey .complete{background:#dfead5}.chapter-routes{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.chapter-routes>div{border:1px solid #d7dfce;border-radius:12px;padding:16px;display:grid;gap:9px;text-align:center}.chapter-routes b{font-size:16px}.chapter-routes small{font-size:13px!important;color:#4e6448!important}.chapter-next{display:block;text-align:center;margin-top:14px}.chapter-finales{padding:20px 22px 30px;border:2px solid #d3dfc5;border-radius:18px;margin:0 22px 22px}.chapter-finales>div{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.chapter-finales span{border:1px solid #cfdbc4;border-radius:10px;padding:14px;font-size:16px;text-align:center}.journey-details .map-size-fit:has(.chapter-journey[data-long-route]) .map-scroll{max-height:68dvh;overflow:auto}.journey-details .map-size-fit .chapter-journey .journey-caption{padding:20px 22px}
+@media(max-width:650px){.journey-details .map-size-fit .chapter-journey ol{padding:6px 12px 16px;gap:14px}.journey-details .map-size-fit .chapter-journey li{padding:14px}.journey-details .map-size-fit .chapter-routes{gap:8px}.journey-details .map-size-fit .chapter-routes>div{padding:12px 8px}.journey-details .map-size-fit .chapter-routes b{font-size:15px}.journey-details .map-size-fit .chapter-journey li>header b{font-size:17px}.journey-details .map-size-fit .chapter-finales{margin:0 12px 14px;padding:14px}}

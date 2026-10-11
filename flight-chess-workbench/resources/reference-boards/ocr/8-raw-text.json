@@ -1,0 +1,2563 @@
+{
+  "lines": [
+    {
+      "text": "指舌",
+      "confidence": 0.9161,
+      "x": 0.040625,
+      "y": 0.0484375,
+      "width": 0.01875,
+      "height": 0.0296875,
+      "reviewed": false
+    },
+    {
+      "text": "定一",
+      "confidence": 0.6711,
+      "x": 0.04765625,
+      "y": 0.04296875,
+      "width": 0.05625,
+      "height": 0.03984375,
+      "reviewed": false
+    },
+    {
+      "text": "回到起点",
+      "confidence": 1,
+      "x": 0.10703125,
+      "y": 0.0484375,
+      "width": 0.05703125,
+      "height": 0.0171875,
+      "reviewed": false
+    },
+    {
+      "text": "指玩的下",
+      "confidence": 0.999,
+      "x": 0.171875,
+      "y": 0.046875,
+      "width": 0.01953125,
+      "height": 0.0546875,
+      "reviewed": false
+    },
+    {
+      "text": "定家屁",
+      "confidence": 0.9936,
+      "x": 0.18515625,
+      "y": 0.046875,
+      "width": 0.0203125,
+      "height": 0.04453125,
+      "reviewed": false
+    },
+    {
+      "text": "一打股",
+      "confidence": 0.9579,
+      "x": 0.196875,
+      "y": 0.046875,
+      "width": 0.02265625,
+      "height": 0.04453125,
+      "reviewed": false
+    },
+    {
+      "text": "名他十",
+      "confidence": 0.9966,
+      "x": 0.21015625,
+      "y": 0.046875,
+      "width": 0.021875,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "前进6格",
+      "confidence": 0.9999,
+      "x": 0.2375,
+      "y": 0.0453125,
+      "width": 0.05078125,
+      "height": 0.021875,
+      "reviewed": false
+    },
+    {
+      "text": "自撸30秒",
+      "confidence": 0.9927,
+      "x": 0.3046875,
+      "y": 0.0484375,
+      "width": 0.05546875,
+      "height": 0.0171875,
+      "reviewed": false
+    },
+    {
+      "text": "指玩掐",
+      "confidence": 0.8984,
+      "x": 0.36875,
+      "y": 0.04765625,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "定家奶",
+      "confidence": 0.998,
+      "x": 0.3828125,
+      "y": 0.046875,
+      "width": 0.01953125,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "两互头",
+      "confidence": 0.9816,
+      "x": 0.3953125,
+      "y": 0.04765625,
+      "width": 0.0203125,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "名相",
+      "confidence": 0.9981,
+      "x": 0.4078125,
+      "y": 0.046875,
+      "width": 0.02109375,
+      "height": 0.03203125,
+      "reviewed": false
+    },
+    {
+      "text": "指玩己分",
+      "confidence": 0.9794,
+      "x": 0.4359375,
+      "y": 0.04765625,
+      "width": 0.0171875,
+      "height": 0.05390625,
+      "reviewed": false
+    },
+    {
+      "text": "定家舔钟",
+      "confidence": 0.9984,
+      "x": 0.4484375,
+      "y": 0.04765625,
+      "width": 0.01953125,
+      "height": 0.0546875,
+      "reviewed": false
+    },
+    {
+      "text": "一给脚",
+      "confidence": 0.9726,
+      "x": 0.4609375,
+      "y": 0.04765625,
+      "width": 0.0203125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "名自一",
+      "confidence": 0.9982,
+      "x": 0.4765625,
+      "y": 0.0484375,
+      "width": 0.0171875,
+      "height": 0.03984375,
+      "reviewed": false
+    },
+    {
+      "text": "后退3格",
+      "confidence": 1,
+      "x": 0.50078125,
+      "y": 0.04765625,
+      "width": 0.05078125,
+      "height": 0.01953125,
+      "reviewed": false
+    },
+    {
+      "text": "指玩己下",
+      "confidence": 0.9653,
+      "x": 0.56640625,
+      "y": 0.04765625,
+      "width": 0.01953125,
+      "height": 0.05390625,
+      "reviewed": false
+    },
+    {
+      "text": "定家屁",
+      "confidence": 0.9955,
+      "x": 0.578125,
+      "y": 0.04609375,
+      "width": 0.02109375,
+      "height": 0.0453125,
+      "reviewed": false
+    },
+    {
+      "text": "一打股",
+      "confidence": 0.9959,
+      "x": 0.5921875,
+      "y": 0.04765625,
+      "width": 0.0203125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "名自十",
+      "confidence": 0.995,
+      "x": 0.6078125,
+      "y": 0.04765625,
+      "width": 0.0171875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "学让家脸",
+      "confidence": 0.9959,
+      "x": 0.6328125,
+      "y": 0.046875,
+      "width": 0.01875,
+      "height": 0.05546875,
+      "reviewed": false
+    },
+    {
+      "text": "狗全几十",
+      "confidence": 0.9633,
+      "x": 0.6453125,
+      "y": 0.04765625,
+      "width": 0.01953125,
+      "height": 0.05390625,
+      "reviewed": false
+    },
+    {
+      "text": "姿部把次",
+      "confidence": 0.9855,
+      "x": 0.65703125,
+      "y": 0.046875,
+      "width": 0.0234375,
+      "height": 0.05546875,
+      "reviewed": false
+    },
+    {
+      "text": "井玩抽",
+      "confidence": 0.9578,
+      "x": 0.6734375,
+      "y": 0.0484375,
+      "width": 0.01796875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "指咬子",
+      "confidence": 0.9083,
+      "x": 0.69765625,
+      "y": 0.04765625,
+      "width": 0.01953125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "定他十",
+      "confidence": 0.9975,
+      "x": 0.709375,
+      "y": 0.04609375,
+      "width": 0.02265625,
+      "height": 0.04453125,
+      "reviewed": false
+    },
+    {
+      "text": "一的下",
+      "confidence": 0.9976,
+      "x": 0.72421875,
+      "y": 0.0484375,
+      "width": 0.0203125,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "人奶",
+      "confidence": 0.9882,
+      "x": 0.7375,
+      "y": 0.0484375,
+      "width": 0.01953125,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "自撸30秒",
+      "confidence": 0.9585,
+      "x": 0.76484375,
+      "y": 0.0484375,
+      "width": 0.05546875,
+      "height": 0.0171875,
+      "reviewed": false
+    },
+    {
+      "text": "指舌",
+      "confidence": 0.9075,
+      "x": 0.8296875,
+      "y": 0.0484375,
+      "width": 0.01875,
+      "height": 0.02890625,
+      "reviewed": false
+    },
+    {
+      "text": "定一秒",
+      "confidence": 0.6994,
+      "x": 0.8359375,
+      "y": 0.04296875,
+      "width": 0.05625,
+      "height": 0.03984375,
+      "reviewed": false
+    },
+    {
+      "text": "停一轮",
+      "confidence": 0.9998,
+      "x": 0.8953125,
+      "y": 0.046875,
+      "width": 0.046875,
+      "height": 0.0203125,
+      "reviewed": false
+    },
+    {
+      "text": "指咬子",
+      "confidence": 0.9439,
+      "x": 0.03984375,
+      "y": 0.1140625,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "定他十",
+      "confidence": 0.8139,
+      "x": 0.0515625,
+      "y": 0.11328125,
+      "width": 0.02265625,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "一的下",
+      "confidence": 0.9978,
+      "x": 0.06484375,
+      "y": 0.11328125,
+      "width": 0.02265625,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "奶",
+      "confidence": 0.8206,
+      "x": 0.07890625,
+      "y": 0.1140625,
+      "width": 0.02109375,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "经可名之格",
+      "confidence": 0.9612,
+      "x": 0.8953125,
+      "y": 0.1140625,
+      "width": 0.01484375,
+      "height": 0.0453125,
+      "reviewed": false
+    },
+    {
+      "text": "码",
+      "confidence": 0.3661,
+      "x": 0.91796875,
+      "y": 0.11015625,
+      "width": 0.0328125,
+      "height": 0.04609375,
+      "reviewed": false
+    },
+    {
+      "text": "人楼",
+      "confidence": 0.5163,
+      "x": 0.9390625,
+      "y": 0.1140625,
+      "width": 0.015625,
+      "height": 0.0359375,
+      "reviewed": false
+    },
+    {
+      "text": "指玩己下",
+      "confidence": 0.9129,
+      "x": 0.04140625,
+      "y": 0.1796875,
+      "width": 0.0171875,
+      "height": 0.05390625,
+      "reviewed": false
+    },
+    {
+      "text": "定家屁",
+      "confidence": 0.9639,
+      "x": 0.0515625,
+      "y": 0.17890625,
+      "width": 0.02265625,
+      "height": 0.04453125,
+      "reviewed": false
+    },
+    {
+      "text": "一打股",
+      "confidence": 0.9927,
+      "x": 0.06640625,
+      "y": 0.1796875,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "名自十",
+      "confidence": 0.9905,
+      "x": 0.08046875,
+      "y": 0.1796875,
+      "width": 0.01796875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "前进三格",
+      "confidence": 1,
+      "x": 0.171875,
+      "y": 0.17890625,
+      "width": 0.06015625,
+      "height": 0.01953125,
+      "reviewed": false
+    },
+    {
+      "text": "为所有人",
+      "confidence": 0.7574,
+      "x": 0.23125,
+      "y": 0.17265625,
+      "width": 0.071875,
+      "height": 0.04453125,
+      "reviewed": false
+    },
+    {
+      "text": "自抄",
+      "confidence": 0.4021,
+      "x": 0.303125,
+      "y": 0.1796875,
+      "width": 0.02109375,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "撸三十",
+      "confidence": 0.9489,
+      "x": 0.3140625,
+      "y": 0.178125,
+      "width": 0.04921875,
+      "height": 0.021875,
+      "reviewed": false
+    },
+    {
+      "text": "自钟家意",
+      "confidence": 0.9977,
+      "x": 0.36796875,
+      "y": 0.17890625,
+      "width": 0.01875,
+      "height": 0.0484375,
+      "reviewed": false
+    },
+    {
+      "text": "学让家脸",
+      "confidence": 0.9973,
+      "x": 0.4359375,
+      "y": 0.1796875,
+      "width": 0.0171875,
+      "height": 0.053125,
+      "reviewed": false
+    },
+    {
+      "text": "狗全几十",
+      "confidence": 0.9962,
+      "x": 0.4484375,
+      "y": 0.17890625,
+      "width": 0.01953125,
+      "height": 0.05546875,
+      "reviewed": false
+    },
+    {
+      "text": "姿部把次",
+      "confidence": 0.9933,
+      "x": 0.459375,
+      "y": 0.17734375,
+      "width": 0.0234375,
+      "height": 0.0578125,
+      "reviewed": false
+    },
+    {
+      "text": "井玩抽",
+      "confidence": 0.9456,
+      "x": 0.47421875,
+      "y": 0.17890625,
+      "width": 0.0203125,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "给家分",
+      "confidence": 0.9893,
+      "x": 0.50078125,
+      "y": 0.1796875,
+      "width": 0.01953125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "其舔钟",
+      "confidence": 0.9707,
+      "x": 0.51328125,
+      "y": 0.17890625,
+      "width": 0.0203125,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "余脚",
+      "confidence": 0.9891,
+      "x": 0.5265625,
+      "y": 0.17890625,
+      "width": 0.02109375,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "玩",
+      "confidence": 0.9952,
+      "x": 0.53828125,
+      "y": 0.1796875,
+      "width": 0.02265625,
+      "height": 0.02890625,
+      "reviewed": false
+    },
+    {
+      "text": "戴指一",
+      "confidence": 0.9858,
+      "x": 0.56640625,
+      "y": 0.1796875,
+      "width": 0.01953125,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "眼定人",
+      "confidence": 0.9767,
+      "x": 0.575,
+      "y": 0.1765625,
+      "width": 0.028125,
+      "height": 0.04765625,
+      "reviewed": false
+    },
+    {
+      "text": "被",
+      "confidence": 0.7276,
+      "x": 0.5875,
+      "y": 0.1734375,
+      "width": 0.0421875,
+      "height": 0.040625,
+      "reviewed": false
+    },
+    {
+      "text": "前进10格",
+      "confidence": 0.9998,
+      "x": 0.6328125,
+      "y": 0.17890625,
+      "width": 0.05703125,
+      "height": 0.01953125,
+      "reviewed": false
+    },
+    {
+      "text": "让家口钟",
+      "confidence": 0.968,
+      "x": 0.6984375,
+      "y": 0.1796875,
+      "width": 0.01875,
+      "height": 0.05390625,
+      "reviewed": false
+    },
+    {
+      "text": "其给交",
+      "confidence": 0.9923,
+      "x": 0.71015625,
+      "y": 0.178125,
+      "width": 0.0203125,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "余自一",
+      "confidence": 0.9489,
+      "x": 0.72421875,
+      "y": 0.17890625,
+      "width": 0.0203125,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "玩己分",
+      "confidence": 0.9935,
+      "x": 0.7375,
+      "y": 0.1796875,
+      "width": 0.0203125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "名交",
+      "confidence": 0.9976,
+      "x": 0.803125,
+      "y": 0.1796875,
+      "width": 0.01953125,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "指玩边秒",
+      "confidence": 0.9992,
+      "x": 0.8953125,
+      "y": 0.1796875,
+      "width": 0.01796875,
+      "height": 0.053125,
+      "reviewed": false
+    },
+    {
+      "text": "定家緣",
+      "confidence": 0.8573,
+      "x": 0.9078125,
+      "y": 0.1796875,
+      "width": 0.02109375,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "一给三",
+      "confidence": 0.9549,
+      "x": 0.921875,
+      "y": 0.1796875,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "名他十",
+      "confidence": 0.9906,
+      "x": 0.9359375,
+      "y": 0.1796875,
+      "width": 0.01796875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "给家分",
+      "confidence": 0.9956,
+      "x": 0.04140625,
+      "y": 0.24609375,
+      "width": 0.01796875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "其舔钟",
+      "confidence": 0.9776,
+      "x": 0.05234375,
+      "y": 0.2453125,
+      "width": 0.02109375,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "余脚",
+      "confidence": 0.9955,
+      "x": 0.0671875,
+      "y": 0.2453125,
+      "width": 0.01953125,
+      "height": 0.0296875,
+      "reviewed": false
+    },
+    {
+      "text": "玩",
+      "confidence": 0.9954,
+      "x": 0.0796875,
+      "y": 0.24609375,
+      "width": 0.0203125,
+      "height": 0.02734375,
+      "reviewed": false
+    },
+    {
+      "text": "指给马秒",
+      "confidence": 0.9936,
+      "x": 0.171875,
+      "y": 0.2453125,
+      "width": 0.01953125,
+      "height": 0.0546875,
+      "reviewed": false
+    },
+    {
+      "text": "定自眼",
+      "confidence": 0.9982,
+      "x": 0.184375,
+      "y": 0.2453125,
+      "width": 0.0203125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "人舔十",
+      "confidence": 0.9922,
+      "x": 0.21015625,
+      "y": 0.24453125,
+      "width": 0.021875,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "自若硬则否",
+      "confidence": 0.9762,
+      "x": 0.7640625,
+      "y": 0.2453125,
+      "width": 0.0171875,
+      "height": 0.05546875,
+      "reviewed": false
+    },
+    {
+      "text": "抽一屁",
+      "confidence": 0.9969,
+      "x": 0.8953125,
+      "y": 0.2453125,
+      "width": 0.01953125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "指玩掐",
+      "confidence": 0.9973,
+      "x": 0.040625,
+      "y": 0.3109375,
+      "width": 0.01796875,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "定家奶",
+      "confidence": 0.9995,
+      "x": 0.053125,
+      "y": 0.3109375,
+      "width": 0.0203125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "两互头",
+      "confidence": 0.9795,
+      "x": 0.06484375,
+      "y": 0.31015625,
+      "width": 0.02265625,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "名相",
+      "confidence": 0.9983,
+      "x": 0.0796875,
+      "y": 0.31171875,
+      "width": 0.01953125,
+      "height": 0.0296875,
+      "reviewed": false
+    },
+    {
+      "text": "定家",
+      "confidence": 0.9718,
+      "x": 0.18515625,
+      "y": 0.3109375,
+      "width": 0.02109375,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "一",
+      "confidence": 0.5708,
+      "x": 0.196875,
+      "y": 0.3109375,
+      "width": 0.02265625,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "名交",
+      "confidence": 0.9942,
+      "x": 0.2109375,
+      "y": 0.3109375,
+      "width": 0.01953125,
+      "height": 0.0296875,
+      "reviewed": false
+    },
+    {
+      "text": "指给交",
+      "confidence": 0.9982,
+      "x": 0.30390625,
+      "y": 0.3109375,
+      "width": 0.01796875,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "定自三",
+      "confidence": 0.9931,
+      "x": 0.3171875,
+      "y": 0.3109375,
+      "width": 0.01875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "一己十",
+      "confidence": 0.6545,
+      "x": 0.3296875,
+      "y": 0.31171875,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "人口秒",
+      "confidence": 0.9856,
+      "x": 0.3421875,
+      "y": 0.31171875,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "学让家屁",
+      "confidence": 0.9985,
+      "x": 0.36953125,
+      "y": 0.3109375,
+      "width": 0.01953125,
+      "height": 0.0546875,
+      "reviewed": false
+    },
+    {
+      "text": "狗全几眼",
+      "confidence": 0.9974,
+      "x": 0.38125,
+      "y": 0.3109375,
+      "width": 0.021875,
+      "height": 0.05546875,
+      "reviewed": false
+    },
+    {
+      "text": "姿部把",
+      "confidence": 0.9491,
+      "x": 0.3953125,
+      "y": 0.3109375,
+      "width": 0.0203125,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "一名",
+      "confidence": 0.8933,
+      "x": 0.4546875,
+      "y": 0.30625,
+      "width": 0.04375,
+      "height": 0.03984375,
+      "reviewed": false
+    },
+    {
+      "text": "指人分",
+      "confidence": 0.9778,
+      "x": 0.5015625,
+      "y": 0.31171875,
+      "width": 0.01796875,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "定肛钟",
+      "confidence": 0.9986,
+      "x": 0.5140625,
+      "y": 0.3109375,
+      "width": 0.01953125,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "被交",
+      "confidence": 0.998,
+      "x": 0.52734375,
+      "y": 0.3109375,
+      "width": 0.01953125,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "11",
+      "confidence": 0.9002,
+      "x": 0.5421875,
+      "y": 0.31328125,
+      "width": 0.0171875,
+      "height": 0.02578125,
+      "reviewed": false
+    },
+    {
+      "text": "全9",
+      "confidence": 0.9513,
+      "x": 0.5671875,
+      "y": 0.31171875,
+      "width": 0.01953125,
+      "height": 0.028125,
+      "reviewed": false
+    },
+    {
+      "text": "全场玩",
+      "confidence": 0.9439,
+      "x": 0.57421875,
+      "y": 0.3078125,
+      "width": 0.04296875,
+      "height": 0.03671875,
+      "reviewed": false
+    },
+    {
+      "text": "家",
+      "confidence": 0.8617,
+      "x": 0.60234375,
+      "y": 0.30859375,
+      "width": 0.02421875,
+      "height": 0.034375,
+      "reviewed": false
+    },
+    {
+      "text": "主出",
+      "confidence": 0.982,
+      "x": 0.6328125,
+      "y": 0.3109375,
+      "width": 0.01875,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "人题",
+      "confidence": 0.583,
+      "x": 0.64375,
+      "y": 0.31015625,
+      "width": 0.0234375,
+      "height": 0.0328125,
+      "reviewed": false
+    },
+    {
+      "text": "任意",
+      "confidence": 0.9997,
+      "x": 0.6578125,
+      "y": 0.3109375,
+      "width": 0.03359375,
+      "height": 0.01875,
+      "reviewed": false
+    },
+    {
+      "text": "让家口钟",
+      "confidence": 0.9969,
+      "x": 0.76484375,
+      "y": 0.31171875,
+      "width": 0.01796875,
+      "height": 0.053125,
+      "reviewed": false
+    },
+    {
+      "text": "其给交",
+      "confidence": 0.9956,
+      "x": 0.7765625,
+      "y": 0.31171875,
+      "width": 0.01875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "余自一",
+      "confidence": 0.9797,
+      "x": 0.78984375,
+      "y": 0.3109375,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "玩己分",
+      "confidence": 0.9976,
+      "x": 0.8046875,
+      "y": 0.3125,
+      "width": 0.01796875,
+      "height": 0.040625,
+      "reviewed": false
+    },
+    {
+      "text": "前进6格",
+      "confidence": 0.9999,
+      "x": 0.8953125,
+      "y": 0.3109375,
+      "width": 0.05078125,
+      "height": 0.0203125,
+      "reviewed": false
+    },
+    {
+      "text": "指玩己分",
+      "confidence": 0.9988,
+      "x": 0.04140625,
+      "y": 0.37734375,
+      "width": 0.0171875,
+      "height": 0.05390625,
+      "reviewed": false
+    },
+    {
+      "text": "定家舔钟",
+      "confidence": 0.9916,
+      "x": 0.053125,
+      "y": 0.3765625,
+      "width": 0.0203125,
+      "height": 0.05546875,
+      "reviewed": false
+    },
+    {
+      "text": "一给脚",
+      "confidence": 0.9622,
+      "x": 0.0671875,
+      "y": 0.378125,
+      "width": 0.01875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "名自一",
+      "confidence": 0.9739,
+      "x": 0.08046875,
+      "y": 0.37734375,
+      "width": 0.01796875,
+      "height": 0.03828125,
+      "reviewed": false
+    },
+    {
+      "text": "送用世等分",
+      "confidence": 0.5494,
+      "x": 0.1703125,
+      "y": 0.37421875,
+      "width": 0.02734375,
+      "height": 0.05,
+      "reviewed": false
+    },
+    {
+      "text": "择用",
+      "confidence": 0.9281,
+      "x": 0.1828125,
+      "y": 0.3765625,
+      "width": 0.01875,
+      "height": 0.0375,
+      "reviewed": false
+    },
+    {
+      "text": "第元",
+      "confidence": 0.4372,
+      "x": 0.18671875,
+      "y": 0.3703125,
+      "width": 0.040625,
+      "height": 0.04765625,
+      "reviewed": false
+    },
+    {
+      "text": "玩摩花",
+      "confidence": 0.9733,
+      "x": 0.21484375,
+      "y": 0.37734375,
+      "width": 0.01640625,
+      "height": 0.034375,
+      "reviewed": false
+    },
+    {
+      "text": "自钟",
+      "confidence": 0.9588,
+      "x": 0.30234375,
+      "y": 0.3765625,
+      "width": 0.02109375,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "撸",
+      "confidence": 0.9672,
+      "x": 0.31640625,
+      "y": 0.37890625,
+      "width": 0.01953125,
+      "height": 0.01640625,
+      "reviewed": false
+    },
+    {
+      "text": "一分",
+      "confidence": 0.9993,
+      "x": 0.33203125,
+      "y": 0.378125,
+      "width": 0.02890625,
+      "height": 0.0171875,
+      "reviewed": false
+    },
+    {
+      "text": "停一轮",
+      "confidence": 1,
+      "x": 0.76328125,
+      "y": 0.3765625,
+      "width": 0.046875,
+      "height": 0.01953125,
+      "reviewed": false
+    },
+    {
+      "text": "指玩己三",
+      "confidence": 0.9364,
+      "x": 0.8953125,
+      "y": 0.37734375,
+      "width": 0.01796875,
+      "height": 0.05234375,
+      "reviewed": false
+    },
+    {
+      "text": "定家舔十",
+      "confidence": 0.9908,
+      "x": 0.9078125,
+      "y": 0.3765625,
+      "width": 0.021875,
+      "height": 0.05546875,
+      "reviewed": false
+    },
+    {
+      "text": "一给屁秒",
+      "confidence": 0.9848,
+      "x": 0.91953125,
+      "y": 0.3765625,
+      "width": 0.0234375,
+      "height": 0.0546875,
+      "reviewed": false
+    },
+    {
+      "text": "名自眼",
+      "confidence": 0.9983,
+      "x": 0.93515625,
+      "y": 0.37734375,
+      "width": 0.01953125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "金随",
+      "confidence": 0.6001,
+      "x": 0.67421875,
+      "y": 0.38671875,
+      "width": 0.0171875,
+      "height": 0.025,
+      "reviewed": false
+    },
+    {
+      "text": "钟",
+      "confidence": 0.9995,
+      "x": 0.18828125,
+      "y": 0.40703125,
+      "width": 0.0140625,
+      "height": 0.01328125,
+      "reviewed": false
+    },
+    {
+      "text": "指玩己三",
+      "confidence": 0.9898,
+      "x": 0.171875,
+      "y": 0.44296875,
+      "width": 0.01953125,
+      "height": 0.05390625,
+      "reviewed": false
+    },
+    {
+      "text": "定家舔十",
+      "confidence": 0.993,
+      "x": 0.18359375,
+      "y": 0.4421875,
+      "width": 0.021875,
+      "height": 0.05546875,
+      "reviewed": false
+    },
+    {
+      "text": "一给屁秒",
+      "confidence": 0.9914,
+      "x": 0.19765625,
+      "y": 0.4421875,
+      "width": 0.02109375,
+      "height": 0.0546875,
+      "reviewed": false
+    },
+    {
+      "text": "名自眼",
+      "confidence": 0.9995,
+      "x": 0.21171875,
+      "y": 0.4421875,
+      "width": 0.01796875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "前进三格",
+      "confidence": 0.9999,
+      "x": 0.30234375,
+      "y": 0.440625,
+      "width": 0.06015625,
+      "height": 0.02109375,
+      "reviewed": false
+    },
+    {
+      "text": "被射",
+      "confidence": 0.9991,
+      "x": 0.434375,
+      "y": 0.4421875,
+      "width": 0.02109375,
+      "height": 0.03203125,
+      "reviewed": false
+    },
+    {
+      "text": "让家口钟",
+      "confidence": 0.9783,
+      "x": 0.6328125,
+      "y": 0.44296875,
+      "width": 0.01875,
+      "height": 0.05390625,
+      "reviewed": false
+    },
+    {
+      "text": "其给交",
+      "confidence": 0.8919,
+      "x": 0.64609375,
+      "y": 0.44375,
+      "width": 0.01796875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "余自一",
+      "confidence": 0.9907,
+      "x": 0.65859375,
+      "y": 0.4421875,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "玩己分",
+      "confidence": 0.9984,
+      "x": 0.671875,
+      "y": 0.44296875,
+      "width": 0.01796875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "所有为",
+      "confidence": 0.5567,
+      "x": 0.7578125,
+      "y": 0.43671875,
+      "width": 0.0703125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "指咬子",
+      "confidence": 0.9523,
+      "x": 0.89609375,
+      "y": 0.44296875,
+      "width": 0.01796875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "定他十",
+      "confidence": 0.9913,
+      "x": 0.9078125,
+      "y": 0.4421875,
+      "width": 0.02109375,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "一的下",
+      "confidence": 0.9945,
+      "x": 0.921875,
+      "y": 0.44296875,
+      "width": 0.0203125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "奶",
+      "confidence": 0.916,
+      "x": 0.93203125,
+      "y": 0.44140625,
+      "width": 0.025,
+      "height": 0.0328125,
+      "reviewed": false
+    },
+    {
+      "text": "新音三",
+      "confidence": 0.4473,
+      "x": 0.03046875,
+      "y": 0.49765625,
+      "width": 0.07890625,
+      "height": 0.06328125,
+      "reviewed": false
+    },
+    {
+      "text": "定自",
+      "confidence": 0.965,
+      "x": 0.05234375,
+      "y": 0.5078125,
+      "width": 0.0203125,
+      "height": 0.0328125,
+      "reviewed": false
+    },
+    {
+      "text": "让家口钟",
+      "confidence": 0.9936,
+      "x": 0.17109375,
+      "y": 0.50859375,
+      "width": 0.01953125,
+      "height": 0.0546875,
+      "reviewed": false
+    },
+    {
+      "text": "其给交",
+      "confidence": 0.9537,
+      "x": 0.18515625,
+      "y": 0.50859375,
+      "width": 0.01953125,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "余自一",
+      "confidence": 0.9744,
+      "x": 0.1984375,
+      "y": 0.50859375,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "玩己分",
+      "confidence": 0.9949,
+      "x": 0.2109375,
+      "y": 0.50859375,
+      "width": 0.0203125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "指人分",
+      "confidence": 0.9985,
+      "x": 0.303125,
+      "y": 0.5078125,
+      "width": 0.0203125,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "定肛钟",
+      "confidence": 0.9928,
+      "x": 0.31640625,
+      "y": 0.5078125,
+      "width": 0.01953125,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "被交",
+      "confidence": 0.9997,
+      "x": 0.32890625,
+      "y": 0.5078125,
+      "width": 0.02109375,
+      "height": 0.03203125,
+      "reviewed": false
+    },
+    {
+      "text": "11",
+      "confidence": 0.5927,
+      "x": 0.3453125,
+      "y": 0.51015625,
+      "width": 0.01640625,
+      "height": 0.02578125,
+      "reviewed": false
+    },
+    {
+      "text": "自眼钟人能",
+      "confidence": 0.995,
+      "x": 0.434375,
+      "y": 0.50859375,
+      "width": 0.0171875,
+      "height": 0.05390625,
+      "reviewed": false
+    },
+    {
+      "text": "指上",
+      "confidence": 0.5259,
+      "x": 0.50078125,
+      "y": 0.5078125,
+      "width": 0.02109375,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "定交",
+      "confidence": 0.9985,
+      "x": 0.5125,
+      "y": 0.50625,
+      "width": 0.02265625,
+      "height": 0.03359375,
+      "reviewed": false
+    },
+    {
+      "text": "两人",
+      "confidence": 0.9991,
+      "x": 0.5265625,
+      "y": 0.5078125,
+      "width": 0.03203125,
+      "height": 0.01875,
+      "reviewed": false
+    },
+    {
+      "text": "后退一格",
+      "confidence": 0.9999,
+      "x": 0.565625,
+      "y": 0.50625,
+      "width": 0.06015625,
+      "height": 0.02109375,
+      "reviewed": false
+    },
+    {
+      "text": "停一轮",
+      "confidence": 1,
+      "x": 0.6328125,
+      "y": 0.50859375,
+      "width": 0.04453125,
+      "height": 0.01796875,
+      "reviewed": false
+    },
+    {
+      "text": "指玩己三",
+      "confidence": 0.9453,
+      "x": 0.7640625,
+      "y": 0.5078125,
+      "width": 0.01875,
+      "height": 0.05390625,
+      "reviewed": false
+    },
+    {
+      "text": "定家舔十",
+      "confidence": 0.9868,
+      "x": 0.7765625,
+      "y": 0.50859375,
+      "width": 0.0203125,
+      "height": 0.0546875,
+      "reviewed": false
+    },
+    {
+      "text": "一给屁秒",
+      "confidence": 0.8018,
+      "x": 0.7875,
+      "y": 0.5078125,
+      "width": 0.021875,
+      "height": 0.05625,
+      "reviewed": false
+    },
+    {
+      "text": "名自眼",
+      "confidence": 0.9953,
+      "x": 0.80390625,
+      "y": 0.509375,
+      "width": 0.01796875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "自撸30秒",
+      "confidence": 0.9794,
+      "x": 0.8953125,
+      "y": 0.50703125,
+      "width": 0.05703125,
+      "height": 0.0203125,
+      "reviewed": false
+    },
+    {
+      "text": "回入",
+      "confidence": 0.7545,
+      "x": 0.4671875,
+      "y": 0.52734375,
+      "width": 0.0171875,
+      "height": 0.02578125,
+      "reviewed": false
+    },
+    {
+      "text": "有不",
+      "confidence": 0.9993,
+      "x": 0.4765625,
+      "y": 0.52578125,
+      "width": 0.0171875,
+      "height": 0.0265625,
+      "reviewed": false
+    },
+    {
+      "text": "定自",
+      "confidence": 0.9977,
+      "x": 0.05234375,
+      "y": 0.5734375,
+      "width": 0.0203125,
+      "height": 0.03203125,
+      "reviewed": false
+    },
+    {
+      "text": "一己",
+      "confidence": 0.4834,
+      "x": 0.0671875,
+      "y": 0.57578125,
+      "width": 0.01875,
+      "height": 0.02890625,
+      "reviewed": false
+    },
+    {
+      "text": "接",
+      "confidence": 0.9651,
+      "x": 0.078125,
+      "y": 0.57421875,
+      "width": 0.021875,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "主意题",
+      "confidence": 0.9599,
+      "x": 0.17265625,
+      "y": 0.57421875,
+      "width": 0.01796875,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "人给",
+      "confidence": 0.9823,
+      "x": 0.18515625,
+      "y": 0.575,
+      "width": 0.01953125,
+      "height": 0.0296875,
+      "reviewed": false
+    },
+    {
+      "text": "可随出",
+      "confidence": 0.6888,
+      "x": 0.19453125,
+      "y": 0.5703125,
+      "width": 0.040625,
+      "height": 0.03828125,
+      "reviewed": false
+    },
+    {
+      "text": "指边",
+      "confidence": 0.9986,
+      "x": 0.30390625,
+      "y": 0.57421875,
+      "width": 0.01875,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "1分人",
+      "confidence": 0.7348,
+      "x": 0.31015625,
+      "y": 0.56953125,
+      "width": 0.06328125,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "一人",
+      "confidence": 0.9975,
+      "x": 0.32890625,
+      "y": 0.57421875,
+      "width": 0.03203125,
+      "height": 0.01875,
+      "reviewed": false
+    },
+    {
+      "text": "插入肛塞",
+      "confidence": 0.9876,
+      "x": 0.7640625,
+      "y": 0.5734375,
+      "width": 0.05859375,
+      "height": 0.01953125,
+      "reviewed": false
+    },
+    {
+      "text": "学让家脸",
+      "confidence": 0.9953,
+      "x": 0.8953125,
+      "y": 0.5734375,
+      "width": 0.01953125,
+      "height": 0.05546875,
+      "reviewed": false
+    },
+    {
+      "text": "狗全几十",
+      "confidence": 0.9886,
+      "x": 0.90625,
+      "y": 0.5734375,
+      "width": 0.02421875,
+      "height": 0.05625,
+      "reviewed": false
+    },
+    {
+      "text": "姿部把次",
+      "confidence": 0.9983,
+      "x": 0.9203125,
+      "y": 0.57265625,
+      "width": 0.02265625,
+      "height": 0.05625,
+      "reviewed": false
+    },
+    {
+      "text": "并玩抽",
+      "confidence": 0.9149,
+      "x": 0.9359375,
+      "y": 0.57421875,
+      "width": 0.01796875,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "前进6格",
+      "confidence": 0.9999,
+      "x": 0.03984375,
+      "y": 0.6390625,
+      "width": 0.05,
+      "height": 0.01875,
+      "reviewed": false
+    },
+    {
+      "text": "舔家十",
+      "confidence": 0.8794,
+      "x": 0.1703125,
+      "y": 0.6390625,
+      "width": 0.02265625,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "左马秒",
+      "confidence": 0.9983,
+      "x": 0.18515625,
+      "y": 0.63984375,
+      "width": 0.01953125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "三",
+      "confidence": 0.6292,
+      "x": 0.19453125,
+      "y": 0.6359375,
+      "width": 0.040625,
+      "height": 0.03828125,
+      "reviewed": false
+    },
+    {
+      "text": "为",
+      "confidence": 0.9999,
+      "x": 0.303125,
+      "y": 0.6390625,
+      "width": 0.02109375,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "为边玩",
+      "confidence": 0.9227,
+      "x": 0.309375,
+      "y": 0.634375,
+      "width": 0.059375,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "全场家",
+      "confidence": 0.8222,
+      "x": 0.3625,
+      "y": 0.6328125,
+      "width": 0.071875,
+      "height": 0.04453125,
+      "reviewed": false
+    },
+    {
+      "text": "一多",
+      "confidence": 0.6841,
+      "x": 0.45703125,
+      "y": 0.6359375,
+      "width": 0.040625,
+      "height": 0.03828125,
+      "reviewed": false
+    },
+    {
+      "text": "后退一格",
+      "confidence": 1,
+      "x": 0.50078125,
+      "y": 0.6390625,
+      "width": 0.059375,
+      "height": 0.01953125,
+      "reviewed": false
+    },
+    {
+      "text": "为所有人",
+      "confidence": 0.7759,
+      "x": 0.559375,
+      "y": 0.6328125,
+      "width": 0.071875,
+      "height": 0.0453125,
+      "reviewed": false
+    },
+    {
+      "text": "一几的",
+      "confidence": 0.8572,
+      "x": 0.65078125,
+      "y": 0.63828125,
+      "width": 0.02265625,
+      "height": 0.03828125,
+      "reviewed": false
+    },
+    {
+      "text": "名把菊",
+      "confidence": 0.9897,
+      "x": 0.66328125,
+      "y": 0.6390625,
+      "width": 0.01875,
+      "height": 0.03671875,
+      "reviewed": false
+    },
+    {
+      "text": "玩摩花",
+      "confidence": 0.9709,
+      "x": 0.67265625,
+      "y": 0.6390625,
+      "width": 0.0203125,
+      "height": 0.03671875,
+      "reviewed": false
+    },
+    {
+      "text": "自眼仲人能",
+      "confidence": 0.9078,
+      "x": 0.6984375,
+      "y": 0.640625,
+      "width": 0.015625,
+      "height": 0.053125,
+      "reviewed": false
+    },
+    {
+      "text": "己展，想柜",
+      "confidence": 0.6286,
+      "x": 0.70546875,
+      "y": 0.63828125,
+      "width": 0.02265625,
+      "height": 0.05703125,
+      "reviewed": false
+    },
+    {
+      "text": "指给交",
+      "confidence": 0.9966,
+      "x": 0.7640625,
+      "y": 0.63984375,
+      "width": 0.01796875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "定自一",
+      "confidence": 0.9925,
+      "x": 0.77734375,
+      "y": 0.6390625,
+      "width": 0.01796875,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "一己分",
+      "confidence": 0.9818,
+      "x": 0.790625,
+      "y": 0.63984375,
+      "width": 0.01796875,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "人口钟",
+      "confidence": 0.9834,
+      "x": 0.803125,
+      "y": 0.63984375,
+      "width": 0.01796875,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "指给交",
+      "confidence": 0.9979,
+      "x": 0.89609375,
+      "y": 0.63984375,
+      "width": 0.01796875,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "定自一",
+      "confidence": 0.993,
+      "x": 0.90703125,
+      "y": 0.63828125,
+      "width": 0.021875,
+      "height": 0.04453125,
+      "reviewed": false
+    },
+    {
+      "text": "一己分",
+      "confidence": 0.946,
+      "x": 0.921875,
+      "y": 0.640625,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "人口钟",
+      "confidence": 0.9948,
+      "x": 0.9359375,
+      "y": 0.640625,
+      "width": 0.01796875,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "定自",
+      "confidence": 0.9968,
+      "x": 0.05390625,
+      "y": 0.70546875,
+      "width": 0.01875,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "接",
+      "confidence": 0.9121,
+      "x": 0.07890625,
+      "y": 0.70546875,
+      "width": 0.02109375,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "指与枪",
+      "confidence": 0.9955,
+      "x": 0.1703125,
+      "y": 0.7046875,
+      "width": 0.0203125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "定自三",
+      "confidence": 0.9889,
+      "x": 0.1859375,
+      "y": 0.70546875,
+      "width": 0.0171875,
+      "height": 0.040625,
+      "reviewed": false
+    },
+    {
+      "text": "一元+",
+      "confidence": 0.4597,
+      "x": 0.1984375,
+      "y": 0.70625,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "人磨秒",
+      "confidence": 0.9903,
+      "x": 0.2109375,
+      "y": 0.7046875,
+      "width": 0.01953125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "给家分",
+      "confidence": 0.9955,
+      "x": 0.8953125,
+      "y": 0.7046875,
+      "width": 0.01875,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "其口钟",
+      "confidence": 0.9381,
+      "x": 0.9078125,
+      "y": 0.7046875,
+      "width": 0.0203125,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "余交",
+      "confidence": 0.9988,
+      "x": 0.92109375,
+      "y": 0.7046875,
+      "width": 0.0203125,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "玩",
+      "confidence": 0.9993,
+      "x": 0.93515625,
+      "y": 0.70546875,
+      "width": 0.01953125,
+      "height": 0.02734375,
+      "reviewed": false
+    },
+    {
+      "text": "指玩己次",
+      "confidence": 0.9872,
+      "x": 0.03984375,
+      "y": 0.77109375,
+      "width": 0.01953125,
+      "height": 0.05546875,
+      "reviewed": false
+    },
+    {
+      "text": "定家舔",
+      "confidence": 0.9569,
+      "x": 0.0515625,
+      "y": 0.77109375,
+      "width": 0.02109375,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "两给脚",
+      "confidence": 0.9715,
+      "x": 0.06484375,
+      "y": 0.7703125,
+      "width": 0.02265625,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "位自五",
+      "confidence": 0.9858,
+      "x": 0.07578125,
+      "y": 0.76875,
+      "width": 0.02890625,
+      "height": 0.046875,
+      "reviewed": false
+    },
+    {
+      "text": "为口钟",
+      "confidence": 0.9916,
+      "x": 0.171875,
+      "y": 0.77109375,
+      "width": 0.01953125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "所交",
+      "confidence": 0.9995,
+      "x": 0.1859375,
+      "y": 0.77265625,
+      "width": 0.01875,
+      "height": 0.0296875,
+      "reviewed": false
+    },
+    {
+      "text": "有",
+      "confidence": 0.9776,
+      "x": 0.19765625,
+      "y": 0.77109375,
+      "width": 0.021875,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "人分",
+      "confidence": 0.9932,
+      "x": 0.21171875,
+      "y": 0.771875,
+      "width": 0.01875,
+      "height": 0.0296875,
+      "reviewed": false
+    },
+    {
+      "text": "指己隶隶移",
+      "confidence": 0.8073,
+      "x": 0.23828125,
+      "y": 0.77265625,
+      "width": 0.01484375,
+      "height": 0.04453125,
+      "reviewed": false
+    },
+    {
+      "text": "定的的始",
+      "confidence": 0.8411,
+      "x": 0.2453125,
+      "y": 0.77109375,
+      "width": 0.0171875,
+      "height": 0.046875,
+      "reviewed": false
+    },
+    {
+      "text": "一方可要其",
+      "confidence": 0.6957,
+      "x": 0.25390625,
+      "y": 0.771875,
+      "width": 0.0171875,
+      "height": 0.0453125,
+      "reviewed": false
+    },
+    {
+      "text": "人隅拒求余",
+      "confidence": 0.8229,
+      "x": 0.2640625,
+      "y": 0.77265625,
+      "width": 0.015625,
+      "height": 0.0453125,
+      "reviewed": false
+    },
+    {
+      "text": "停一轮",
+      "confidence": 0.9999,
+      "x": 0.30234375,
+      "y": 0.7703125,
+      "width": 0.04765625,
+      "height": 0.0203125,
+      "reviewed": false
+    },
+    {
+      "text": "指为马秒",
+      "confidence": 0.9998,
+      "x": 0.4359375,
+      "y": 0.771875,
+      "width": 0.0171875,
+      "height": 0.053125,
+      "reviewed": false
+    },
+    {
+      "text": "定自眼",
+      "confidence": 0.9967,
+      "x": 0.4484375,
+      "y": 0.77109375,
+      "width": 0.01953125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "1m",
+      "confidence": 0.5335,
+      "x": 0.4609375,
+      "y": 0.771875,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "人舔十",
+      "confidence": 0.9552,
+      "x": 0.4734375,
+      "y": 0.771875,
+      "width": 0.02109375,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "起拒场一",
+      "confidence": 0.7234,
+      "x": 0.5203125,
+      "y": 0.7703125,
+      "width": 0.01953125,
+      "height": 0.0453125,
+      "reviewed": false
+    },
+    {
+      "text": "点绝玩分",
+      "confidence": 0.9907,
+      "x": 0.5328125,
+      "y": 0.77265625,
+      "width": 0.015625,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "要家钟",
+      "confidence": 0.9958,
+      "x": 0.54296875,
+      "y": 0.77734375,
+      "width": 0.0171875,
+      "height": 0.0375,
+      "reviewed": false
+    },
+    {
+      "text": "主出",
+      "confidence": 0.9559,
+      "x": 0.5671875,
+      "y": 0.771875,
+      "width": 0.01875,
+      "height": 0.0296875,
+      "reviewed": false
+    },
+    {
+      "text": "全场家",
+      "confidence": 0.8041,
+      "x": 0.6265625,
+      "y": 0.765625,
+      "width": 0.0703125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "全场玩家",
+      "confidence": 0.9901,
+      "x": 0.6421875,
+      "y": 0.7703125,
+      "width": 0.05,
+      "height": 0.021875,
+      "reviewed": false
+    },
+    {
+      "text": "自秒",
+      "confidence": 0.998,
+      "x": 0.6984375,
+      "y": 0.771875,
+      "width": 0.01953125,
+      "height": 0.0296875,
+      "reviewed": false
+    },
+    {
+      "text": "撸三十",
+      "confidence": 0.9798,
+      "x": 0.70859375,
+      "y": 0.7703125,
+      "width": 0.05,
+      "height": 0.021875,
+      "reviewed": false
+    },
+    {
+      "text": "一手花",
+      "confidence": 0.9969,
+      "x": 0.7890625,
+      "y": 0.77109375,
+      "width": 0.0203125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "人指",
+      "confidence": 0.9956,
+      "x": 0.803125,
+      "y": 0.771875,
+      "width": 0.01953125,
+      "height": 0.0296875,
+      "reviewed": false
+    },
+    {
+      "text": "让家舔钟",
+      "confidence": 0.9984,
+      "x": 0.8296875,
+      "y": 0.77109375,
+      "width": 0.01953125,
+      "height": 0.05546875,
+      "reviewed": false
+    },
+    {
+      "text": "其给脚",
+      "confidence": 0.9147,
+      "x": 0.8421875,
+      "y": 0.77109375,
+      "width": 0.0203125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "余自一",
+      "confidence": 0.9706,
+      "x": 0.85546875,
+      "y": 0.77109375,
+      "width": 0.02109375,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "玩己分",
+      "confidence": 0.9941,
+      "x": 0.86875,
+      "y": 0.771875,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "指给交",
+      "confidence": 0.9959,
+      "x": 0.89609375,
+      "y": 0.77109375,
+      "width": 0.01796875,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "定自",
+      "confidence": 0.9989,
+      "x": 0.90859375,
+      "y": 0.77109375,
+      "width": 0.01953125,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "隔自秒",
+      "confidence": 0.9934,
+      "x": 0.03828125,
+      "y": 0.8359375,
+      "width": 0.021875,
+      "height": 0.04453125,
+      "reviewed": false
+    },
+    {
+      "text": "着撸",
+      "confidence": 0.719,
+      "x": 0.053125,
+      "y": 0.8375,
+      "width": 0.01953125,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "裤",
+      "confidence": 0.9911,
+      "x": 0.06484375,
+      "y": 0.834375,
+      "width": 0.0375,
+      "height": 0.0359375,
+      "reviewed": false
+    },
+    {
+      "text": "把家嘴两",
+      "confidence": 0.9987,
+      "x": 0.04140625,
+      "y": 0.90390625,
+      "width": 0.0171875,
+      "height": 0.053125,
+      "reviewed": false
+    },
+    {
+      "text": "上内里轮",
+      "confidence": 0.9593,
+      "x": 0.05390625,
+      "y": 0.90234375,
+      "width": 0.01953125,
+      "height": 0.05546875,
+      "reviewed": false
+    },
+    {
+      "text": "位裤游",
+      "confidence": 0.9876,
+      "x": 0.065625,
+      "y": 0.90234375,
+      "width": 0.021875,
+      "height": 0.04453125,
+      "reviewed": false
+    },
+    {
+      "text": "玩塞玩",
+      "confidence": 0.7375,
+      "x": 0.07734375,
+      "y": 0.90234375,
+      "width": 0.0234375,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "再投一次",
+      "confidence": 0.9999,
+      "x": 0.10625,
+      "y": 0.90234375,
+      "width": 0.059375,
+      "height": 0.01953125,
+      "reviewed": false
+    },
+    {
+      "text": "定家",
+      "confidence": 0.9968,
+      "x": 0.1859375,
+      "y": 0.903125,
+      "width": 0.01875,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "两",
+      "confidence": 0.9263,
+      "x": 0.19765625,
+      "y": 0.90234375,
+      "width": 0.021875,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "指音",
+      "confidence": 0.3644,
+      "x": 0.2296875,
+      "y": 0.8953125,
+      "width": 0.06015625,
+      "height": 0.05703125,
+      "reviewed": false
+    },
+    {
+      "text": "定自",
+      "confidence": 0.9969,
+      "x": 0.2515625,
+      "y": 0.903125,
+      "width": 0.01875,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "已",
+      "confidence": 0.6274,
+      "x": 0.2640625,
+      "y": 0.9046875,
+      "width": 0.01953125,
+      "height": 0.028125,
+      "reviewed": false
+    },
+    {
+      "text": "人接",
+      "confidence": 0.9971,
+      "x": 0.2765625,
+      "y": 0.90390625,
+      "width": 0.01953125,
+      "height": 0.0296875,
+      "reviewed": false
+    },
+    {
+      "text": "指学次",
+      "confidence": 0.9994,
+      "x": 0.303125,
+      "y": 0.903125,
+      "width": 0.0203125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "定狗",
+      "confidence": 0.6519,
+      "x": 0.315625,
+      "y": 0.90234375,
+      "width": 0.02109375,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "一",
+      "confidence": 0.7386,
+      "x": 0.3234375,
+      "y": 0.9,
+      "width": 0.0421875,
+      "height": 0.03671875,
+      "reviewed": false
+    },
+    {
+      "text": "指隔舔",
+      "confidence": 0.97,
+      "x": 0.36640625,
+      "y": 0.90234375,
+      "width": 0.0234375,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "定着脚",
+      "confidence": 0.9776,
+      "x": 0.38203125,
+      "y": 0.90234375,
+      "width": 0.01953125,
+      "height": 0.04296875,
+      "reviewed": false
+    },
+    {
+      "text": "一袜三",
+      "confidence": 0.8199,
+      "x": 0.3953125,
+      "y": 0.90390625,
+      "width": 0.0203125,
+      "height": 0.04140625,
+      "reviewed": false
+    },
+    {
+      "text": "人子下",
+      "confidence": 0.9977,
+      "x": 0.40859375,
+      "y": 0.903125,
+      "width": 0.0203125,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "指直只",
+      "confidence": 0.9873,
+      "x": 0.4359375,
+      "y": 0.903125,
+      "width": 0.01796875,
+      "height": 0.0421875,
+      "reviewed": false
+    },
+    {
+      "text": "定接剩",
+      "confidence": 0.9926,
+      "x": 0.446875,
+      "y": 0.90234375,
+      "width": 0.02265625,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "一内",
+      "confidence": 0.957,
+      "x": 0.459375,
+      "y": 0.90234375,
+      "width": 0.0234375,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "人到裤",
+      "confidence": 0.9972,
+      "x": 0.47265625,
+      "y": 0.90234375,
+      "width": 0.021875,
+      "height": 0.04375,
+      "reviewed": false
+    },
+    {
+      "text": "定自",
+      "confidence": 0.9839,
+      "x": 0.5140625,
+      "y": 0.903125,
+      "width": 0.01875,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "1己",
+      "confidence": 0.5914,
+      "x": 0.5265625,
+      "y": 0.903125,
+      "width": 0.0203125,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "接",
+      "confidence": 0.8696,
+      "x": 0.5390625,
+      "y": 0.903125,
+      "width": 0.02109375,
+      "height": 0.03125,
+      "reviewed": false
+    },
+    {
+      "text": "指隔揉巴",
+      "confidence": 0.9993,
+      "x": 0.565625,
+      "y": 0.90234375,
+      "width": 0.02109375,
+      "height": 0.0546875,
+      "reviewed": false
+    },
+    {
+      "text": "人子鸡",
+      "confidence": 0.9974,
+      "x": 0.6046875,
+      "y": 0.90234375,
+      "width": 0.0234375,
+      "height": 0.04453125,
+      "reviewed": false
+    },
+    {
+      "text": "停一轮",
+      "confidence": 0.9997,
+      "x": 0.63203125,
+      "y": 0.9015625,
+      "width": 0.04765625,
+      "height": 0.021875,
+      "reviewed": false
+    },
+    {
+      "text": "定自",
+      "confidence": 0.996,
+      "x": 0.7109375,
+      "y": 0.903125,
+      "width": 0.01953125,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "已",
+      "confidence": 0.6444,
+      "x": 0.725,
+      "y": 0.9046875,
+      "width": 0.0203125,
+      "height": 0.028125,
+      "reviewed": false
+    },
+    {
+      "text": "接",
+      "confidence": 0.9395,
+      "x": 0.7359375,
+      "y": 0.903125,
+      "width": 0.021875,
+      "height": 0.03046875,
+      "reviewed": false
+    },
+    {
+      "text": "脱服",
+      "confidence": 0.9915,
+      "x": 0.7640625,
+      "y": 0.903125,
+      "width": 0.01875,
+      "height": 0.0296875,
+      "reviewed": false
+    },
+    {
+      "text": "一件衣",
+      "confidence": 0.9993,
+      "x": 0.7796875,
+      "y": 0.903125,
+      "width": 0.04296875,
+      "height": 0.01796875,
+      "reviewed": false
+    },
+    {
+      "text": "再投一次",
+      "confidence": 0.9999,
+      "x": 0.82890625,
+      "y": 0.90234375,
+      "width": 0.06015625,
+      "height": 0.01953125,
+      "reviewed": false
+    },
+    {
+      "text": "开始",
+      "confidence": 0.9997,
+      "x": 0.90234375,
+      "y": 0.9203125,
+      "width": 0.05234375,
+      "height": 0.0296875,
+      "reviewed": false
+    }
+  ],
+  "engine": "RapidOCR 3.9.2 · PP-OCRv6 small",
+  "width": 1280,
+  "height": 1280
+}

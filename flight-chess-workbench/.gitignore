@@ -1,0 +1,10 @@
+node_modules/
+dist/
+work/
+.wrangler/
+.firebase/
+functions/node_modules/
+functions/lib/
+.env
+.env.*
+.DS_Store

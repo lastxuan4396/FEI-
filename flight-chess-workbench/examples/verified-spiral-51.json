@@ -1,0 +1,633 @@
+{
+  "version": 1,
+  "id": "verified-spiral-51",
+  "title": "图片螺旋地图 · 51 个编号格",
+  "description": "人工核对原图 1–51 格路线，另补起点 0 与终点 52。移动规则保留；露骨任务替换为可编辑占位。移动后不连锁触发。",
+  "layout": {
+    "columns": 11,
+    "rows": 9,
+    "path": [
+      [
+        10,
+        8
+      ],
+      [
+        10,
+        7
+      ],
+      [
+        10,
+        6
+      ],
+      [
+        10,
+        5
+      ],
+      [
+        10,
+        4
+      ],
+      [
+        10,
+        3
+      ],
+      [
+        10,
+        2
+      ],
+      [
+        10,
+        1
+      ],
+      [
+        10,
+        0
+      ],
+      [
+        9,
+        0
+      ],
+      [
+        8,
+        0
+      ],
+      [
+        7,
+        0
+      ],
+      [
+        6,
+        0
+      ],
+      [
+        5,
+        0
+      ],
+      [
+        4,
+        0
+      ],
+      [
+        3,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        5
+      ],
+      [
+        0,
+        6
+      ],
+      [
+        0,
+        7
+      ],
+      [
+        1,
+        7
+      ],
+      [
+        2,
+        7
+      ],
+      [
+        3,
+        7
+      ],
+      [
+        4,
+        7
+      ],
+      [
+        5,
+        7
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        7,
+        7
+      ],
+      [
+        8,
+        7
+      ],
+      [
+        8,
+        6
+      ],
+      [
+        8,
+        5
+      ],
+      [
+        8,
+        4
+      ],
+      [
+        8,
+        3
+      ],
+      [
+        8,
+        2
+      ],
+      [
+        7,
+        2
+      ],
+      [
+        6,
+        2
+      ],
+      [
+        5,
+        2
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        3,
+        5
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        5,
+        5
+      ],
+      [
+        6,
+        5
+      ],
+      [
+        6,
+        4
+      ]
+    ],
+    "style": "paper-spiral"
+  },
+  "rules": {
+    "launchOnSix": false,
+    "finish": "stop",
+    "chainEffects": false,
+    "maxChain": 12,
+    "goal": "race"
+  },
+  "players": [
+    {
+      "id": "a",
+      "name": "玩家 A",
+      "color": "#e26b49"
+    },
+    {
+      "id": "b",
+      "name": "玩家 B",
+      "color": "#497f88"
+    }
+  ],
+  "decks": {
+    "reference51": {
+      "name": "示例互动占位",
+      "cards": [
+        "由玩家共同确认一项可接受的非露骨互动任务，也可以跳过。"
+      ]
+    }
+  },
+  "tiles": [
+    {
+      "type": "start",
+      "color": "#edab79",
+      "label": "起点"
+    },
+    {
+      "type": "plain",
+      "color": "#fffdf8",
+      "label": "准备确认"
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 10
+    },
+    {
+      "type": "task",
+      "color": "#a6d291",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self"
+    },
+    {
+      "type": "move",
+      "color": "#ed5345",
+      "label": "后退2格",
+      "steps": -2
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#a6d291",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#c58acf",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 120
+    },
+    {
+      "type": "move",
+      "color": "#fff0a9",
+      "label": "前进2格",
+      "steps": 2
+    },
+    {
+      "type": "task",
+      "color": "#78b4de",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 10
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 10
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 20
+    },
+    {
+      "type": "move",
+      "color": "#ed5345",
+      "label": "后退2格",
+      "steps": -2
+    },
+    {
+      "type": "task",
+      "color": "#78b4de",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 20
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 20
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 20
+    },
+    {
+      "type": "task",
+      "color": "#c58acf",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 30
+    },
+    {
+      "type": "move",
+      "color": "#fff0a9",
+      "label": "前进2格",
+      "steps": 2
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 20
+    },
+    {
+      "type": "task",
+      "color": "#78b4de",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 10
+    },
+    {
+      "type": "task",
+      "color": "#a6d291",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 20
+    },
+    {
+      "type": "move",
+      "color": "#ed5345",
+      "label": "后退2格",
+      "steps": -2
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 20
+    },
+    {
+      "type": "task",
+      "color": "#c58acf",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 120
+    },
+    {
+      "type": "move",
+      "color": "#fff0a9",
+      "label": "前进2格",
+      "steps": 2
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 20
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 20
+    },
+    {
+      "type": "task",
+      "color": "#a6d291",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 30
+    },
+    {
+      "type": "move",
+      "color": "#ed5345",
+      "label": "后退2格",
+      "steps": -2
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 20
+    },
+    {
+      "type": "task",
+      "color": "#78b4de",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#c58acf",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 120
+    },
+    {
+      "type": "move",
+      "color": "#fff0a9",
+      "label": "前进2格",
+      "steps": 2
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 30
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 30
+    },
+    {
+      "type": "task",
+      "color": "#78b4de",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 30
+    },
+    {
+      "type": "task",
+      "color": "#c58acf",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 120
+    },
+    {
+      "type": "move",
+      "color": "#fff0a9",
+      "label": "前进2格",
+      "steps": 2
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 30
+    },
+    {
+      "type": "move",
+      "color": "#ed5345",
+      "label": "退回第19格",
+      "steps": -22
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#78b4de",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 30
+    },
+    {
+      "type": "move",
+      "color": "#fff0a9",
+      "label": "前进2格",
+      "steps": 2
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 30
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self"
+    },
+    {
+      "type": "move",
+      "color": "#ed5345",
+      "label": "后退5格",
+      "steps": -5
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 60
+    },
+    {
+      "type": "task",
+      "color": "#c9d7e4",
+      "label": "互动占位",
+      "deck": "reference51",
+      "target": "self",
+      "duration": 60
+    },
+    {
+      "type": "move",
+      "color": "#ed5345",
+      "label": "退回第31格",
+      "steps": -19
+    },
+    {
+      "type": "move",
+      "color": "#ed5345",
+      "label": "后退3格",
+      "steps": -3
+    },
+    {
+      "type": "finish",
+      "color": "#f6d05c",
+      "label": "终点"
+    }
+  ]
+}

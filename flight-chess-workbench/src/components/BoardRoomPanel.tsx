@@ -1,0 +1,5 @@
+import {useState} from 'react';
+export function BoardRoomPanel({code,name,status,error,invitation,onLeave}:{code:string;name:string;status:string;error:string;invitation:string;onLeave:()=>void}){
+ const [copied,setCopied]=useState(false);
+ return <section className="board-room-panel" aria-label="双人联机房间"><div><b>房间 {code} · 你是{name}</b><span role="status">{status}</span></div>{error&&<p role="alert">{error}</p>}{invitation?<details open><summary>邀请另一位玩家</summary><input aria-label="棋盘邀请链接" readOnly value={invitation} onFocus={e=>e.target.select()}/><button onClick={async()=>{try{await navigator.clipboard.writeText(invitation);setCopied(true);}catch{const input=document.querySelector<HTMLInputElement>('[aria-label="棋盘邀请链接"]');input?.select();setCopied(document.execCommand('copy'));}}}>{copied?'已复制':'复制邀请链接'}</button><small>把邀请链接发给对方，打开即可加入。请保留各自链接，刷新可重连。</small></details>:<p>已加入。回合由当前玩家操作，任务由承担者操作。</p>}{location.hostname.endsWith('.onrender.com')&&<small>首次打开休眠服务可能需要等待。请保留各自房间链接，网页重启后可重连。</small>}<button onClick={onLeave}>离开房间，回到本机</button></section>;
+}

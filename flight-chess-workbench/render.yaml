@@ -1,0 +1,29 @@
+services:
+  - type: keyvalue
+    name: flight-workbench-rooms
+    plan: free
+    region: oregon
+    maxmemoryPolicy: noeviction
+    ipAllowList: []
+  - type: web
+    name: flight-chess-workbench
+    runtime: node
+    repo: https://github.com/lastxuan4396/FEI-
+    rootDir: flight-chess-workbench
+    branch: codex/render-multiplayer
+    plan: free
+    region: oregon
+    buildCommand: npm ci && npm run build
+    startCommand: npm run serve:online
+    healthCheckPath: /healthz
+    autoDeploy: true
+    envVars:
+      - key: NODE_VERSION
+        value: 22.16.0
+      - key: REDIS_PREFIX
+        value: paired-workbench-v1
+      - key: REDIS_URL
+        fromService:
+          type: keyvalue
+          name: flight-workbench-rooms
+          property: connectionString

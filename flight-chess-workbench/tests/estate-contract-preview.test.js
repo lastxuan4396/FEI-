@@ -1,0 +1,38 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import {createArcade,arcadeTransition as go,parseArcade,validateArcade} from '../src/core/arcade.js';
+import {estateMap} from '../src/core/estateMaps.js';
+import {estatePublicDescription,tradeReason} from '../src/core/estate.js';
+const players=[{name:'甲',color:'#739aa5'},{name:'乙',color:'#ce765f'}];
+const pool=['观察7秒','重复5次','分享一件开心的事'];
+function fresh(size=12,mode='linked',texts=pool){return createArcade('estate',players,{seed:1,pool:texts,sourceTexts:texts===pool?{'观察7秒':'观察30秒'}:undefined,estate:{mapSize:size,taskMode:mode,target:800,rounds:16}});}
+function arrive(size=12,mode='linked',texts=pool,lot=10){const s=fresh(size,mode,texts);s.state.seed=1;s.state.players[0].position=lot-1;return go(s,{type:'ROLL'});}
+const roundtrip=s=>parseArcade(JSON.stringify(s));
+test('Every contract tile on all maps deals stable distinct previews before task commitment',()=>{
+ for(const size of [12,20,28])for(const mode of ['linked','events'])for(const [lot,tile] of estateMap(fresh(size,mode).config).tiles.entries()){
+  if(tile.kind!=='contract')continue;let s=arrive(size,mode,pool,lot);const before=structuredClone(s.state);assert.equal(s.state.phase,'contract');assert.equal(s.state.pending,null);assert.equal(s.state.moves,0);assert.deepEqual(s.state.players.map(p=>p.cash),[120,120]);assert.equal(s.state.estate.contract.tasks.length,2);assert.equal(new Set(s.state.estate.contract.tasks).size,2);s=roundtrip(s);assert.deepEqual(s.state.estate.contract,before.estate.contract);assert.throws(()=>go(s,{type:'PREVIEW_CONTRACT'}));s=go(s,{type:'SELECT_CONTRACT_TASK',index:1});assert.equal(s.state.estate.contract.selected,1);assert.deepEqual(s.state.players,before.players);assert.deepEqual(s.state.bag,before.bag);assert.equal(s.state.seed,before.seed);s=roundtrip(s);s=go(s,{type:'CONTRACT',method:'cash'});assert.equal(s.state.pending.text,before.estate.contract.tasks[1]);assert.equal(s.state.estate.contract,null);assert.equal(s.state.players[0].cash,120);s=go(s,{type:'RESOLVE',done:true});assert.equal(s.state.players[0].cash,135);assert.throws(()=>go(s,{type:'RESOLVE',done:true}));
+ }
+});
+test('Chosen task and source wording survive commitment, undo and all contract settlement choices',()=>{
+ for(const method of ['cash','pass','redraw','coop','risk'])for(const done of [true,false]){let s=arrive();const selected=s.state.estate.contract.tasks.length-1;s=go(s,{type:'SELECT_CONTRACT_TASK',index:selected});const preview=structuredClone(s.state.estate.contract);if(method==='coop')assert.throws(()=>go(s,{type:'CONTRACT',method,target:1}));s=go(s,{type:'CONTRACT',method,target:1,partnerAccepted:true});assert.equal(s.state.pending.text,preview.tasks[selected]);assert.equal(s.state.pending.endsAt,null);const pending=structuredClone(s.state.pending);s=go(s,{type:'UNDO'});assert.deepEqual(s.state.estate.contract,preview);s=go(s,{type:'CONTRACT',method,target:1,partnerAccepted:true});assert.deepEqual(s.state.pending,pending);s=go(roundtrip(s),{type:'RESOLVE',done});assert.equal(s.state.players[0].cash,120+(done?(method==='cash'?15:method==='coop'?10:method==='risk'?30:0):(method==='risk'?-10:0)));assert.equal(s.state.players[1].cash,120+(method==='coop'&&done?10:0));}
+ let s=arrive(12,'events',['观察7秒']);s.config.sourceTexts={'观察7秒':'观察30秒'};s=go(s,{type:'CONTRACT',method:'cash'});assert.equal(s.state.pending.original,'观察30秒');assert.equal(s.state.pending.duration,7);
+});
+test('Preview alone can be declined without loss and ordinary capped coupons have accurate overflow',()=>{
+ let s=go(arrive(),{type:'SELECT_CONTRACT_TASK',index:1});s=go(s,{type:'CONTRACT',method:'skip'});assert.deepEqual(s.state.players.map(p=>p.cash),[120,120]);assert.equal(s.state.turn,1);assert.equal(s.state.estate.contract,null);s=go(s,{type:'UNDO'});assert.equal(s.state.estate.contract.selected,1);assert.equal(s.state.moves,0);assert.equal(go(s,{type:'END'}).state.estate.contract,null);
+ for(const method of ['pass','redraw']){let s=arrive();s.state.estate[method==='pass'?'passes':'redraws'][0]=3;s=go(s,{type:'CONTRACT',method});s=go(s,{type:'RESOLVE',done:true});assert.equal(s.state.players[0].cash,135);assert.equal(s.state.estate[method==='pass'?'passes':'redraws'][0],3);}
+});
+test('One-task decks and old contract saves can show a preview once and remain importable',()=>{
+ const s=arrive(12,'events',['重复5次']);assert.deepEqual(s.state.estate.contract,{tasks:['重复5次'],selected:0});assert.throws(()=>go(s,{type:'SELECT_CONTRACT_TASK',index:1}));
+ let old=arrive();delete old.state.estate.contract;old.state.undo.forEach(u=>delete u.estate.contract);old=roundtrip(old);old=go(old,{type:'PREVIEW_CONTRACT'});assert.equal(old.state.estate.contract.tasks.length,2);assert.throws(()=>go(old,{type:'PREVIEW_CONTRACT'}));old=go(old,{type:'SELECT_CONTRACT_TASK',index:1});old=go(old,{type:'CONTRACT',method:'risk'});assert.equal(old.state.pending.estate.risk,true);roundtrip(old);
+});
+test('Import and commands reject mismatched, forged or stale contract preview states',()=>{
+ for(const change of [s=>s.state.estate.contract.selected=2,s=>s.state.estate.contract.selected=.5,s=>s.state.estate.contract.tasks=['foreign task'],s=>s.state.estate.contract.tasks=[pool[0],pool[0]],s=>s.state.phase='ready']){const s=arrive();change(s);assert.throws(()=>validateArcade(s));}
+ let s=arrive();assert.throws(()=>go(s,{type:'SELECT_CONTRACT_TASK',index:-1}));assert.throws(()=>go(s,{type:'SELECT_CONTRACT_TASK',index:1,expectedRevision:0}));s=go(s,{type:'CONTRACT',method:'cash'});assert.throws(()=>go(s,{type:'SELECT_CONTRACT_TASK',index:0}));assert.throws(()=>go(s,{type:'PREVIEW_CONTRACT'}));
+});
+test('Expanded-map descriptions and trade constraints use the actual street and economic state',()=>{
+ for(const size of [12,20,28]){let s=fresh(size);for(const [lot,t] of estateMap(s.config).tiles.entries()){const text=estatePublicDescription(s.config,lot);if(t.kind==='penalty')assert.match(text,/直接抽取.*惩罚/);if(t.kind==='reward')assert.match(text,/直接领取20/);if(t.kind==='contract')assert.match(text,/先查看并选择/);if(t.kind==='property')assert.equal(text,'');}
+ const g=estateMap(s.config).groups.at(-1),lot=g.lots[0];g.lots.forEach(i=>s.state.owners[i]=0);s=go(s,{type:'BUILD',lot});assert.match(tradeReason(s,lot,1,40),/建筑/);assert.throws(()=>go(s,{type:'TRADE',lot,target:1,price:40}),/建筑/);s=go(s,{type:'SELL_BUILDING',lot});s=go(s,{type:'MORTGAGE',lot});assert.match(tradeReason(s,lot,1,40),/赎回/);assert.throws(()=>go(s,{type:'TRADE',lot,target:1,price:40}),/赎回/);s=go(s,{type:'REDEEM',lot});assert.match(tradeReason(s,lot,1,121),/金币不足/);assert.match(tradeReason(s,lot,1,1.5),/整数/);assert.equal(tradeReason(s,lot,1,40),'');s=go(s,{type:'TRADE',lot,target:1,price:40});s=go(s,{type:'ACCEPT',yes:true});assert.equal(s.state.owners[lot],1);assert.equal(s.state.players[1].cash,80);roundtrip(s);}
+});
+test('Contract preview and selection do not spend lasting-card turns or pay dividends before completion',()=>{
+ let s=arrive();s=go(s,{type:'EFFECT_ADD',now:1000,effect:{cardId:'estate-dividend',targets:['0']}});const before=s.state.effectTurns??0;s=go(s,{type:'SELECT_CONTRACT_TASK',index:1});s=roundtrip(s);assert.equal(s.state.effectTurns??0,before);assert.equal(s.state.players[0].cash,120);s=go(s,{type:'CONTRACT',method:'cash'});assert.equal(s.state.effectTurns??0,before);assert.equal(s.state.players[0].cash,120);s=go(s,{type:'RESOLVE',done:true});assert.equal(s.state.players[0].cash,140);assert.equal(s.state.effectTurns,before+1);s=go(s,{type:'UNDO'});assert.equal(s.state.players[0].cash,120);assert.equal(s.state.effectTurns??0,before);
+});

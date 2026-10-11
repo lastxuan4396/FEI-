@@ -1,0 +1,526 @@
+{
+  "version": 1,
+  "id": "verified-spiral-44",
+  "title": "编号 1–44 · 内圈螺旋地图",
+  "description": "核对原图0起点及1–44编号，另加45终点，共46格。保留可确定的前退格和回起点；露骨任务与不支持的持续状态用占位，14格只保留后退2格，未配置附加翻倍。",
+  "layout": {
+    "columns": 8,
+    "rows": 10,
+    "path": [
+      [
+        7,
+        9
+      ],
+      [
+        7,
+        8
+      ],
+      [
+        7,
+        7
+      ],
+      [
+        7,
+        6
+      ],
+      [
+        7,
+        5
+      ],
+      [
+        7,
+        4
+      ],
+      [
+        7,
+        3
+      ],
+      [
+        7,
+        2
+      ],
+      [
+        7,
+        1
+      ],
+      [
+        7,
+        0
+      ],
+      [
+        6,
+        0
+      ],
+      [
+        5,
+        0
+      ],
+      [
+        4,
+        0
+      ],
+      [
+        3,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        1,
+        0
+      ],
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        1
+      ],
+      [
+        0,
+        2
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        0,
+        4
+      ],
+      [
+        0,
+        5
+      ],
+      [
+        0,
+        6
+      ],
+      [
+        0,
+        7
+      ],
+      [
+        0,
+        8
+      ],
+      [
+        0,
+        9
+      ],
+      [
+        1,
+        9
+      ],
+      [
+        2,
+        9
+      ],
+      [
+        3,
+        9
+      ],
+      [
+        4,
+        9
+      ],
+      [
+        5,
+        9
+      ],
+      [
+        5,
+        8
+      ],
+      [
+        5,
+        7
+      ],
+      [
+        5,
+        6
+      ],
+      [
+        5,
+        5
+      ],
+      [
+        5,
+        4
+      ],
+      [
+        5,
+        3
+      ],
+      [
+        5,
+        2
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        3,
+        2
+      ],
+      [
+        2,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        2,
+        4
+      ],
+      [
+        2,
+        5
+      ],
+      [
+        3,
+        5
+      ],
+      [
+        3,
+        4
+      ]
+    ]
+  },
+  "rules": {
+    "launchOnSix": false,
+    "finish": "stop",
+    "chainEffects": false,
+    "maxChain": 12,
+    "goal": "race"
+  },
+  "players": [
+    {
+      "id": "a",
+      "name": "玩家 A",
+      "color": "#e26b49"
+    },
+    {
+      "id": "b",
+      "name": "玩家 B",
+      "color": "#497f88"
+    }
+  ],
+  "decks": {
+    "reference": {
+      "name": "图片互动占位",
+      "cards": [
+        "共同确认一项非露骨互动，也可以选择跳过。"
+      ]
+    }
+  },
+  "tiles": [
+    {
+      "type": "start",
+      "color": "#ebbd82",
+      "label": "起点"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "move",
+      "color": "#aad5e6",
+      "label": "后退3格",
+      "steps": -3
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "move",
+      "color": "#aad5e6",
+      "label": "前进3格",
+      "steps": 3
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "home",
+      "color": "#edb69c",
+      "label": "回到起点"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "move",
+      "color": "#aad5e6",
+      "label": "后退2格",
+      "steps": -2
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "plain",
+      "color": "#d4c6e8",
+      "label": "状态占位"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "plain",
+      "color": "#d4c6e8",
+      "label": "状态占位"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "home",
+      "color": "#edb69c",
+      "label": "回到起点"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "move",
+      "color": "#aad5e6",
+      "label": "后退5格",
+      "steps": -5
+    },
+    {
+      "type": "plain",
+      "color": "#d4c6e8",
+      "label": "状态占位"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "move",
+      "color": "#aad5e6",
+      "label": "前进4格",
+      "steps": 4
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "move",
+      "color": "#aad5e6",
+      "label": "前进3格",
+      "steps": 3
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "move",
+      "color": "#aad5e6",
+      "label": "后退5格",
+      "steps": -5
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#e6e6e6",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "finish",
+      "color": "#a6d45d",
+      "label": "终点"
+    }
+  ]
+}

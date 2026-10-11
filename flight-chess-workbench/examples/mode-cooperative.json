@@ -1,0 +1,427 @@
+{
+  "version": 1,
+  "id": "mode-cooperative",
+  "title": "合作闯关",
+  "description": "折返长路线，全队位置同步。任务由所有人共同完成，到达终点时全队获胜。",
+  "layout": {
+    "columns": 11,
+    "rows": 16,
+    "path": [
+      [
+        0,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        4,
+        0
+      ],
+      [
+        6,
+        0
+      ],
+      [
+        8,
+        0
+      ],
+      [
+        10,
+        0
+      ],
+      [
+        10,
+        3
+      ],
+      [
+        8,
+        3
+      ],
+      [
+        6,
+        3
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        0,
+        3
+      ],
+      [
+        0,
+        6
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        6,
+        6
+      ],
+      [
+        8,
+        6
+      ],
+      [
+        10,
+        6
+      ],
+      [
+        10,
+        9
+      ],
+      [
+        8,
+        9
+      ],
+      [
+        6,
+        9
+      ],
+      [
+        4,
+        9
+      ],
+      [
+        2,
+        9
+      ],
+      [
+        0,
+        9
+      ],
+      [
+        0,
+        12
+      ],
+      [
+        2,
+        12
+      ],
+      [
+        4,
+        12
+      ],
+      [
+        6,
+        12
+      ],
+      [
+        8,
+        12
+      ],
+      [
+        10,
+        12
+      ],
+      [
+        10,
+        15
+      ],
+      [
+        8,
+        15
+      ],
+      [
+        6,
+        15
+      ],
+      [
+        4,
+        15
+      ],
+      [
+        2,
+        15
+      ],
+      [
+        0,
+        15
+      ]
+    ],
+    "style": "switchback"
+  },
+  "rules": {
+    "launchOnSix": false,
+    "finish": "stop",
+    "chainEffects": true,
+    "maxChain": 12,
+    "goal": "cooperative"
+  },
+  "players": [
+    {
+      "id": "a",
+      "name": "玩家 A",
+      "color": "#e26b49"
+    },
+    {
+      "id": "b",
+      "name": "玩家 B",
+      "color": "#497f88"
+    }
+  ],
+  "decks": {
+    "talk": {
+      "name": "聊聊彼此",
+      "cards": [
+        "分享最近一件让你开心的小事。",
+        "说出对方的三个优点。",
+        "聊聊你最想一起去的一个地方。",
+        "各说一个想尝试的新爱好。",
+        "描述一次印象深刻的旅行。",
+        "说说今天最值得感谢的一件事。",
+        "分享一个童年趣事。",
+        "一起计划下一次休息日。"
+      ]
+    },
+    "play": {
+      "name": "默契挑战",
+      "cards": [
+        "不出声，用动作表演一种动物，让对方猜。",
+        "各自在心里选一种颜色，再同时说出来。",
+        "用手指在对方手心写一个字，让对方猜。",
+        "石头剪刀布，三局两胜。",
+        "轮流接龙说水果名称，持续 30 秒。",
+        "各自猜对方此刻最想吃的食物。",
+        "用三个词描述你们的共同回忆。",
+        "一起拍一张笑脸合照，也可以用画画代替。"
+      ]
+    },
+    "creative": {
+      "name": "创意表演",
+      "cards": [
+        "用三个动作演出一部电影，让大家猜。",
+        "各画一个表情，交换后编一段对白。",
+        "用桌上一个物品编一段广告。",
+        "模仿一种天气，让其他人猜。",
+        "轮流用一个词讲完一个小故事。",
+        "为今天的游戏起一个电影片名。",
+        "用不超过十个字介绍自己。",
+        "即兴给一个普通物品起新名字。"
+      ]
+    },
+    "memory": {
+      "name": "回忆与计划",
+      "cards": [
+        "分享最近学到的一件新事。",
+        "回忆一次大家都笑起来的时刻。",
+        "各推荐一本书、电影或一首歌。",
+        "说一个今年想完成的小目标。",
+        "一起选出下一次聚会的主题。",
+        "描述一个你喜欢的季节。",
+        "分享一件生活中的小习惯。",
+        "说一个未来想一起尝试的活动。"
+      ]
+    },
+    "team": {
+      "name": "共同挑战",
+      "cards": [
+        "所有人同时说一种动物，试试能否一致。",
+        "轮流说一种水果，不能重复。",
+        "一起编一个包含三个随机词的小故事。",
+        "各画一笔，共同完成一幅画。",
+        "每人说对下一位玩家的一个感谢。",
+        "一起规划一份简单的周末菜单。",
+        "两人比划，其他人猜一个成语。",
+        "全队依次说数字，遇到三的倍数拍手。"
+      ]
+    },
+    "quick": {
+      "name": "限时小挑战",
+      "cards": [
+        "在计时结束前轮流说城市名称。",
+        "在计时结束前找出五件相同颜色的物品。",
+        "用五个词描述一个地方，让大家猜。",
+        "轮流说带有同一个字的词语。",
+        "给一个普通物品想出三种新用途。",
+        "用手势表达一句常用的话。",
+        "一起给下一局设计一个任务。",
+        "每人用一句话讲一个轻松的小笑话。"
+      ]
+    }
+  },
+  "tiles": [
+    {
+      "type": "start"
+    },
+    {
+      "type": "task",
+      "deck": "play",
+      "target": "both"
+    },
+    {
+      "type": "task",
+      "deck": "creative",
+      "target": "both"
+    },
+    {
+      "type": "task",
+      "deck": "memory",
+      "target": "both",
+      "duration": 30
+    },
+    {
+      "type": "plain"
+    },
+    {
+      "type": "move",
+      "steps": 3
+    },
+    {
+      "type": "task",
+      "deck": "talk",
+      "target": "both",
+      "duration": 30
+    },
+    {
+      "type": "task",
+      "deck": "play",
+      "target": "both"
+    },
+    {
+      "type": "plain"
+    },
+    {
+      "type": "task",
+      "deck": "memory",
+      "target": "both",
+      "duration": 30
+    },
+    {
+      "type": "task",
+      "deck": "team",
+      "target": "both"
+    },
+    {
+      "type": "task",
+      "deck": "quick",
+      "target": "both"
+    },
+    {
+      "type": "move",
+      "steps": -2
+    },
+    {
+      "type": "task",
+      "deck": "play",
+      "target": "both"
+    },
+    {
+      "type": "task",
+      "deck": "creative",
+      "target": "both"
+    },
+    {
+      "type": "task",
+      "deck": "memory",
+      "target": "both",
+      "duration": 30
+    },
+    {
+      "type": "plain"
+    },
+    {
+      "type": "task",
+      "deck": "quick",
+      "target": "both"
+    },
+    {
+      "type": "task",
+      "deck": "talk",
+      "target": "both",
+      "duration": 30
+    },
+    {
+      "type": "task",
+      "deck": "play",
+      "target": "both"
+    },
+    {
+      "type": "extra"
+    },
+    {
+      "type": "task",
+      "deck": "memory",
+      "target": "both",
+      "duration": 30
+    },
+    {
+      "type": "task",
+      "deck": "team",
+      "target": "both"
+    },
+    {
+      "type": "task",
+      "deck": "quick",
+      "target": "both"
+    },
+    {
+      "type": "plain"
+    },
+    {
+      "type": "task",
+      "deck": "play",
+      "target": "both"
+    },
+    {
+      "type": "task",
+      "deck": "creative",
+      "target": "both"
+    },
+    {
+      "type": "task",
+      "deck": "memory",
+      "target": "both",
+      "duration": 30
+    },
+    {
+      "type": "double"
+    },
+    {
+      "type": "task",
+      "deck": "quick",
+      "target": "both"
+    },
+    {
+      "type": "task",
+      "deck": "talk",
+      "target": "both",
+      "duration": 30
+    },
+    {
+      "type": "task",
+      "deck": "play",
+      "target": "both"
+    },
+    {
+      "type": "plain"
+    },
+    {
+      "type": "task",
+      "deck": "memory",
+      "target": "both",
+      "duration": 30
+    },
+    {
+      "type": "task",
+      "deck": "team",
+      "target": "both"
+    },
+    {
+      "type": "finish"
+    }
+  ]
+}

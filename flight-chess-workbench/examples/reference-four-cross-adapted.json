@@ -1,0 +1,587 @@
+{
+  "version": 1,
+  "id": "reference-four-cross-adapted",
+  "title": "四人十字棋盘 · 共享路线改编",
+  "description": "参考第一张十字外形制作的可玩改编：四人共享路线，共49格。原图文字及格线过小，格数未逐格确认；未实现四条独立终点航线、四起点、碰撞退回与追赶规则。露骨任务用占位。",
+  "layout": {
+    "columns": 11,
+    "rows": 13,
+    "path": [
+      [
+        4,
+        12
+      ],
+      [
+        4,
+        11
+      ],
+      [
+        4,
+        10
+      ],
+      [
+        4,
+        9
+      ],
+      [
+        3,
+        9
+      ],
+      [
+        2,
+        9
+      ],
+      [
+        1,
+        9
+      ],
+      [
+        0,
+        9
+      ],
+      [
+        0,
+        8
+      ],
+      [
+        0,
+        7
+      ],
+      [
+        0,
+        6
+      ],
+      [
+        1,
+        6
+      ],
+      [
+        2,
+        6
+      ],
+      [
+        3,
+        6
+      ],
+      [
+        4,
+        6
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        4,
+        4
+      ],
+      [
+        4,
+        3
+      ],
+      [
+        4,
+        2
+      ],
+      [
+        4,
+        1
+      ],
+      [
+        4,
+        0
+      ],
+      [
+        5,
+        0
+      ],
+      [
+        6,
+        0
+      ],
+      [
+        7,
+        0
+      ],
+      [
+        7,
+        1
+      ],
+      [
+        7,
+        2
+      ],
+      [
+        7,
+        3
+      ],
+      [
+        7,
+        4
+      ],
+      [
+        7,
+        5
+      ],
+      [
+        7,
+        6
+      ],
+      [
+        8,
+        6
+      ],
+      [
+        9,
+        6
+      ],
+      [
+        10,
+        6
+      ],
+      [
+        10,
+        7
+      ],
+      [
+        10,
+        8
+      ],
+      [
+        10,
+        9
+      ],
+      [
+        9,
+        9
+      ],
+      [
+        8,
+        9
+      ],
+      [
+        7,
+        9
+      ],
+      [
+        7,
+        10
+      ],
+      [
+        7,
+        11
+      ],
+      [
+        7,
+        12
+      ],
+      [
+        6,
+        12
+      ],
+      [
+        5,
+        12
+      ],
+      [
+        5,
+        11
+      ],
+      [
+        5,
+        10
+      ],
+      [
+        5,
+        9
+      ],
+      [
+        5,
+        8
+      ],
+      [
+        5,
+        7
+      ]
+    ],
+    "style": "cross"
+  },
+  "rules": {
+    "launchOnSix": true,
+    "finish": "stop",
+    "chainEffects": false,
+    "maxChain": 12,
+    "goal": "race"
+  },
+  "players": [
+    {
+      "id": "p0",
+      "name": "玩家 A",
+      "color": "#e26b49"
+    },
+    {
+      "id": "p1",
+      "name": "玩家 B",
+      "color": "#497f88"
+    },
+    {
+      "id": "p2",
+      "name": "玩家 C",
+      "color": "#78a052"
+    },
+    {
+      "id": "p3",
+      "name": "玩家 D",
+      "color": "#a67db5"
+    }
+  ],
+  "decks": {
+    "reference": {
+      "name": "图片互动占位",
+      "cards": [
+        "共同确认一项非露骨互动，也可以选择跳过。"
+      ]
+    }
+  },
+  "tiles": [
+    {
+      "type": "start",
+      "color": "#ebbd82",
+      "label": "起点"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#fffdf8",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#9bc9ef",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#9bc9ef",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#9bc9ef",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#9bc9ef",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "task",
+      "color": "#9bc9ef",
+      "label": "互动占位",
+      "deck": "reference",
+      "target": "self"
+    },
+    {
+      "type": "finish",
+      "color": "#a6d45d",
+      "label": "终点"
+    }
+  ]
+}

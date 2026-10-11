@@ -1,0 +1,2 @@
+// Normalize only compressed brightness ranges; do not amplify an almost blank image.
+export function normalizeLowContrast(rgba){let min=255,max=0;for(let i=0;i<rgba.length;i+=4){const gray=rgba[i]*.299+rgba[i+1]*.587+rgba[i+2]*.114;min=Math.min(min,gray);max=Math.max(max,gray);}if(max-min>=70||max-min<8)return rgba;const result=new Uint8ClampedArray(rgba);for(let i=0;i<result.length;i+=4)for(let c=0;c<3;c++)result[i+c]=(rgba[i+c]-min)*255/(max-min);return result;}

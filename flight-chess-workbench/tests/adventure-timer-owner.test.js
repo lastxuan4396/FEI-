@@ -1,0 +1,38 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {createAdventure,adventureTransition as go,adventureView} from '../src/core/adventure.js';
+import {createRooms} from '../scripts/rooms.mjs';import http from 'node:http';import {mkdtemp,rm} from 'node:fs/promises';import {tmpdir} from 'node:os';import {join} from 'node:path';
+const make=(variant='spire')=>createAdventure({variant,players:['甲','乙'],pool:['观察10秒','观察20秒','观察30秒'],settings:{floors:2,rounds:3},seed:1});
+const act=(s,a,actor=0)=>go(s,{...a,epoch:s.epoch},actor),reload=s=>JSON.parse(JSON.stringify(s));
+const operations=[{now:1000},{now:2000,timerMode:'pause'},{now:null}];
+const rejected=(s,a,actor)=>{const before=structuredClone(s);assert.throws(()=>act(s,a,actor));assert.deepEqual(s,before);};
+test('Only current spire task owner controls clock; clock operations survive reload without resource, journal or turn changes',()=>{
+ let s=act(make(),{type:'PATH',path:'normal'});s=act(s,{type:'PLAY',index:0});const initial=structuredClone(s);for(const operation of operations)rejected(s,{type:'TIMER',taskId:s.pending.id,...operation},1);
+ s=act(s,{type:'TIMER',taskId:s.pending.id,now:1000});const deadline=1000+s.pending.duration*1000;assert.equal(s.pending.endsAt,deadline);s=act(s,{type:'TIMER',taskId:s.pending.id,now:2000,timerMode:'pause'});assert.equal(s.pending.pausedRemaining,deadline-2000);s=act(reload(s),{type:'TIMER',taskId:s.pending.id,now:5000});assert.equal(s.pending.endsAt,5000+deadline-2000);s=act(s,{type:'TIMER',taskId:s.pending.id,now:null});assert.equal(s.pending.endsAt,null);assert.equal(s.pending.pausedRemaining,undefined);
+ assert.deepEqual(s.energy,initial.energy);assert.deepEqual(s.battle,initial.battle);assert.deepEqual(s.log,initial.log);assert.equal(s.turn,initial.turn);assert.equal(s.effectTurns,initial.effectTurns);assert.equal(adventureView(s,1).pending.id,s.pending.id);
+ s=act(s,{type:'COMPLETE',done:false,taskId:s.pending.id});rejected(s,{type:'TIMER',now:1000},0);
+});
+test('Cancelled and reselected same card has a fresh claim identity; stale timer and confirmation cannot alter new task, while old saves still continue',()=>{
+ for(const variant of ['spire','rps','limited','ecard','numbers','charge']){
+ let s=make(variant);if(variant==='spire')s=act(s,{type:'PATH',path:'normal'});const claim=variant==='spire'?'PLAY':'SELECT';s=act(s,{type:claim,index:0});const m=variant==='spire'?s.pending:s.secret[0].task;const oldId=m.id,epoch=s.epoch,cost=structuredClone(s.costs[0][0]);s=act(s,{type:'COMPLETE',done:false,taskId:oldId});s=act(s,{type:claim,index:0});const current=variant==='spire'?s.pending:s.secret[0].task;assert.notEqual(current.id,oldId);assert.equal(s.epoch,epoch);assert.equal(current.text,m.text);assert.deepEqual(s.costs[0][0],cost);
+ for(const operation of operations)rejected(s,{type:'TIMER',taskId:oldId,...operation},0);for(const done of [true,false])rejected(s,{type:'COMPLETE',taskId:oldId,done},0);
+ s=act(reload(s),{type:'TIMER',taskId:current.id,now:1000});s=act(s,{type:'COMPLETE',taskId:current.id,done:true});rejected(s,{type:'TIMER',taskId:current.id,now:2000},0);
+ // Older snapshots/clients have no claim suffix or taskId argument.
+ let legacy=make(variant);if(variant==='spire')legacy=act(legacy,{type:'PATH',path:'normal'});legacy=act(legacy,{type:claim,index:0});(variant==='spire'?legacy.pending:legacy.secret[0].task).id='legacy-task';legacy=act(reload(legacy),{type:'TIMER',now:1000});assert.equal((variant==='spire'?legacy.pending:legacy.secret[0].task).endsAt,1000+cost.duration*1000);assert.doesNotThrow(()=>act(legacy,{type:'COMPLETE',done:true}));
+ }
+});
+test('Duel clocks belong only to unlocked tasks; preference clocks belong to each player’s outstanding penalty after reveal',()=>{
+ for(const variant of ['rps','limited','ecard','numbers','charge']){
+ let s=make(variant);s=act(s,{type:'SELECT',index:0},0);rejected(s,{type:'TIMER',now:1000},1);s=act(s,{type:'SELECT',index:0},1);const a=s.secret[0].task,b=s.secret[1].task;rejected(s,{type:'TIMER',taskId:a.id,now:1000},1);
+ s=act(s,{type:'TIMER',taskId:a.id,now:1000},0);s=act(s,{type:'TIMER',taskId:b.id,now:2000},1);assert.equal(s.secret[0].task.endsAt,1000+a.duration*1000);assert.equal(s.secret[1].task.endsAt,2000+b.duration*1000);s=act(s,{type:'COMPLETE',taskId:a.id,done:true},0);rejected(s,{type:'TIMER',taskId:a.id,now:null},0);s=act(s,{type:'COMPLETE',taskId:b.id,done:true},1);assert.equal(s.phase,'reveal');for(const actor of [0,1])rejected(s,{type:'TIMER',now:3000},actor);
+ }
+ let s=make('preference');for(const actor of [0,1])rejected(s,{type:'TIMER',now:1000},actor);s=act(s,{type:'SELECT',favorite:0,guess:1},0);s=act(s,{type:'SELECT',favorite:0,guess:2},1);const [a,b]=s.penalties;assert(a&&b);rejected(s,{type:'TIMER',taskId:a.id,now:1000},1);s=act(s,{type:'TIMER',taskId:a.id,now:1000},0);s=act(s,{type:'TIMER',taskId:b.id,now:2000},1);s=act(s,{type:'COMPLETE',taskId:a.id,done:true},0);rejected(s,{type:'TIMER',taskId:a.id,now:3000},0);assert.equal(s.penalties[1].endsAt,2000+b.duration*1000);s=act(s,{type:'COMPLETE',taskId:b.id,done:false},1);s=act(s,{type:'NEXT'},0);rejected(s,{type:'TIMER',taskId:b.id,now:null},1);
+});
+test('Room service rejects peer and stale task clock/confirmation atomically and keeps owner deadline through server reload',async()=>{
+ const directory=await mkdtemp(join(tmpdir(),'adventure-owner-test-'));let handler=await createRooms({directory});const server=http.createServer((req,res)=>handler(req,res,new URL(req.url,'http://localhost').pathname));await new Promise(r=>server.listen(0,'127.0.0.1',r));const base=`http://127.0.0.1:${server.address().port}/api/rooms`;
+ const request=async(path,token,data)=>{const r=await fetch(base+path,{method:data?'POST':'GET',headers:{...(token?{Authorization:'Bearer '+token}:{}),...(data?{'Content-Type':'application/json'}:{})},...(data?{body:JSON.stringify(data)}:{})});return {status:r.status,...await r.json()};};
+ try{const room=await request('',null,make().config),path='/'+room.code;let serial=0;const post=(actor,action,id)=>request(path+'/action',actor?room.inviteToken:room.token,{requestId:id??'owner-'+ ++serial,action});let r=await post(0,{type:'PATH',path:'normal',epoch:room.state.epoch});r=await post(0,{type:'PLAY',index:0,epoch:r.state.epoch});const old=r.state.pending.id,epoch=r.state.epoch;
+ for(const operation of operations){const denied=await post(1,{type:'TIMER',taskId:old,epoch,...operation});assert.equal(denied.status,422);assert.deepEqual((await request(path,room.token)).state,r.state);}
+ r=await post(0,{type:'TIMER',taskId:old,epoch,now:1000},'valid-start');const once=r.state.revision;const duplicate=await post(0,{type:'TIMER',taskId:old,epoch,now:3000},'valid-start');assert.equal(duplicate.state.revision,once);handler=await createRooms({directory});assert.deepEqual((await request(path,room.token)).state,r.state);
+ r=await post(0,{type:'COMPLETE',taskId:old,epoch,done:false});r=await post(0,{type:'PLAY',index:0,epoch});const id=r.state.pending.id;assert.notEqual(id,old);for(const action of [{type:'TIMER',now:1000},{type:'COMPLETE',done:true},{type:'COMPLETE',done:false}]){assert.equal((await post(0,{...action,epoch,taskId:old})).status,422);assert.deepEqual((await request(path,room.token)).state,r.state);}
+ r=await post(0,{type:'TIMER',taskId:id,epoch,now:5000});assert.equal(r.status,200);assert.equal(r.state.pending.endsAt,5000+r.state.pending.duration*1000);const paid=await post(0,{type:'COMPLETE',taskId:id,epoch,done:true});assert.equal(paid.status,200);assert.equal(paid.state.pending,undefined);assert(paid.state.energy[0]<r.state.energy[0]);
+ }finally{await new Promise(r=>server.close(r));await rm(directory,{recursive:true,force:true});}
+});
