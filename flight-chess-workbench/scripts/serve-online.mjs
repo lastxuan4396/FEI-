@@ -3,6 +3,7 @@ import {readFile} from 'node:fs/promises';
 import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {pairedRooms} from '../server/pairedRooms.js';
+import {createArcadeHTTP} from '../server/arcadeHttp.js';
 import {createFileRoomStore,createRedisRoomStore} from '../server/roomStore.js';
 import {createBoardRooms} from './board-rooms.mjs';
 import {referenceCatalog} from './reference-catalog.mjs';
@@ -14,7 +15,9 @@ const directory=process.env.ROOM_DIRECTORY||fileURLToPath(new URL('../work/onlin
 const prefix=process.env.REDIS_PREFIX||'paired-workbench-v1';
 const store=process.env.REDIS_URL?await createRedisRoomStore(process.env.REDIS_URL,prefix+':paired'):await createFileRoomStore(path.join(directory,'paired.json'));
 const boardStore=process.env.REDIS_URL?await createRedisRoomStore(process.env.REDIS_URL,prefix+':board'):await createFileRoomStore(path.join(directory,'board.json'));
+const arcadeStore=process.env.REDIS_URL?await createRedisRoomStore(process.env.REDIS_URL,prefix+':arcade'):await createFileRoomStore(path.join(directory,'arcade.json'));
 const paired=pairedRooms(store,{baseURL}),boards=await createBoardRooms({store:boardStore}),references=referenceCatalog();
+const arcade=createArcadeHTTP({store:arcadeStore,baseURL});
 const root=path.resolve(fileURLToPath(new URL('../dist/',import.meta.url)));
 const mime={'.html':'text/html; charset=utf-8','.js':'text/javascript','.css':'text/css','.json':'application/json','.png':'image/png','.jpg':'image/jpeg','.jpeg':'image/jpeg','.svg':'image/svg+xml','.wasm':'application/wasm'};
 const json=(res,status,body)=>{res.writeHead(status,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(body));};
@@ -24,6 +27,7 @@ const server=http.createServer(async(req,res)=>{
   const pathname=decodeURIComponent(new URL(req.url,'http://local').pathname);
   if(pathname==='/healthz'){json(res,200,{ok:true,service:'paired-workbench',storage:process.env.REDIS_URL?'redis':'local-file'});return;}
   if(await boards(req,res,pathname))return;
+  if(await arcade(req,res,pathname))return;
   if(pathname==='/api/rooms'||pathname.startsWith('/api/rooms/')){
    if(!requestOriginAllowed(req)){json(res,403,{error:'请从本网站打开房间'});return;}
    let body;if(req.method==='POST'){let raw='';for await(const chunk of req){raw+=chunk;if(Buffer.byteLength(raw)>800000){json(res,413,{error:'题库太大，请减少本局题目数量。'});return;}}try{body=JSON.parse(raw);}catch{json(res,400,{error:'请求格式不正确'});return;}}
@@ -42,4 +46,4 @@ const server=http.createServer(async(req,res)=>{
  }catch(e){json(res,e.status||404,{error:e.status===503?'房间保存暂时失败，请稍后重连。':'内容暂时无法读取。'});}
 });
 server.listen(port,'0.0.0.0',()=>console.log(`Online workbench listening on ${port}`));
-const stop=()=>server.close(async()=>{await Promise.all([store.close(),boardStore.close()]);process.exit(0);});process.on('SIGTERM',stop);process.on('SIGINT',stop);
+const stop=()=>server.close(async()=>{await Promise.all([store.close(),boardStore.close(),arcadeStore.close()]);process.exit(0);});process.on('SIGTERM',stop);process.on('SIGINT',stop);

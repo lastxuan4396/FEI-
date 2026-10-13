@@ -786,3 +786,9 @@ User asked whether multiplayer is ready. No gameplay code changed. Live producti
 
 ## 2026-10-11 Render internet multiplayer in progress
 User switched provider from Firebase to Render. Render CLI account verified and old FEI repo/flight-chess-room-v2 preserved. Dedicated free Key Value red-db5eqt7lot8c73ena4qg provisioned, external IP allowlist empty; no paid plan enabled. New render.yaml validates. New isolated Node online entry, transactional Redis/file stores, server-corrected task timestamps, durable action retry transport, initial-room snapshot fix and storage error statuses added. Six new tests plus existing board tests passed 10/10; full suite 406/406 passed. Source source-map archive remains untouched. Local dependency/build verification and real two-client browser replay still pending; no public URL claimed live. Free Key Value itself lacks disk persistence, explicitly documented.
+
+
+## 2026-10-13 八个剩余玩法双设备联机发布准备
+用户明确要求剩余游戏也双设备联机。本轮新增独立 /api/arcade-rooms 和 Redis arcade 命名空间，保留既有 paired/board 路由及存档。转盘、卡牌、合作闯关、剧情、宾果、默契抉择、解谜、大富翁新开局默认在线，私密邀请固定角色；服务器检查动作、版本、目标并去重，双方秘密投票各自提交。大富翁竞拍出价者、交易买方和合作合约接受者均独立授权，合作邀请需要对方实际接受。独立持续计时/计次同步且继续主游戏，服务器时钟校正、刷新身份恢复和断线稳定编号重试；线上状态不覆盖本机进度。原图/OCR内容未改。
+版本1.8.7。全套426项规则测试和新增HTTP集成1项通过，类型/静态/最终构建通过。真实两个独立Chromium上下文1280/390的八模式加外置计时计次共9检查通过，60秒设备时钟偏差检查通过；官方未修改develop-web-game客户端点击抽卡，截图和状态已打开。测试使用中性自建题、隔离房间与存储，不操作真实玩家房间。公网发布及同网址重新验收仍待完成；不是物理双手机或不同运营商网络验证。
+代码固定副本：/private/tmp/flight-arcade-publish/flight-chess-workbench；耐久证据：flight-chess-framework/work/arcade-online-check/。

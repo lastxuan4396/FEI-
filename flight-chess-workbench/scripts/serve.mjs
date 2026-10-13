@@ -1,6 +1,8 @@
 import {networkInterfaces} from 'node:os';
 import {createRooms} from './rooms.mjs';
 import {createBoardRooms} from './board-rooms.mjs';
+import {createFileRoomStore} from '../server/roomStore.js';
+import {createArcadeHTTP} from '../server/arcadeHttp.js';
 import {localVision,ocrAvailable,stopVision} from './ocr-bridge.mjs';
 import http from 'node:http';
 import { readFile } from 'node:fs/promises';
@@ -12,6 +14,8 @@ const references=referenceCatalog();
 const rooms=await createRooms({directory:process.env.PLAYTEST_ROOM_DIRECTORY});
 const boardRooms=await createBoardRooms({directory:process.env.PLAYTEST_BOARD_ROOM_DIRECTORY});
 const port=Number(process.env.PORT)||8766;
+const arcadeStore=await createFileRoomStore(path.join(process.env.PLAYTEST_ARCADE_ROOM_DIRECTORY||fileURLToPath(new URL('../work/arcade-rooms/',import.meta.url)),'arcade.json'));
+const arcadeRooms=createArcadeHTTP({store:arcadeStore,baseURL:process.env.PUBLIC_BASE_URL||`http://127.0.0.1:${port}/`});
 const localHosts=['127.0.0.1','localhost',...Object.values(networkInterfaces()).flat().filter(n=>n?.family==='IPv4'&&!n.internal).map(n=>n.address)];
 const allowedHosts=localHosts.map(host=>`${host}:${port}`);
 const allowedOrigins=allowedHosts.map(host=>`http://${host}`);
@@ -24,6 +28,7 @@ const server = http.createServer(async (req, res) => {
     res.setHeader('X-Content-Type-Options','nosniff');
     if(pathname==='/healthz'){res.writeHead(200,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify({ok:true,service:'flight-chess'}));return;}
     if(await boardRooms(req,res,pathname))return;
+    if(await arcadeRooms(req,res,pathname))return;
     if(await rooms(req,res,pathname))return;
     if(pathname==='/favicon.ico'){res.writeHead(204);res.end();return;}
     if(pathname==='/api/reference-boards'||pathname.startsWith('/api/reference-boards/')){
